@@ -21,12 +21,12 @@ Route::group([
     'prefix' => 'dashboard'
 ], function ($router) {
     //users
-Route::get('/users', [UserController::class, 'index']);
-Route::get('/users/{user}', [UserController::class, 'show']);
-Route::post('/users', [UserController::class, 'store']);
-Route::post('/users/{user}', [UserController::class, 'update']);
-Route::delete('/users/{user}', [UserController::class, 'destroy']);
-Route::get('getUserCount', [UserController::class, 'getUserCount']); 
+// Route::get('/users', [UserController::class, 'index']);
+// Route::get('/users/{user}', [UserController::class, 'show']);
+// Route::post('/users', [UserController::class, 'store']);
+// Route::post('/users/{user}', [UserController::class, 'update']);
+// Route::delete('/users/{user}', [UserController::class, 'destroy']);
+// Route::get('getUserCount', [UserController::class, 'getUserCount']); 
 //roles
 // Route::get('/roles', [RoleController::class, 'index']);
 // Route::get('/roles/{role}', [RoleController::class, 'show']);

@@ -18,11 +18,7 @@ class UserController extends Controller
     protected $user;
     function __construct(User $user)
     {
-        // $this->middleware('permission:user', ['only' => ['show']]);
-        // $this->middleware('permission:users-list', ['only' => ['index']]);
-        // $this->middleware('permission:add-user', ['only' => ['store']]);
-        // $this->middleware('permission:update-user', ['only' => ['update']]);
-        // $this->middleware('permission:delete-user', ['only' => ['destroy']]);
+
         $this->user = $user;
     }
     /**
@@ -32,51 +28,51 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-         $users = User::with('permissions')->paginate($request->get('per_page', 50));
-        
+        $users = User::with('permissions')->paginate($request->get('per_page', 50));
+
         return UserResource::collection($users);
     }
 
-   public function store(Request $request)
-{
-    $validator = Validator::make($request->all(), [
-        'name' => 'required|string|max:255',
-        'date_of_birth' => 'required|date_format:Y/m/d',
-        'national_id' => 'required|string|max:255',
-        'photo' => 'nullable',
-        'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
-        'email' => 'required|string|email|max:255|unique:users,email,'.$request->id,
-        'password' => 'required|string|min:8',
-        'roles_name' => 'required',
-    ]);
+    public function store(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'date_of_birth' => 'required|date_format:Y/m/d',
+            'national_id' => 'required|string|max:255',
+            'photo' => 'nullable',
+            'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+            'email' => 'required|string|email|max:255' . $request->id,
+            'password' => 'required|string|min:8',
+            'roles_name' => 'required',
+        ]);
 
-    if ($validator->fails()) {
-        return response()->json(['errors' => $validator->errors()]);
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()]);
+        }
+
+        if ($request->file('photo')) {
+            $avatar = $request->file('photo');
+            $avatar->store('uploads/personal_photo/', 'public');
+            $photo = $avatar->hashName();
+        } else {
+            $photo = null;
+        }
+
+        $user = User::create([
+            'name' => $request->name,
+            'national_id' => $request->national_id,
+            'date_of_birth' => $request->date_of_birth,
+            'photo' => $photo,
+            'number' => $request->number,
+            'email' => $request->email,
+            'roles_name' => $request->roles_name,
+            'password' => Hash::make($request->password),
+        ]);
+
+        $user->assignRole([$request->input('roles_name')]);
+
+        return new UserResource($user);
     }
-
-    if ($request->file('photo')) {
-        $avatar = $request->file('photo');
-        $avatar->store('uploads/personal_photo/', 'public');
-        $photo = $avatar->hashName();
-    } else {
-        $photo = null;
-    }
-
-    $user = User::create([
-        'name' => $request->name,
-        'national_id' => $request->national_id,
-        'date_of_birth' => $request->date_of_birth,
-        'photo' => $photo,
-        'number' => $request->number,
-        'email' => $request->email,
-        'roles_name' => $request->roles_name,
-        'password' => Hash::make($request->password),
-    ]);
-
-    $user->assignRole([$request->input('roles_name')]);
-
-    return new UserResource($user);
-}
 
     /**
      * Display the specified resource.
@@ -89,60 +85,53 @@ class UserController extends Controller
         return new UserResource($user);
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-   public function update(Request $request, User $user)
-{
-    $validator = Validator::make($request->all(), [
-        
-        'name' => 'nullable|string|max:255',
-        'nationality' => 'nullable|string|max:255',
-        'personal_photo' => 'nullable',
-        'phone_number' => 'nullable|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
-        'email' => 'nullable|string|email|max:255|unique:users,email,' . $user->id,
-        'password' => 'required|string|min:8',
-        'roles_name' => 'required',
-    ]);
+    public function update(Request $request, User $user)
+    {
+        $validator = Validator::make($request->all(), [
 
-    if ($validator->fails()) {
-        // Debug statements
-        dd($request->all(), $validator->errors()->all());
+            'name' => 'nullable|string|max:255',
+            'nationality' => 'nullable|string|max:255',
+            'photo' => 'nullable',
+            'phone' => 'nullable|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
+            'email' => 'nullable|string|email|max:255,',
+            'password' => 'required|string|min:8',
+            'roles_name' => 'required',
+        ]);
 
-        return response()->json(['errors' => $validator->errors()]);
+        if ($validator->fails()) {
+            // Debug statements
+            dd($request->all(), $validator->errors()->all());
+
+            return response()->json(['errors' => $validator->errors()]);
+        }
+
+        if ($request->file('personal_photo')) {
+            $avatar = $request->file('personal_photo');
+            $avatar->store('uploads/personal_photo/', 'public');
+            $personal_photo = $avatar->hashName();
+        } else {
+            $personal_photo = null;
+        }
+
+        // Update user details
+        $user->update([
+            'name' => $request->first_name,
+
+
+            'photo' => $personal_photo,
+            'number' => $request->phone_number,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        // Delete existing roles
+        DB::table('model_has_roles')->where('model_id', $user->id)->delete();
+
+        // Assign new roles
+        $user->assignRole([$request->input('roles_name')]);
+
+        return new UserResource($user);
     }
-
-    if ($request->file('personal_photo')) {
-        $avatar = $request->file('personal_photo');
-        $avatar->store('uploads/personal_photo/', 'public');
-        $personal_photo = $avatar->hashName();
-    } else {
-        $personal_photo = null;
-    }
-
-    // Update user details
-    $user->update([
-        'first_name' => $request->first_name,
-        'last_name' => $request->last_name,
-        'nationality' => $request->nationality,
-        'personal_photo' => $personal_photo,
-        'phone_number' => $request->phone_number,
-        'email' => $request->email,
-        'password' => Hash::make($request->password),
-    ]);
-
-    // Delete existing roles
-    DB::table('model_has_roles')->where('model_id', $user->id)->delete();
-
-    // Assign new roles
-    $user->assignRole([$request->input('roles_name')]);
-
-    return new UserResource($user);
-}
     /**
      * Remove the specified resource from storage.
      *
@@ -151,20 +140,20 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-     
-     // Delete personal photo if it exists
-     if ($user->personal_photo) {
-        // Assuming 'personal_photo' is the attribute storing the file name
-        $photoPath = 'uploads/personal_photo/' . $user->personal_photo;
 
-        // Delete photo from storage
-        Storage::delete($photoPath);
-    }
+        // Delete personal photo if it exists
+        if ($user->personal_photo) {
+            // Assuming 'personal_photo' is the attribute storing the file name
+            $photoPath = 'uploads/personal_photo/' . $user->personal_photo;
 
-    // Delete the user
-    $user->delete();
+            // Delete photo from storage
+            Storage::delete($photoPath);
+        }
 
-    return response()->json(['message' => 'User deleted successfully']);
+        // Delete the user
+        $user->delete();
+
+        return response()->json(['message' => 'User deleted successfully']);
     }
     public function getUserCount()
     {
@@ -176,7 +165,4 @@ class UserController extends Controller
             'data' => $count
         ]);
     }
-   
-    
-   
 }
