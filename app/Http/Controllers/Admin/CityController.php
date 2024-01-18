@@ -14,9 +14,9 @@ class CityController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index()
     {
-        $cities = City::paginate($request->get('per_page', 50));
+        $cities = City::all();
         return CityResource::collection($cities);
     }
 
@@ -25,7 +25,6 @@ class CityController extends Controller
      */
     public function create()
     {
-
     }
 
     /**
@@ -33,10 +32,14 @@ class CityController extends Controller
      */
     public function store(CityRequest $request)
     {
-        if ($request->file('image')) {
-            $avatar = $request->file('image');
-            $avatar->store('uploads/city/', 'public');
-            $image = $avatar->hashName();
+        if (request()->has('image') &&  request('image') != '') {
+            $avatar = request()->file('image');
+            if ($avatar->isValid()) {
+                $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
+                $avatarPath = public_path('/uploads/city');
+                $avatar->move($avatarPath, $avatarName);
+                $image  = $avatarName;
+            }
         } else {
             $image = null;
         }
@@ -52,7 +55,7 @@ class CityController extends Controller
      */
     public function show(City $city)
     {
-        return CityResource::collection($city);
+        return  new CityResource($city);
     }
 
     /**
@@ -68,10 +71,14 @@ class CityController extends Controller
      */
     public function update(CityRequest $request, City $city)
     {
-        if ($request->file('image')) {
-            $avatar = $request->file('image');
-            $avatar->store('uploads/cities/', 'public');
-            $image = $avatar->hashName();
+        if (request()->has('image') &&  request('image') != '') {
+            $avatar = request()->file('image');
+            if ($avatar->isValid()) {
+                $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
+                $avatarPath = public_path('/uploads/city');
+                $avatar->move($avatarPath, $avatarName);
+                $image  = $avatarName;
+            }
         } else {
             $image = null;
         }

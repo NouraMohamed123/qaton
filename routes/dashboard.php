@@ -1,8 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\AreaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AuthController;
-
+use App\Http\Controllers\Admin\CityController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -37,8 +38,20 @@ Route::group([
 
 //city route
 
+Route::get('/city', [CityController::class, 'index']);
+Route::get('/city/{city}', [CityController::class, 'show']);
+Route::post('/city', [CityController::class, 'store']);
+Route::post('/city/{city}', [CityController::class, 'update']);
+Route::delete('/city/{city}', [CityController::class, 'destroy']);
+
+
 //area route
 
+Route::get('/area', [AreaController::class, 'index']);
+Route::get('/area/{area}', [AreaController::class, 'show']);
+Route::post('/area', [AreaController::class, 'store']);
+Route::post('/area/{area}', [AreaController::class, 'update']);
+Route::delete('/area/{area}', [AreaController::class, 'destroy']);
 
 
 

@@ -14,7 +14,7 @@ class AreaController extends Controller
      */
     public function index(Request $request)
     {
-        $areas = Area::with('city')->paginate($request->get('per_page', 50));
+        $areas = Area::with('city')->get();
         return AreaResource::collection($areas);
     }
 
@@ -45,7 +45,7 @@ class AreaController extends Controller
     public function show(string $id)
     {
         $area = Area::with('city')->where('id', $id)->first();
-        return AreaResource::collection($area);
+        return new AreaResource($area);
     }
 
     /**
