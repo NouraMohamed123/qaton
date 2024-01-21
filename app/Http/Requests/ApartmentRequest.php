@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Validation\Rule;
 class ApartmentRequest extends FormRequest
 {
     /**
@@ -11,7 +11,7 @@ class ApartmentRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,14 @@ class ApartmentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+          'name'=>'required|string',
+          'price'=>'required|numeric',
+          'bathrooms'=>'required|numeric',
+          'lounges'=>'required|numeric',
+          'view' => ['required', Rule::in(['street', 'passage', 'park', 'promenade'])],
+          'area_id'=>'required|exists:areas,id',
+          'parking'=>['required', Rule::in(['external','basement'])],
+
         ];
     }
 }

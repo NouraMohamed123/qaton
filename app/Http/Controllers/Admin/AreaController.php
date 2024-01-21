@@ -42,9 +42,8 @@ class AreaController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show( Area $area)
     {
-        $area = Area::with('city')->where('id', $id)->first();
         return new AreaResource($area);
     }
 

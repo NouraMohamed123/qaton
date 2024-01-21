@@ -8,5 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Apartment extends Model
 {
     use HasFactory;
-    protected $guarded =[];
+    protected $guarded =['id'];
+
+    public function rooms()
+    {
+        return $this->hasMany(Room::class);
+    }
+    public function reviews()
+    {
+        return $this->hasMany(Review::class);
+    }
+    public function BookedApartments()
+    {
+        return $this->hasMany(Booked_apartment::class);
+    }
 }

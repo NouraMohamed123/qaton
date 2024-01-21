@@ -9,4 +9,8 @@ class Booked_apartment extends Model
 {
     use HasFactory;
     protected $guarded =[];
+    public function Apartment()
+    {
+        return $this->belongsTo(Apartment::class);
+    }
 }

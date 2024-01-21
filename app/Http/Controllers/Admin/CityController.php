@@ -32,14 +32,9 @@ class CityController extends Controller
      */
     public function store(CityRequest $request)
     {
-        if (request()->has('image') &&  request('image') != '') {
-            $avatar = request()->file('image');
-            if ($avatar->isValid()) {
-                $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
-                $avatarPath = public_path('/uploads/city');
-                $avatar->move($avatarPath, $avatarName);
-                $image  = $avatarName;
-            }
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $avatar = $request->file('image');
+            $image = upload($avatar,public_path('uploads/city'));
         } else {
             $image = null;
         }
@@ -97,7 +92,6 @@ class CityController extends Controller
             $photoPath = 'uploads/cities/' . $city->image;
             Storage::delete($photoPath);
         }
-        // Delete the user
         $city->delete();
         return response()->json(['isSuccess' => true], 200);
     }

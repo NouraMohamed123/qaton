@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\ApartmentController;
 use App\Http\Controllers\Admin\AreaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CityController;
+use App\Http\Controllers\Admin\ReviewController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -53,6 +55,17 @@ Route::post('/area', [AreaController::class, 'store']);
 Route::post('/area/{area}', [AreaController::class, 'update']);
 Route::delete('/area/{area}', [AreaController::class, 'destroy']);
 
+//apartment route
 
+Route::get('/apartment', [ApartmentController::class, 'index']);
+Route::get('/apartment/{apartment}', [ApartmentController::class, 'show']);
+Route::post('/apartment', [ApartmentController::class, 'store']);
+Route::post('/apartment/{apartment}', [ApartmentController::class, 'update']);
+Route::delete('/apartment/{apartment}', [ApartmentController::class, 'destroy']);
+//reviews route
+
+Route::post('/review', [ReviewController::class, 'store']);
+Route::post('/review/{review}', [ReviewController::class, 'update']);
+Route::delete('/review/{review}', [ReviewController::class, 'destroy']);
 
 
