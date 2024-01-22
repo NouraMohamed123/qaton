@@ -4,6 +4,8 @@ use App\Http\Controllers\Admin\ApartmentController;
 use App\Http\Controllers\Admin\AreaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\CityController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\RoleController;
 use Illuminate\Support\Facades\Route;
 
