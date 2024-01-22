@@ -4,8 +4,7 @@ use App\Http\Controllers\Admin\ApartmentController;
 use App\Http\Controllers\Admin\AreaController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\CityController;
-use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Admin\RoleController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -24,18 +23,18 @@ Route::group([
     'prefix' => 'dashboard'
 ], function ($router) {
     //users
-// Route::get('/users', [UserController::class, 'index']);
-// Route::get('/users/{user}', [UserController::class, 'show']);
-// Route::post('/users', [UserController::class, 'store']);
-// Route::post('/users/{user}', [UserController::class, 'update']);
-// Route::delete('/users/{user}', [UserController::class, 'destroy']);
-// Route::get('getUserCount', [UserController::class, 'getUserCount']);
+Route::get('/users', [UserController::class, 'index']);
+Route::get('/users/{user}', [UserController::class, 'show']);
+Route::post('/users', [UserController::class, 'store']);
+Route::post('/users/{user}', [UserController::class, 'update']);
+Route::delete('/users/{user}', [UserController::class, 'destroy']);
+Route::get('getUserCount', [UserController::class, 'getUserCount']); 
 //roles
-// Route::get('/roles', [RoleController::class, 'index']);
-// Route::get('/roles/{role}', [RoleController::class, 'show']);
-// Route::post('/roles', [RoleController::class, 'store']);
-// Route::post('/roles/{role}', [RoleController::class, 'update']);
-// Route::delete('/roles/{role}', [RoleController::class, 'destroy']);
+Route::get('/roles', [RoleController::class, 'index']);
+Route::get('/roles/{role}', [RoleController::class, 'show']);
+Route::post('/roles', [RoleController::class, 'store']);
+Route::post('/roles/{role}', [RoleController::class, 'update']);
+Route::delete('/roles/{role}', [RoleController::class, 'destroy']);
 });
 
 //city route

@@ -12,17 +12,26 @@ class UserResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-   
+    public function with($request)
+    {
+        return [
+            'status' => 'true',
+            'message' => 'تمت العميله بنجاح'
+        ];
+    }
        
    
     public function toArray($request)
     {
         
+        
         return [
             'id' => $this->id,
             'name' => $this->name,
             'email' => $this->email,
-            'number' => $this->phone,
+            'phone' => $this->phone,
+            'date_of_birth' => $this->date_of_birth,
+            'national_id' => $this->national_id,
             'photo' => $this->photo,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
