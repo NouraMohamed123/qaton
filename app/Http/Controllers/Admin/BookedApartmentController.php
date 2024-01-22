@@ -2,8 +2,12 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\Apartment;
 use Illuminate\Http\Request;
+use App\Models\Booked_apartment;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class BookedApartmentController extends Controller
 {
@@ -28,7 +32,43 @@ class BookedApartmentController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $apartment_list = explode(',', $request->apartment_list);
+        $checkInDate = Carbon::parse($request->check_in_date);
+        $checkOutDate = Carbon::parse($request->check_out_date);
+
+        $totalDays = $checkInDate->diffInDays($checkOutDate);
+        if($checkInDate == $checkOutDate){
+            return response()->json(['error' => 'Check in and Check out date should not be same'],403 );
+        }
+        $apartments = Apartment::where('status',1)->whereIn('id',$apartment_list)->with(['BookedApartments'=>function($BookedApartments) use ($checkInDate,$checkOutDate){
+            $BookedApartments->where(function($q) use ($checkInDate,$checkOutDate){
+                $q->where(function($qq) use ($checkInDate,$checkOutDate){
+                    $qq->where('date_from','<=',$checkInDate)->where('date_to','>',$checkInDate);
+                })->orWhere(function($qqq) use ($checkInDate,$checkOutDate){
+                    $qqq->where('date_from','<=',$checkOutDate)->where('date_to','>=',$checkOutDate);
+                });
+            });
+        }])->get();
+        foreach ($apartments as $apartment) {
+            if($apartment->BookedApartments->count() > 0){
+                return response()->json(['error' => 'Some apartment has already booked'],403 );
+            }
+        }
+
+        if ($apartments->count() <= 0) {
+            return response()->json(['error' => 'There is no apartment found'],403 );
+        }
+        $totalPrice = $apartments->sum('price');
+        $totalPrice = $totalPrice * $totalDays;
+        foreach ($apartments as $apartment) {
+        Booked_apartment::create([
+            'user_id'=>Auth::guard('app_users')->user()->id,
+            'apartment_id'=>$apartment->id,
+            'total_price'=>$totalPrice,
+            'date_from'=>$checkInDate,
+            'date_to'=>$checkOutDate
+        ]);
+    }
     }
 
     /**
