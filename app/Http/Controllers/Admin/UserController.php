@@ -10,8 +10,10 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
+
 
 class UserController extends Controller
 {
@@ -29,9 +31,15 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = User::with('permissions')->paginate($request->get('per_page', 50));
-
-        return UserResource::collection($users);
+    
+        return response()->json([
+            'successful' => true,
+            'message' => 'Operation retrieved successfully',
+            'data' => UserResource::collection($users)
+        ], 200);
     }
+    
+    
 
     public function store(Request $request)
     {
@@ -62,6 +70,7 @@ class UserController extends Controller
             'name' => $request->name,
             'national_id' => $request->national_id,
             'date_of_birth' => $request->date_of_birth,
+            'phone' => $request->phone,
             'photo' => $photo,
             'number' => $request->number,
             'email' => $request->email,
@@ -71,7 +80,9 @@ class UserController extends Controller
 
         $user->assignRole([$request->input('roles_name')]);
 
-        return new UserResource($user);
+        return (new UserResource($user))
+        ->response()
+        ->setStatusCode(200);
     }
 
     /**
@@ -82,10 +93,24 @@ class UserController extends Controller
      */
     public function show(User $user)
     {
-        return new UserResource($user);
+        try {
+            // Laravel's route model binding should automatically fetch the user by ID
+            // If not found, it will throw a ModelNotFoundException
+            $user = User::findOrFail($user->id);
+    
+            $userRole = $user->roles->pluck('name', 'name')->all();
+    
+            return response()->json([
+                'successful' => true,
+                'message' => 'Operation retrieved successfully',
+                'data' => new UserResource($user)
+            ], 200);
+        } catch (ModelNotFoundException $e) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
     }
 
-    public function update(Request $request, User $user)
+    public function update(Request $request, User $user )
     {
         $validator = Validator::make($request->all(), [
 
@@ -93,34 +118,36 @@ class UserController extends Controller
             'nationality' => 'nullable|string|max:255',
             'photo' => 'nullable',
             'phone' => 'nullable|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
-            'email' => 'nullable|string|email|max:255,',
+            'email' => 'required|unique:users,email,' . $request->id,
             'password' => 'required|string|min:8',
             'roles_name' => 'required',
         ]);
 
         if ($validator->fails()) {
             // Debug statements
-            dd($request->all(), $validator->errors()->all());
+           // dd($request->all(), $validator->errors()->all());
 
             return response()->json(['errors' => $validator->errors()]);
         }
 
-        if ($request->file('personal_photo')) {
-            $avatar = $request->file('personal_photo');
+        if ($request->file('photo')) {
+            $avatar = $request->file('photo');
             $avatar->store('uploads/personal_photo/', 'public');
-            $personal_photo = $avatar->hashName();
+            $photo = $avatar->hashName();
         } else {
-            $personal_photo = null;
+            $photo = null;
         }
 
         // Update user details
         $user->update([
-            'name' => $request->first_name,
-
-
-            'photo' => $personal_photo,
-            'number' => $request->phone_number,
-            'email' => $request->email,
+            'name' => $request->name,
+            'national_id' => $request->national_id,
+            'date_of_birth' => $request->date_of_birth,
+            'phone' => $request->phone,
+            'photo' => $photo,
+            'number' => $request->number,
+            'email' =>$request->email,
+            'roles_name' => $request->roles_name,
             'password' => Hash::make($request->password),
         ]);
 
@@ -130,7 +157,9 @@ class UserController extends Controller
         // Assign new roles
         $user->assignRole([$request->input('roles_name')]);
 
-        return new UserResource($user);
+        return (new UserResource($user))
+        ->response()
+        ->setStatusCode(200);
     }
     /**
      * Remove the specified resource from storage.
@@ -142,9 +171,9 @@ class UserController extends Controller
     {
 
         // Delete personal photo if it exists
-        if ($user->personal_photo) {
+        if ($user->photo) {
             // Assuming 'personal_photo' is the attribute storing the file name
-            $photoPath = 'uploads/personal_photo/' . $user->personal_photo;
+            $photoPath = 'uploads/personal_photo/' . $user->photo;
 
             // Delete photo from storage
             Storage::delete($photoPath);
@@ -153,7 +182,7 @@ class UserController extends Controller
         // Delete the user
         $user->delete();
 
-        return response()->json(['message' => 'User deleted successfully']);
+        return response()->json(['message' => 'User deleted successfully'], 200);
     }
     public function getUserCount()
     {
@@ -163,6 +192,6 @@ class UserController extends Controller
             "successful" => true,
             "message" => "عملية العرض تمت بنجاح",
             'data' => $count
-        ]);
+        ], 200);
     }
 }
