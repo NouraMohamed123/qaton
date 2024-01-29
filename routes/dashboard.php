@@ -73,6 +73,8 @@ Route::post('/review/{review}', [ReviewController::class, 'update']);
 Route::delete('/review/{review}', [ReviewController::class, 'destroy']);
 
 //////
+Route::get('/booked', [BookedApartmentController::class, 'index']);
+Route::get('/booked/{booked}', [BookedApartmentController::class, 'show']);
 Route::post('/booked', [BookedApartmentController::class, 'store']);
 Route::post('/booked/{Booked_apartment}', [BookedApartmentController::class, 'update']);
 Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, 'destroy']);
