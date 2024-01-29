@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Admin\AboutUsController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AreaController;
 use App\Http\Controllers\Admin\AuthController;
@@ -8,9 +7,10 @@ use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Admin\AboutUsController;
+use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ApartmentController;
 use App\Http\Controllers\Admin\BookedApartmentController;
-use App\Http\Controllers\Admin\PrivacyController;
 
 Route::group([
     'middleware' => 'api',
