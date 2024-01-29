@@ -17,7 +17,7 @@ class SettingController extends Controller
     {
         $settings = Setting::pluck('value', 'key')
         ->toArray();
-        return SettingResource::collection($settings);
+        return  $settings;
     }
 
     /**
@@ -46,10 +46,22 @@ class SettingController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return redirect()->back()->withErrors($validator)->withInput();
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors(),
+            ], 422);
         }
 
         foreach ($validator->validated() as $key => $input) {
+
+            if (request()->hasFile('site_logo') && $request->file('site_logo')->isValid()) {
+
+                $avatar = $request->file('site_logo');
+                $image = upload($avatar,public_path('uploads/settings'));
+                 $input =$image;
+
+            }
+
             Setting::updateOrCreate(
                 [
                     'key' => $key,

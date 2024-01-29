@@ -6,6 +6,7 @@ use App\Models\Privacy;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PrivacyResource;
+use Illuminate\Support\Facades\Validator;
 
 class PrivacyController extends Controller
 {
@@ -31,6 +32,16 @@ class PrivacyController extends Controller
      */
     public function store(Request $request)
     {
+     $validator = Validator::make($request->all(), [
+            'description' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors(),
+            ], 422);
+        }
         $privacy = new Privacy();
         $privacy->description = $request->description;
         $privacy->save();
@@ -58,7 +69,16 @@ class PrivacyController extends Controller
      */
     public function update(Request $request,Privacy $privacy)
     {
+        $validator = Validator::make($request->all(), [
+            'description' => 'required',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors(),
+            ], 422);
+        }
         $privacy->description = $request->description;
         $privacy->save();
         return response()->json(['isSuccess' => true], 200);

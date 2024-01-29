@@ -6,6 +6,7 @@ use App\Models\AboutUs;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AboutUsResource;
+use Illuminate\Support\Facades\Validator;
 
 class AboutUsController extends Controller
 {
@@ -14,6 +15,7 @@ class AboutUsController extends Controller
      */
     public function index()
     {
+
         $about_us = AboutUs::all();
         return AboutUsResource::collection($about_us);
     }
@@ -31,6 +33,13 @@ class AboutUsController extends Controller
      */
     public function store(Request $request)
     {
+     $validator = Validator::make($request->all(), [
+            'description' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
         $about_us = new AboutUs();
         $about_us->description = $request->description;
         $about_us->save();
@@ -58,7 +67,16 @@ class AboutUsController extends Controller
      */
     public function update(Request $request,AboutUs $about_us)
     {
+        $validator = Validator::make($request->all(), [
+            'description' => 'required',
+        ]);
 
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors(),
+            ], 422);
+        }
         $about_us->description = $request->description;
         $about_us->save();
         return response()->json(['isSuccess' => true], 200);
