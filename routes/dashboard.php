@@ -1,12 +1,16 @@
 <?php
 
-use App\Http\Controllers\Admin\ApartmentController;
-use App\Http\Controllers\Admin\AreaController;
-use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\AuthController;
-use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\AboutUsController;
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\Admin\AreaController;
+use App\Http\Controllers\Admin\AuthController;
+use App\Http\Controllers\Admin\CityController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Admin\ApartmentController;
+use App\Http\Controllers\Admin\BookedApartmentController;
+use App\Http\Controllers\Admin\PrivacyController;
 
 Route::group([
     'middleware' => 'api',
@@ -28,7 +32,7 @@ Route::get('/users/{user}', [UserController::class, 'show']);
 Route::post('/users', [UserController::class, 'store']);
 Route::post('/users/{user}', [UserController::class, 'update']);
 Route::delete('/users/{user}', [UserController::class, 'destroy']);
-Route::get('getUserCount', [UserController::class, 'getUserCount']); 
+Route::get('getUserCount', [UserController::class, 'getUserCount']);
 //roles
 Route::get('/roles', [RoleController::class, 'index']);
 Route::get('/roles/{role}', [RoleController::class, 'show']);
@@ -67,4 +71,21 @@ Route::post('/review', [ReviewController::class, 'store']);
 Route::post('/review/{review}', [ReviewController::class, 'update']);
 Route::delete('/review/{review}', [ReviewController::class, 'destroy']);
 
+//////
+Route::post('/booked', [BookedApartmentController::class, 'store']);
+Route::post('/booked/{Booked_apartment}', [BookedApartmentController::class, 'update']);
+Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, 'destroy']);
 
+/////////about_us
+Route::get('/about_us', [AboutUsController::class, 'index']);
+Route::get('/about_us/{about_us}', [AboutUsController::class, 'show']);
+Route::post('/about_us', [AboutUsController::class, 'store']);
+Route::post('/about_us/{about_us}', [AboutUsController::class, 'update']);
+Route::delete('/about_us/{about_us}', [AboutUsController::class, 'destroy']);
+
+/////////privacy
+Route::get('/privacy', [PrivacyController::class, 'index']);
+Route::get('/privacy/{privacy}', [PrivacyController::class, 'show']);
+Route::post('/privacy', [PrivacyController::class, 'store']);
+Route::post('/privacy/{privacy}', [PrivacyController::class, 'update']);
+Route::delete('/privacy/{privacy}', [PrivacyController::class, 'destroy']);
