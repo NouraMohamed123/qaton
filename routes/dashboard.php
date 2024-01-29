@@ -11,6 +11,7 @@ use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ApartmentController;
 use App\Http\Controllers\Admin\BookedApartmentController;
+use App\Http\Controllers\Admin\SettingController;
 
 Route::group([
     'middleware' => 'api',
@@ -89,3 +90,7 @@ Route::get('/privacy/{privacy}', [PrivacyController::class, 'show']);
 Route::post('/privacy', [PrivacyController::class, 'store']);
 Route::post('/privacy/{privacy}', [PrivacyController::class, 'update']);
 Route::delete('/privacy/{privacy}', [PrivacyController::class, 'destroy']);
+
+//setting
+Route::get('/setting', [SettingController::class, 'index']);
+Route::post('/setting', [SettingController::class, 'store']);

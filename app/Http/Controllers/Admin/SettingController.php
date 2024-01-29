@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\Setting;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\SettingResource;
+use Illuminate\Support\Facades\Validator;
 
 class SettingController extends Controller
 {
@@ -12,7 +15,9 @@ class SettingController extends Controller
      */
     public function index()
     {
-        //
+        $settings = Setting::pluck('value', 'key')
+        ->toArray();
+        return SettingResource::collection($settings);
     }
 
     /**
@@ -28,7 +33,34 @@ class SettingController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validator = Validator::make($request->all(), [
+            'site_logo' => '',
+            'site_name' => '',
+            'info_email'=> '',
+            'mobile'=> '',
+            'tiktok'=> '',
+            'instagram' => '',
+            'maintenance_mode' => '',
+            'siteMaintenanceMsg' => '',
+            'tax_added_value'=>'',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+
+        foreach ($validator->validated() as $key => $input) {
+            Setting::updateOrCreate(
+                [
+                    'key' => $key,
+                ],
+                [
+                    'value' => $input,
+                ]
+            );
+        }
+
+        return response()->json(['isSuccess' => true], 200);
     }
 
     /**
@@ -52,7 +84,7 @@ class SettingController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+
     }
 
     /**
