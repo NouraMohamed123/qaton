@@ -6,12 +6,11 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ApartmentController;
-use App\Http\Controllers\Admin\BookedApartmentController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\Admin\TermsController;
 
 Route::group([
     'middleware' => 'api',
@@ -66,18 +65,6 @@ Route::get('/apartment/{apartment}', [ApartmentController::class, 'show']);
 Route::post('/apartment', [ApartmentController::class, 'store']);
 Route::post('/apartment/{apartment}', [ApartmentController::class, 'update']);
 Route::delete('/apartment/{apartment}', [ApartmentController::class, 'destroy']);
-//reviews route
-
-Route::post('/review', [ReviewController::class, 'store']);
-Route::post('/review/{review}', [ReviewController::class, 'update']);
-Route::delete('/review/{review}', [ReviewController::class, 'destroy']);
-
-//////
-Route::get('/booked', [BookedApartmentController::class, 'index']);
-Route::get('/booked/{booked}', [BookedApartmentController::class, 'show']);
-Route::post('/booked', [BookedApartmentController::class, 'store']);
-Route::post('/booked/{Booked_apartment}', [BookedApartmentController::class, 'update']);
-Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, 'destroy']);
 
 /////////about_us
 Route::get('/about_us', [AboutUsController::class, 'index']);
@@ -92,6 +79,14 @@ Route::get('/privacy/{privacy}', [PrivacyController::class, 'show']);
 Route::post('/privacy', [PrivacyController::class, 'store']);
 Route::post('/privacy/{privacy}', [PrivacyController::class, 'update']);
 Route::delete('/privacy/{privacy}', [PrivacyController::class, 'destroy']);
+
+/////////terms
+Route::get('/terms', [TermsController::class, 'index']);
+Route::get('/terms/{terms}', [TermsController::class, 'show']);
+Route::post('/terms', [TermsController::class, 'store']);
+Route::post('/terms/{terms}', [TermsController::class, 'update']);
+Route::delete('/terms/{terms}', [TermsController::class, 'destroy']);
+
 
 //setting
 Route::get('/setting', [SettingController::class, 'index']);

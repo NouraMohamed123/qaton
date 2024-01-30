@@ -36,13 +36,8 @@ class ApartmentController extends Controller
     public function store(ApartmentRequest $request)
     {
         try {
+
             DB::beginTransaction();
-            if ($request->hasFile('image') && $request->file('image')->isValid()) {
-                $avatar = $request->file('image');
-                $image = upload($avatar,public_path('uploads/apartments'));
-            } else {
-                $image = null;
-            }
 
             if ($request->hasFile('video') && $request->file('video')->isValid()) {
                 $video =  upload($request->file('video'),public_path('uploads/apartments/vidios'));
@@ -56,20 +51,26 @@ class ApartmentController extends Controller
                 'bathrooms' => $request->bathrooms,
                 'lounges' => $request->lounges,
                 'dining_session' => $request->dining_session,
-                'balcony' => $request->balcony,
-                'yard' => $request->yard,
-                'terrace' => $request->terrace,
+                'features' => json_encode($request->features),
                 'view' => $request->view,
                 'additional_features' => json_encode($request->additional_features),
                 'area_id' => $request->area_id,
-                'images ' => $image,
                 'video' => $video,
                 'parking' => $request->parking,
                 'max_guests' => $request->max_guests,
                 'status' => $request->status,
             ];
 
+
             $apartment =  Apartment::create($data);
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    if ($image->isValid()) {
+                        $uploadedImage = upload($image, public_path('uploads/apartments'));
+                        $apartment->images()->create(['image' => $uploadedImage]);
+                    }
+                }
+            }
             foreach ($request->rooms as $roomData) {
                 $room = new Room();
                 $room->room_number = $roomData['room_number'];
@@ -110,12 +111,7 @@ class ApartmentController extends Controller
     {
         try {
             DB::beginTransaction();
-            if ($request->hasFile('image') && $request->file('image')->isValid()) {
-                $avatar = $request->file('image');
-                $image = upload($avatar,public_path('uploads/apartments'));
-            } else {
-                $image = null;
-            }
+
 
             if ($request->hasFile('video') && $request->file('video')->isValid()) {
                 $video =  upload($request->file('video'),public_path('uploads/apartments/vidios'));
@@ -129,13 +125,10 @@ class ApartmentController extends Controller
                 'bathrooms' => $request->bathrooms,
                 'lounges' => $request->lounges,
                 'dining_session' => $request->dining_session,
-                'balcony' => $request->balcony,
-                'yard' => $request->yard,
-                'terrace' => $request->terrace,
                 'view' => $request->view,
+                'features' => json_encode($request->features),
                 'additional_features' => json_encode($request->additional_features),
                 'area_id' => $request->area_id,
-                'images ' => $image,
                 'video' => $video,
                 'parking' => $request->parking,
                 'max_guests' => $request->max_guests,
@@ -143,6 +136,14 @@ class ApartmentController extends Controller
             ];
 
              $apartment->update($data);
+             if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    if ($image->isValid()) {
+                        $uploadedImage = upload($image, public_path('uploads/apartments'));
+                        $apartment->images()->create(['image' => $uploadedImage]);
+                    }
+                }
+            }
             foreach ($request->rooms as $roomData) {
                 $room = new Room();
                 $room->room_number = $roomData['room_number'];
@@ -165,11 +166,13 @@ class ApartmentController extends Controller
      */
     public function destroy(Apartment $apartment)
     {
-
-        if ($apartment->images ) {
-            $photoPath = 'uploads/apartments/' .$apartment->images;
+        $images = $apartment->images;
+        if ($images) {
+            foreach ($images as $image) {
+            $photoPath = 'uploads/apartments/' .$apartment->image;
             Storage::delete($photoPath);
         }
+       }
         if ($apartment->video) {
             $photoPath = 'uploads/apartments/vidios/' .$apartment->video;
             Storage::delete($photoPath);

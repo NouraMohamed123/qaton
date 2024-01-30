@@ -4,6 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CityController;
+use App\Http\Controllers\AppUser\ReviewController;
+use App\Http\Controllers\AppUser\BookedApartmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -16,6 +18,18 @@ use App\Http\Controllers\Admin\CityController;
 |
 */
 
+//reviews route
+
+Route::post('/review', [ReviewController::class, 'store']);
+Route::post('/review/{review}', [ReviewController::class, 'update']);
+Route::delete('/review/{review}', [ReviewController::class, 'destroy']);
+
+//////booked
+Route::get('/booked', [BookedApartmentController::class, 'index']);
+Route::get('/booked/{booked}', [BookedApartmentController::class, 'show']);
+Route::post('/booked', [BookedApartmentController::class, 'store']);
+Route::post('/booked/{Booked_apartment}', [BookedApartmentController::class, 'update']);
+Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, 'destroy']);
 
 
 require __DIR__ . '/dashboard.php';
