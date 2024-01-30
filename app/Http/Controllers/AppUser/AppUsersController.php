@@ -92,6 +92,39 @@ class AppUsersController extends Controller
             return response()->json(['success' => "false", 'error' => 'wrong data'], 200);
         }
     }
+    public function update_user_password(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'token' => 'required',
+            'old_password' => 'required',
+            'new_password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => "false", 'error' => $validator->errors()], 422);
+        }
+
+        $user = AppUsers::where('api_token', $request->token)->first();
+        if ($user) {
+            $email = $user->email;
+            $old_password = $request->old_password;
+
+            if (Auth::guard('app_users')->attempt(['email' => $email, 'password' => $old_password])) {
+
+
+                $user->password = Hash::make($request->new_password);
+
+
+                $user->save();
+
+                return response()->json(['success' => "true", 'user' => $user], 200);
+            } else {
+                return response()->json(['success' => "false", 'error' => "you do not have access"], 200);
+            }
+        } else {
+            return response()->json(['success' => "false", 'error' => "you do not have access 1"], 200);
+        }
+    }
     public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
