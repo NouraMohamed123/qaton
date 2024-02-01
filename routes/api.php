@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\AppUser\ReviewController;
 use App\Http\Controllers\AppUser\ApartmentController;
 use App\Http\Controllers\AppUser\BookedApartmentController;
+use App\Http\Controllers\AppUser\UserProfileController;
 
 /*
 |--------------------------------------------------------------------------
@@ -34,5 +35,9 @@ Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, '
 
 //apartments
 Route::post('/search/apartments', [ApartmentController::class, 'search']);
-
+///user profile
+Route::get('/user-review', [UserProfileController::class, 'reviews']);
+Route::get('/user-favorit', [UserProfileController::class, 'favorit']);
+Route::get('/user-booked', [UserProfileController::class, 'booked']);
+Route::get('/user-settings', [UserProfileController::class, 'settings']);
 require __DIR__ . '/dashboard.php';
