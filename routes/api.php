@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\AppUser\ReviewController;
+use App\Http\Controllers\AppUser\ApartmentController;
 use App\Http\Controllers\AppUser\BookedApartmentController;
 
 /*
@@ -31,5 +32,7 @@ Route::post('/booked', [BookedApartmentController::class, 'store']);
 Route::post('/booked/{Booked_apartment}', [BookedApartmentController::class, 'update']);
 Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, 'destroy']);
 
+//apartments
+Route::get('/search/apartments', [ApartmentController::class, 'search']);
 
 require __DIR__ . '/dashboard.php';
