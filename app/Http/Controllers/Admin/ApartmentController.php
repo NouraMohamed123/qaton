@@ -71,15 +71,15 @@ class ApartmentController extends Controller
                     }
                 }
             }
-            foreach ($request->rooms as $roomData) {
-                $room = new Room();
-                $room->room_number = $roomData['room_number'];
-                $room->beds = $roomData['beds'];
-                $room->adult = $roomData['adult'];
-                $room->child = $roomData['child'];
-                $room->apartment_id = $apartment->id;
-                $room->save();
-            }
+            // foreach ($request->rooms as $roomData) {
+            //     $room = new Room();
+            //     $room->room_number = $roomData['room_number'];
+            //     $room->beds = $roomData['beds'];
+            //     $room->adult = $roomData['adult'];
+            //     $room->child = $roomData['child'];
+            //     $room->apartment_id = $apartment->id;
+            //     $room->save();
+            // }
            DB::commit();
            return response()->json(['isSuccess' => true], 200);
         } catch (\Exception $e) {
@@ -144,15 +144,15 @@ class ApartmentController extends Controller
                     }
                 }
             }
-            foreach ($request->rooms as $roomData) {
-                $room = new Room();
-                $room->room_number = $roomData['room_number'];
-                $room->beds = $roomData['beds'];
-                $room->adult = $roomData['adult'];
-                $room->child = $roomData['child'];
-                $room->apartment_id = $apartment->id;
-                $room->save();
-            }
+            // foreach ($request->rooms as $roomData) {
+            //     $room = new Room();
+            //     $room->room_number = $roomData['room_number'];
+            //     $room->beds = $roomData['beds'];
+            //     $room->adult = $roomData['adult'];
+            //     $room->child = $roomData['child'];
+            //     $room->apartment_id = $apartment->id;
+            //     $room->save();
+            // }
            DB::commit();
            return response()->json(['isSuccess' => true], 200);
         } catch (\Exception $e) {

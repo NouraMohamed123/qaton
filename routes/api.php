@@ -33,6 +33,6 @@ Route::post('/booked/{Booked_apartment}', [BookedApartmentController::class, 'up
 Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, 'destroy']);
 
 //apartments
-Route::get('/search/apartments', [ApartmentController::class, 'search']);
+Route::post('/search/apartments', [ApartmentController::class, 'search']);
 
 require __DIR__ . '/dashboard.php';

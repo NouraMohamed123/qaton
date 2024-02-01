@@ -19,11 +19,15 @@ class ApartmentController extends Controller
      */
     public function search(Request $request)
     {
+
         $area_id= checkPoints($request->lat, $request->lon);
-        dd($area_id);
+
        if( $area_id > 0 ){
         $checkInDate = Carbon::parse($request->check_in_date);
         $checkOutDate = Carbon::parse($request->check_out_date);
+        $adults = $request->adults;
+        $childs = $request->childs;
+
         $apartments = \App\Models\Apartment::where('status', 1)->where('area_id', $area_id)->with(['BookedApartments'=>function($BookedApartments) use ($checkInDate,$checkOutDate){
             $BookedApartments->where(function($q) use ($checkInDate,$checkOutDate){
                 $q->where(function($qq) use ($checkInDate,$checkOutDate){
@@ -33,6 +37,7 @@ class ApartmentController extends Controller
                 });
             });
         }])->get();
+        // dd( $apartments);
         foreach ($apartments as $apartment) {
             if($apartment->BookedApartments->count() > 0){
                 return response()->json(['error' => 'Some apartment has already booked'],403 );
@@ -41,7 +46,15 @@ class ApartmentController extends Controller
         if ($apartments->count() <= 0) {
             return response()->json(['error' => 'There is no apartment found'],403 );
         }else{
-         return   $apartments;
+
+          $available_apartments = $apartments->filter(function ($apartment) use ($adults, $childs) {
+            // dd($apartment->rooms);
+                return $apartment->rooms->where('adult', '>=', $adults)->where('child', '>=', $childs)->isNotEmpty();
+            });
+
+
+            return response()->json(['isSuccess' => true,'data'=>   $available_apartments], 200);
+
         }
        }else{
         return response()->json(['error' => 'locton not found'],403 );

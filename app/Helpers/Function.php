@@ -75,6 +75,7 @@ if (!function_exists('checkPoints')) {
         ini_set('post_max_size', -1);
         ini_set('upload_max_filesize', -1);
         $point = $lat . " " . $lon;
+
         $check = false;
         $area_id = 0;
         $areas = \App\Models\Area::all();
@@ -88,7 +89,7 @@ if (!function_exists('checkPoints')) {
             }
             if (isset($boundaries[0][0][0])) {
                 $polygon[] = $boundaries[0][0][0] . " " . $boundaries[0][0][1];
-                // dd($polygon);
+
                 $check = pointInPolygon($point, $polygon);
 
                 if ($check) {
