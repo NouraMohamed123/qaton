@@ -6,6 +6,7 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\AppUser\ReviewController;
 use App\Http\Controllers\AppUser\BookedApartmentController;
+use App\Http\Controllers\AppUser\FavoriteController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,5 +32,10 @@ Route::post('/booked', [BookedApartmentController::class, 'store']);
 Route::post('/booked/{Booked_apartment}', [BookedApartmentController::class, 'update']);
 Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, 'destroy']);
 
+//favorit route
+
+Route::post('/favorit', [FavoriteController::class, 'store']);
+Route::post('/favorit/{favorit}', [FavoriteController::class, 'update']);
+Route::delete('/favorit/{favorit}', [FavoriteController::class, 'destroy']);
 
 require __DIR__ . '/dashboard.php';
