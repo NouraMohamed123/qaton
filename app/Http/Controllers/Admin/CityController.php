@@ -92,7 +92,10 @@ class CityController extends Controller
             $photoPath = 'uploads/cities/' . $city->image;
             Storage::delete($photoPath);
         }
-        $city->delete();
+        if($city){
+            $city->delete();
+        }
+
         return response()->json(['isSuccess' => true], 200);
     }
 }

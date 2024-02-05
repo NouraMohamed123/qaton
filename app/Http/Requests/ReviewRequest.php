@@ -22,7 +22,6 @@ class ReviewRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'user_id' => 'required|exists:app_users,id',
             'apartment_id' => 'required|exists:apartments,id',
             'descriptions' => 'nullable|string',
             'rating' => 'required',

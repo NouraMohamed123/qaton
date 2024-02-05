@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReviewRequest;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller
 {
@@ -32,14 +33,15 @@ class ReviewController extends Controller
     public function store(ReviewRequest $request)
     {
 
-        Review::create([
-            // 'user_id' => Auth::guard('app_users')->user()->id,
-            'user_id' => $request->user_id,
+
+
+        $reviews = Review::create([
+            'user_id' => Auth::guard('app_users')->user()->id,
             'apartment_id' => $request->apartment_id,
             'descriptions' => $request->descriptions,
             'rating' => $request->rating,
         ]);
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['isSuccess' => true, 'data' =>  $reviews], 200);
     }
 
     /**
@@ -63,9 +65,10 @@ class ReviewController extends Controller
      */
     public function update(ReviewRequest $request, Review $review)
     {
+
+
         $review->update([
-            // 'user_id' => Auth::guard('app_users')->user()->id,
-            'user_id' => $request->user_id,
+            'user_id' => Auth::guard('app_users')->user()->id,
             'apartment_id' => $request->apartment_id,
             'descriptions' => $request->descriptions,
             'rating' => $request->rating,

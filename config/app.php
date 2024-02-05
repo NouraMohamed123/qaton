@@ -171,8 +171,8 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-        
-        
+
+
     ])->toArray(),
 
     /*
@@ -192,7 +192,8 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
-        
+        'Auth' => Illuminate\Support\Facades\Auth::class,
+
     ])->toArray(),
 
 ];
