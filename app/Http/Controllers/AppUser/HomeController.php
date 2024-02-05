@@ -9,7 +9,11 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TermsResource;
 use App\Http\Resources\AboutUsResource;
+use App\Http\Resources\AreaResource;
+use App\Http\Resources\CityResource;
 use App\Http\Resources\PrivacyResource;
+use App\Models\Area;
+use App\Models\City;
 
 class HomeController extends Controller
 {
@@ -30,6 +34,16 @@ class HomeController extends Controller
     {
         $terms = Term::get();
         return TermsResource::collection($terms);
+    }
+    public function cities()
+    {
+        $terms = City::get();
+        return CityResource::collection($terms);
+    }
+    public function areas()
+    {
+        $terms = Area::get();
+        return AreaResource::collection($terms);
     }
     /**
      * Show the form for creating a new resource.

@@ -65,4 +65,7 @@ Route::post('/search/apartments', [ApartmentController::class, 'search']);
 Route::get('/about_us', [HomeController::class, 'about_us']);
 Route::get('/privacy', [HomeController::class, 'privacy']);
 Route::get('/terms', [HomeController::class, 'terms']);
+//areas
+Route::get('/cities', [HomeController::class, 'cities']);
+Route::get('/areas', [HomeController::class, 'areas']);
 require __DIR__ . '/dashboard.php';

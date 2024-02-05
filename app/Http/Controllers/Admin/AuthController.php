@@ -2,16 +2,17 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Facades\JWTAuth;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Spatie\Permission\Models\Permission;
+use Illuminate\Support\Facades\Validator;
 
 class AuthController extends Controller
 {
-   
+
 
 // public function login(Request $request)
 // {
@@ -63,11 +64,12 @@ public function login(Request $request)
         $id = $user->id;
         $name = $user->name;
         $roles = $user->roles;
-
+        $permissions = Permission::whereIn('role_id', $roles->pluck('id'))->pluck('name');
         return response()->json([
             'access_token' => $token,
             "roles" => $roles,
             "name" => $name,
+            'permissions' => $permissions,
             "id" => $id,
             'expires_in' => JWTAuth::factory()->getTTL() * 60,
         ]);
@@ -78,7 +80,7 @@ public function login(Request $request)
    *
    * @return \Illuminate\Http\JsonResponse
    */
- 
+
     /**
      * Register a new user.
      *
