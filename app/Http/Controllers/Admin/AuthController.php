@@ -65,8 +65,8 @@ public function login(Request $request)
         $name = $user->name;
         $roles = $user->roles;
         $permissions = $roles->flatMap(function ($role) {
-            return $role->permissions;
-        })->pluck('name');
+            return $role->permissions->pluck('name');
+        });
         return response()->json([
             'access_token' => $token,
             "roles" => $roles,
