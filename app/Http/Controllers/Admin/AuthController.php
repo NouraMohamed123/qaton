@@ -64,7 +64,9 @@ public function login(Request $request)
         $id = $user->id;
         $name = $user->name;
         $roles = $user->roles;
-        $permissions = Permission::whereIn('role_id', $roles->pluck('id'))->pluck('name');
+        $permissions = $roles->flatMap(function ($role) {
+            return $role->permissions;
+        })->pluck('name');
         return response()->json([
             'access_token' => $token,
             "roles" => $roles,
