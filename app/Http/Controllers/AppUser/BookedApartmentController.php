@@ -55,7 +55,7 @@ class BookedApartmentController extends Controller
         $totalPrice = $apartments->sum('price');
         $totalPrice = $totalPrice * $totalDays;
         foreach ($apartments as $apartment) {
-        Booked_apartment::create([
+            $booked =  Booked_apartment::create([
            'user_id'=>Auth::guard('app_users')->user()->id,
             'apartment_id'=>$apartment->id,
             'total_price'=>$totalPrice,
@@ -63,7 +63,7 @@ class BookedApartmentController extends Controller
             'date_to'=>$checkOutDate
         ]);
     }
-    return response()->json(['isSuccess' => true], 200);
+    return response()->json(['isSuccess' => true,'data'=> new BookedResource( $booked)], 200);
     }
 
     /**
@@ -125,7 +125,7 @@ class BookedApartmentController extends Controller
             'date_to'=>$checkOutDate
         ]);
     }
-    return response()->json(['isSuccess' => true], 200);
+    return response()->json(['isSuccess' => true,'data'=> new BookedResource( $booked)], 200);
     }
 
     /**

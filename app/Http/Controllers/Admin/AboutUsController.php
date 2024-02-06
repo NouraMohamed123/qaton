@@ -43,7 +43,7 @@ class AboutUsController extends Controller
         $about_us = new AboutUs();
         $about_us->description = $request->description;
         $about_us->save();
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['isSuccess' => true,'data'=> new AboutUsResource($about_us)], 200);
     }
 
     /**
@@ -79,7 +79,7 @@ class AboutUsController extends Controller
         }
         $about_us->description = $request->description;
         $about_us->save();
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['isSuccess' => true,'data'=> new AboutUsResource($about_us)], 200);
     }
 
     /**

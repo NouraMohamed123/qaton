@@ -42,7 +42,7 @@ class CityController extends Controller
         $city->name = $request->name;
         $city->image = $image;
         $city->save();
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['isSuccess' => true,'data'=> new CityResource($city)], 200);
     }
 
     /**
@@ -80,7 +80,7 @@ class CityController extends Controller
         $city->name = $request->name;
         $city->image = $image;
         $city->save();
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['isSuccess' => true,'data'=> new CityResource($city)], 200);
     }
 
     /**

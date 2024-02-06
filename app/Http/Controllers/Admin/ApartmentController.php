@@ -82,7 +82,7 @@ class ApartmentController extends Controller
             //     $room->save();
             // }
            DB::commit();
-           return response()->json(['isSuccess' => true], 200);
+           return response()->json(['isSuccess' => true,'data'=> new ApartmentResource( $apartment)], 200);
         } catch (\Exception $e) {
              DB::rollback();
             return response()->json(['error' => $e->getMessage()], 500);
@@ -155,7 +155,7 @@ class ApartmentController extends Controller
             //     $room->save();
             // }
            DB::commit();
-           return response()->json(['isSuccess' => true], 200);
+           return response()->json(['isSuccess' => true,'data'=> new ApartmentResource( $apartment)], 200);
         } catch (\Exception $e) {
              DB::rollback();
             return response()->json(['error' => $e->getMessage()], 500);

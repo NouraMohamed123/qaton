@@ -73,7 +73,7 @@ class ReviewController extends Controller
             'descriptions' => $request->descriptions,
             'rating' => $request->rating,
         ]);
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['isSuccess' => true, 'data' =>   $review], 200);
     }
 
     /**

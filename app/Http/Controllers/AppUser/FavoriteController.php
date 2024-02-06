@@ -35,7 +35,7 @@ class FavoriteController extends Controller
             'apartment_id' => $request->apartment_id,
 
         ]);
-        return response()->json(['isSuccess' => true,'data' =>   $favorit], 200);
+        return response()->json(['isSuccess' => true,'data' => $favorit], 200);
 
     }
 
@@ -60,14 +60,14 @@ class FavoriteController extends Controller
         if( $favorit){
             $favorit->delete();
         }else{
-            Favorit::create([
+            $favorit =  Favorit::create([
                 'user_id' => Auth::guard('app_users')->user()->id,
                 'apartment_id' => $request->apartment_id,
 
             ]);
         }
 
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['isSuccess' => true,'data' => $favorit], 200);
     }
 
 
