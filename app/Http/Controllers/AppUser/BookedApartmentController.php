@@ -20,15 +20,6 @@ class BookedApartmentController extends Controller
       $booked =  Booked_apartment::with('Apartment')->get();
       return BookedResource::collection($booked);
     }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -65,8 +56,7 @@ class BookedApartmentController extends Controller
         $totalPrice = $totalPrice * $totalDays;
         foreach ($apartments as $apartment) {
         Booked_apartment::create([
-            // 'user_id'=>Auth::guard('app_users')->user()->id,
-            'user_id'=>1,
+           'user_id'=>Auth::guard('app_users')->user()->id,
             'apartment_id'=>$apartment->id,
             'total_price'=>$totalPrice,
             'date_from'=>$checkInDate,
@@ -128,8 +118,7 @@ class BookedApartmentController extends Controller
         foreach ($apartments as $apartment) {
 
             $booked->update([
-            // 'user_id'=>Auth::guard('app_users')->user()->id,
-            'user_id'=>1,
+            'user_id'=>Auth::guard('app_users')->user()->id,
             'apartment_id'=>$apartment->id,
             'total_price'=>$totalPrice,
             'date_from'=>$checkInDate,
@@ -147,5 +136,23 @@ class BookedApartmentController extends Controller
         $booked->delete();
         return response()->json(['isSuccess' => true], 200);
 
+    }
+    public function canceld(Booked_apartment $booked)
+    {
+        if($booked){
+            $booked->update([
+                'status' => 'canceled',
+            ]);
+        }else{
+            return response()->json(['isSuccess' => false], 200);
+        }
+
+        return response()->json(['error' => 'There is no booked found'],403);
+
+    }
+    public function reportsBooked(Request $request){
+
+     $BookedApartments =   Booked_apartment::where('status',$request->status)->get();
+     return BookedResource::collection($BookedApartments);
     }
 }

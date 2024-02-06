@@ -63,11 +63,9 @@ public function login(Request $request)
         $user = auth()->guard('app_users')->user();
         $id = $user->id;
         $name = $user->name;
-        $roles = $user->roles;
 
         return response()->json([
             'access_token' => $token,
-            "roles" => $roles,
             "name" => $name,
             "id" => $id,
             'expires_in' => JWTAuth::factory()->getTTL() * 60,

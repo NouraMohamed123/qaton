@@ -49,8 +49,12 @@ Route::get('/booked', [BookedApartmentController::class, 'index']);
 Route::get('/booked/{booked}', [BookedApartmentController::class, 'show']);
 Route::post('/booked', [BookedApartmentController::class, 'store']);
 Route::post('/booked/{Booked_apartment}', [BookedApartmentController::class, 'update']);
+Route::get('/canceld-booked/{Booked_apartment}', [BookedApartmentController::class, 'canceld']);
 Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, 'destroy']);
-
+///invest-user
+Route::post('/invest-user', [ApartmentController::class, 'store']);
+//reports booked
+Route::get('reports-booked', [BookedApartmentController::class, 'reportsBooked']);
 
 ///user profile
 Route::get('/user-review', [UserProfileController::class, 'reviews']);

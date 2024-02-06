@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('apartments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('unit_space');
+            $table->string('unit_space')->nullable();
             $table->string('price');
             $table->integer('bathrooms');
             $table->integer('lounges');
@@ -30,6 +30,8 @@ return new class extends Migration
             $table->string('video')->nullable();
             $table->enum('parking',['external','basement'])->default('external');
             $table->integer('max_guests')->nullable();
+            $table->integer('max_rooms')->nullable();
+            $table->foreign('owner_id')->references('id')->on('app_users')->nullable()->onDelete('cascade');
             $table->tinyInteger('status')->nullable();
             $table->timestamps();
         });

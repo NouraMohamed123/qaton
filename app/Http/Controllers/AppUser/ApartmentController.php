@@ -4,10 +4,12 @@ namespace App\Http\Controllers\AppUser;
 
 use Carbon\Carbon;
 use App\Models\Room;
+use App\Models\AppUsers;
 use App\Models\Apartment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ApartmentRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\ApartmentResource;
@@ -63,5 +65,44 @@ class ApartmentController extends Controller
 
     }
 
+    public function store(Request $request)
+    {
+        try {
 
+            DB::beginTransaction();
+
+          $user =  AppUsers::where('id',Auth::guard('app_users')->user()->id)->first();
+          if($user){
+            $user->update([
+                'type'=>1,
+              ]);
+          }
+            $data = [
+                'name' => $request->name,
+                'price' => $request->price,
+                'bathrooms' => $request->bathrooms,
+                'lounges' => $request->lounges,
+                'view' => $request->view,
+                'area_id' => $request->area_id,
+                'max_rooms' => $request->max_rooms,
+                'owner_id'=>Auth::guard('app_users')->user()->id,
+            ];
+
+
+            $apartment =  Apartment::create($data);
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    if ($image->isValid()) {
+                        $uploadedImage = upload($image, public_path('uploads/apartments'));
+                        $apartment->images()->create(['image' => $uploadedImage]);
+                    }
+                }
+            }
+           DB::commit();
+           return response()->json(['isSuccess' => true], 200);
+        } catch (\Exception $e) {
+             DB::rollback();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 }

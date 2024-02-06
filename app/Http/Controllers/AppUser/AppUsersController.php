@@ -59,7 +59,7 @@ class AppUsersController extends Controller
         } catch (\Exception $e) {
             return response()->json(['success' => "false", 'is_new' => false], 200);
         }
-        
+
     }
     public function check_opt(Request $request)
     {
@@ -78,7 +78,7 @@ class AppUsersController extends Controller
             $user = AppUsers::where('phone', $phone)->first();
             return response()->json(['success' => "true", 'user' => $user], 200);
         }
-        
+
         $user = AppUsers::where('phone', $phone)->where('otp',$request->otp)->first();
         if($user)
         {

@@ -20,7 +20,7 @@ return new class extends Migration
             $table->date('date_from');
             $table->date('date_to');
             $table->integer('total_price');
-            $table->tinyInteger('stats')->nullable();
+            $table->enum('status', ['recent', 'past', 'canceled'])->default('recent');
             $table->timestamps();
         });
     }
