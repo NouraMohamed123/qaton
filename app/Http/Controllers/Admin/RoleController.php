@@ -14,7 +14,7 @@ class RoleController extends Controller
     {
         $roles = Role::with('permissions')->paginate($request->get('per_page', 10));
         return response()->json($roles);
-       
+
     }
 
     /**
@@ -36,7 +36,7 @@ class RoleController extends Controller
         return response()->json([
             'message' => 'true',
             'data' => $role,
-           
+
         ], 200);
     }
 
@@ -48,8 +48,8 @@ class RoleController extends Controller
      */
     public function show(Role $role,$id)
     {
-        $role = Role::with('permission')->find($id);
-        
+        $role = Role::with('permissions')->find($id);
+
         return response()->json($role);
     }
 
@@ -66,18 +66,18 @@ class RoleController extends Controller
             'name' => 'required',
             'permission' => 'required',
         ]);
-        
-    
+
+
         $role->syncPermissions($request->input('permission'));
         $role->update(['name' => $request->name]);
-      
+
         return response()->json([
             'data' => $role,
             'message' => 'Role update successfully',
         ], 200);
     }
 
-   
+
     public function destroy(Role $role)
     {
         $role->delete();
