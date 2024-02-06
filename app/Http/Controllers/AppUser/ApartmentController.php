@@ -55,7 +55,7 @@ class ApartmentController extends Controller
             });
 
 
-            return response()->json(['isSuccess' => true,'data'=>   $available_apartments], 200);
+            return response()->json(['isSuccess' => true,'data'=> ApartmentResource::collection($available_apartments)  ], 200);
 
         }
        }else{

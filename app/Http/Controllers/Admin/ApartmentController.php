@@ -18,7 +18,7 @@ class ApartmentController extends Controller
      */
     public function index()
     {
-        $apartments = Apartment::with('rooms', 'reviews')->get();
+        $apartments = Apartment::with('rooms', 'reviews','images')->get();
 
         return ApartmentResource::collection($apartments);
     }
