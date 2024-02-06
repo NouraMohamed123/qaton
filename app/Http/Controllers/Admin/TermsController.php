@@ -82,6 +82,7 @@ class TermsController extends Controller
         }
        $term->description = $request->description;
        $term->save();
+
         return response()->json(['isSuccess' => true,'data'=>new TermsResource( $term)], 200);
     }
 

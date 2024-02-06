@@ -78,10 +78,10 @@ Route::delete('/privacy/{privacy}', [PrivacyController::class, 'destroy']);
 
 /////////terms
 Route::get('/terms', [TermsController::class, 'index']);
-Route::get('/terms/{terms}', [TermsController::class, 'show']);
+Route::get('/terms/{term}', [TermsController::class, 'show']);
 Route::post('/terms', [TermsController::class, 'store']);
-Route::post('/terms/{terms}', [TermsController::class, 'update']);
-Route::delete('/terms/{terms}', [TermsController::class, 'destroy']);
+Route::post('/terms/{term}', [TermsController::class, 'update']);
+Route::delete('/terms/{term}', [TermsController::class, 'destroy']);
 
 
 //setting
