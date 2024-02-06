@@ -45,7 +45,7 @@ class PrivacyController extends Controller
         $privacy = new Privacy();
         $privacy->description = $request->description;
         $privacy->save();
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['isSuccess' => true,'data'=>new PrivacyResource($privacy)], 200);
     }
 
     /**
@@ -81,7 +81,7 @@ class PrivacyController extends Controller
         }
         $privacy->description = $request->description;
         $privacy->save();
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['isSuccess' => true,'data'=>new PrivacyResource($privacy)], 200);
     }
 
     /**

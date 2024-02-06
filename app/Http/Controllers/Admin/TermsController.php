@@ -42,10 +42,11 @@ class TermsController extends Controller
                 'message' => $validator->errors(),
             ], 422);
         }
-        $privacy = new Term();
-        $privacy->description = $request->description;
-        $privacy->save();
-        return response()->json(['isSuccess' => true], 200);
+        $term = new Term();
+        $term->description = $request->description;
+        $term->save();
+
+        return response()->json(['isSuccess' => true,'data'=>new TermsResource( $term)], 200);
     }
 
     /**
@@ -81,7 +82,7 @@ class TermsController extends Controller
         }
        $term->description = $request->description;
        $term->save();
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['isSuccess' => true,'data'=>new TermsResource( $term)], 200);
     }
 
     /**

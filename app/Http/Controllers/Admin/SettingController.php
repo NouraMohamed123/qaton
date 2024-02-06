@@ -62,7 +62,7 @@ class SettingController extends Controller
 
             }
 
-            Setting::updateOrCreate(
+          $settings =  Setting::updateOrCreate(
                 [
                     'key' => $key,
                 ],
@@ -72,7 +72,7 @@ class SettingController extends Controller
             );
         }
 
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['isSuccess' => true,'data'=> $settings], 200);
     }
 
     /**
