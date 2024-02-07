@@ -90,6 +90,7 @@ class CityController extends Controller
     public function destroy(City $city)
     {
 
+
         if($city){
             if ($city->image) {
 

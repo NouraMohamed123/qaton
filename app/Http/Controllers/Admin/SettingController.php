@@ -16,7 +16,7 @@ class SettingController extends Controller
     public function index()
     {
         $settings = Setting::pluck('value', 'key')
-        ->toArray();
+            ->toArray();
         return  $settings;
     }
 
@@ -36,13 +36,13 @@ class SettingController extends Controller
         $validator = Validator::make($request->all(), [
             'site_logo' => '',
             'site_name' => '',
-            'info_email'=> '',
-            'mobile'=> '',
-            'tiktok'=> '',
+            'info_email' => '',
+            'mobile' => '',
+            'tiktok' => '',
             'instagram' => '',
             'maintenance_mode' => '',
             'siteMaintenanceMsg' => '',
-            'tax_added_value'=>'',
+            'tax_added_value' => '',
         ]);
 
         if ($validator->fails()) {
@@ -57,12 +57,11 @@ class SettingController extends Controller
             if (request()->hasFile('site_logo') && $request->file('site_logo')->isValid()) {
 
                 $avatar = $request->file('site_logo');
-                $image = upload($avatar,public_path('uploads/settings'));
-                 $input =$image;
-
+                $image = upload($avatar, public_path('uploads/settings'));
+                $input = $image;
             }
 
-          $settings =  Setting::updateOrCreate(
+            $settings =  Setting::updateOrCreate(
                 [
                     'key' => $key,
                 ],
@@ -71,8 +70,12 @@ class SettingController extends Controller
                 ]
             );
         }
+        $settings = Setting::pluck('value', 'key')
+            ->toArray();
 
-        return response()->json(['isSuccess' => true,'data'=> $settings], 200);
+        $image = asset('uploads/settings/' .  $settings['site_logo']);
+        $settings['site_logo'] =    $image;
+        return response()->json(['isSuccess' => true, 'data' =>    $settings], 200);
     }
 
     /**
@@ -96,7 +99,6 @@ class SettingController extends Controller
      */
     public function update(Request $request, string $id)
     {
-
     }
 
     /**
