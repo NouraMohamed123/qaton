@@ -91,7 +91,11 @@ class TermsController extends Controller
      */
     public function destroy(Term $term)
     {
-        $term->delete();
-        return response()->json(['isSuccess' => true], 200);
+        if($term){
+            $term->delete();
+            return response()->json(['isSuccess' => true], 200);
+        }
+        return response()->json(['error' => 'no found'],403);
+
     }
 }

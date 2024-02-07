@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\CityRequest;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\CityResource;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 
 class CityController extends Controller
@@ -88,14 +89,23 @@ class CityController extends Controller
      */
     public function destroy(City $city)
     {
-        if ($city->image) {
-            $photoPath = 'uploads/cities/' . $city->image;
-            Storage::delete($photoPath);
-        }
+
         if($city){
+            if ($city->image) {
+
+                $imagePath = public_path('uploads/cities/' . $city->image);
+
+
+                if (File::exists($imagePath)) {
+
+                    File::delete($imagePath);
+                }
+
+            }
             $city->delete();
+            return response()->json(['isSuccess' => true], 200);
         }
 
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['error' => 'no found'],403);
     }
 }

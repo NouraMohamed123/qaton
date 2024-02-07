@@ -7,6 +7,7 @@ use App\Models\Apartment;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\File;
 use App\Http\Requests\ApartmentRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\ApartmentResource;
@@ -18,7 +19,7 @@ class ApartmentController extends Controller
      */
     public function index()
     {
-        $apartments = Apartment::with('rooms', 'reviews','images')->get();
+        $apartments = Apartment::with('rooms', 'reviews', 'images')->get();
 
         return ApartmentResource::collection($apartments);
     }
@@ -41,7 +42,7 @@ class ApartmentController extends Controller
             DB::beginTransaction();
 
             if ($request->hasFile('video') && $request->file('video')->isValid()) {
-                $video =  upload($request->file('video'),public_path('uploads/apartments/vidios'));
+                $video =  upload($request->file('video'), public_path('uploads/apartments/vidios'));
             } else {
                 $video = null;
             }
@@ -81,10 +82,10 @@ class ApartmentController extends Controller
             //     $room->apartment_id = $apartment->id;
             //     $room->save();
             // }
-           DB::commit();
-           return response()->json(['isSuccess' => true,'data'=> new ApartmentResource( $apartment)], 200);
+            DB::commit();
+            return response()->json(['isSuccess' => true, 'data' => new ApartmentResource($apartment)], 200);
         } catch (\Exception $e) {
-             DB::rollback();
+            DB::rollback();
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -92,9 +93,9 @@ class ApartmentController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show( Apartment $apartment)
+    public function show(Apartment $apartment)
     {
-        return new ApartmentResource( $apartment);
+        return new ApartmentResource($apartment);
     }
 
     /**
@@ -115,7 +116,7 @@ class ApartmentController extends Controller
 
 
             if ($request->hasFile('video') && $request->file('video')->isValid()) {
-                $video =  upload($request->file('video'),public_path('uploads/apartments/vidios'));
+                $video =  upload($request->file('video'), public_path('uploads/apartments/vidios'));
             } else {
                 $video = null;
             }
@@ -136,8 +137,8 @@ class ApartmentController extends Controller
                 'status' => $request->status,
             ];
 
-             $apartment->update($data);
-             if ($request->hasFile('images')) {
+            $apartment->update($data);
+            if ($request->hasFile('images')) {
                 foreach ($request->file('images') as $image) {
                     if ($image->isValid()) {
                         $uploadedImage = upload($image, public_path('uploads/apartments'));
@@ -154,10 +155,10 @@ class ApartmentController extends Controller
             //     $room->apartment_id = $apartment->id;
             //     $room->save();
             // }
-           DB::commit();
-           return response()->json(['isSuccess' => true,'data'=> new ApartmentResource( $apartment)], 200);
+            DB::commit();
+            return response()->json(['isSuccess' => true, 'data' => new ApartmentResource($apartment)], 200);
         } catch (\Exception $e) {
-             DB::rollback();
+            DB::rollback();
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
@@ -170,15 +171,23 @@ class ApartmentController extends Controller
         $images = $apartment->images;
         if ($images) {
             foreach ($images as $image) {
-            $photoPath = 'uploads/apartments/' .$apartment->image;
-            Storage::delete($photoPath);
+                $imagePath = public_path('uploads/apartments/' . $apartment->image);
+
+
+                if (File::exists($imagePath)) {
+
+                    File::delete($imagePath);
+                }
+            }
         }
-       }
-        if ($apartment->video) {
-            $photoPath = 'uploads/apartments/vidios/' .$apartment->video;
-            Storage::delete($photoPath);
+        if ($apartment) {
+            if ($apartment->video) {
+                $photoPath = 'uploads/apartments/vidios/' . $apartment->video;
+                Storage::delete($photoPath);
+            }
+            $apartment->delete();
+            return response()->json(['isSuccess' => true], 200);
         }
-        $apartment->delete();
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['error' => 'no found'], 403);
     }
 }

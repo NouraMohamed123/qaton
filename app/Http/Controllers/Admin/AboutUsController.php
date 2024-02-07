@@ -87,7 +87,11 @@ class AboutUsController extends Controller
      */
     public function destroy(AboutUs $about_us)
     {
-        $about_us->delete();
-        return response()->json(['isSuccess' => true], 200);
+
+        if($about_us){
+            $about_us->delete();
+            return response()->json(['isSuccess' => true], 200);
+        }
+        return response()->json(['error' => 'no found'],403);
     }
 }
