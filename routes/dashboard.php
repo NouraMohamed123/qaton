@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ApartmentController;
+use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\TermsController;
 
@@ -87,6 +88,10 @@ Route::delete('/terms/{term}', [TermsController::class, 'destroy']);
 //setting
 Route::get('/setting', [SettingController::class, 'index']);
 Route::post('/setting', [SettingController::class, 'store']);
+
+//payments getway
+Route::get('/payments-getway', [PaymentGatewayController::class, 'index']);
+Route::post('/myFatoorah-update', [PaymentGatewayController::class, 'MyfatoorahUpdate']);
 });
 
 
