@@ -31,21 +31,20 @@ class UserController extends Controller
     public function index(Request $request)
     {
         $users = User::with('permissions')->paginate($request->get('per_page', 50));
-    
+
         return response()->json([
             'successful' => true,
             'message' => 'Operation retrieved successfully',
             'data' => UserResource::collection($users)
         ], 200);
     }
-    
-    
+
+
 
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'date_of_birth' => 'required|date_format:Y/m/d',
             'national_id' => 'required|string|max:255',
             'photo' => 'nullable',
             'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
@@ -97,9 +96,9 @@ class UserController extends Controller
             // Laravel's route model binding should automatically fetch the user by ID
             // If not found, it will throw a ModelNotFoundException
             $user = User::findOrFail($user->id);
-    
+
             $userRole = $user->roles->pluck('name', 'name')->all();
-    
+
             return response()->json([
                 'successful' => true,
                 'message' => 'Operation retrieved successfully',
