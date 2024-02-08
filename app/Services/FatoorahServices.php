@@ -17,12 +17,12 @@ class FatoorahServices{
             ['keyword', 'myfatoorah'],
         ])->first();
         $myfatoorahConf = json_decode($myfatoorah->information, true);
-       $this->request_client =  Config::set('services.myfatoorah.api_token', $myfatoorahConf["api_token"]);
+       $this->request_client = $request_client;
        $this->base_url = Config::set('services.myfatoorah.base_url','https://apitest.myfatoorah.com/');
 
           $this->headers= [
            "Content-Type" =>'application/json',
-           "authorization" => 'Bearer '.env("fatoora_token","fatoora_token")
+           "authorization" => 'Bearer '. Config::set('services.myfatoorah.api_token', $myfatoorahConf["api_token"]);
        ];
     }
 

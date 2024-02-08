@@ -27,6 +27,7 @@ class BookedApartmentController extends Controller
     {
 
         $apartment_list = explode(',', $request->apartment_list);
+
         $checkInDate = Carbon::parse($request->check_in_date);
         $checkOutDate = Carbon::parse($request->check_out_date);
 
@@ -124,6 +125,8 @@ class BookedApartmentController extends Controller
             'date_from'=>$checkInDate,
             'date_to'=>$checkOutDate
         ]);
+
+
     }
     return response()->json(['isSuccess' => true,'data'=> new BookedResource( $booked)], 200);
     }
