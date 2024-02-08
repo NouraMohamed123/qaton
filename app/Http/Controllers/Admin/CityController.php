@@ -33,19 +33,12 @@ class CityController extends Controller
      */
     public function store(CityRequest $request)
     {
-        // if ($request->hasFile('image') && $request->file('image')->isValid()) {
-        //     $avatar = $request->file('image');
-        //     $image = upload($avatar,public_path('uploads/city'));
-        // } else {
-        //     $image = null;
-        // }
         if ($request->hasFile('image') && $request->file('image')->isValid()) {
-        $avatar = $request->file('image');
-        $avatar->store('uploads/city/', 'public');
-        $image = $avatar->hashName();
-      } else {
-        $image = null;
-      }
+            $avatar = $request->file('image');
+            $image = upload($avatar,public_path('uploads/city'));
+        } else {
+            $image = null;
+        }
         $city = new City();
         $city->name = $request->name;
         $city->image = $image;
