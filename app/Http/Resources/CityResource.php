@@ -15,7 +15,7 @@ class CityResource extends JsonResource
     public function toArray($request)
     {
 
-        return array_merge(parent::toArray($request), ['image' => asset('uploads/city/' . $this->image) ]);
+        return parent::toArray($request);
 
     }
 }
