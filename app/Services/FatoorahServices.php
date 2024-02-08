@@ -18,7 +18,7 @@ class FatoorahServices{
         ])->first();
         $myfatoorahConf = json_decode($myfatoorah->information, true);
        $this->request_client = $request_client;
-       $this->base_url = Config::set('services.myfatoorah.base_url','https://apitest.myfatoorah.com/');
+      // $this->base_url = Config::set('services.myfatoorah.base_url','https://apitest.myfatoorah.com/');
 
           $this->headers= [
            "Content-Type" =>'application/json',
