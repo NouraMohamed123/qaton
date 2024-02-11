@@ -56,6 +56,9 @@ Route::post('/invest-user', [ApartmentController::class, 'store']);
 //reports booked
 Route::get('reports-booked', [BookedApartmentController::class, 'reportsBooked']);
 
+//////payments
+Route::post('/callback', [BookedApartmentController::class, 'callback'])->name('callback');
+Route::post('/error', [BookedApartmentController::class, 'error'])->name('error');
 ///user profile
 Route::get('/user-review', [UserProfileController::class, 'reviews']);
 Route::get('/user-favorit', [UserProfileController::class, 'favorit']);

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->date('date_to');
             $table->integer('total_price');
             $table->enum('status', ['recent', 'past', 'canceled'])->default('recent');
+            $table->integer('paid')->default(0);
             $table->timestamps();
         });
     }
