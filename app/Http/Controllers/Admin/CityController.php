@@ -76,7 +76,7 @@ class CityController extends Controller
                 $image  = $avatarName;
             }
         } else {
-            $image = null;
+            $image = $city->image;
         }
         $city->name = $request->name;
         $city->image = $image;
