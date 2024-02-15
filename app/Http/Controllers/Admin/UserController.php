@@ -59,12 +59,10 @@ class UserController extends Controller
 
         if ($request->file('photo')) {
             $avatar = $request->file('photo');
-            $avatar->store('uploads/personal_photo/', 'public');
-            $photo = $avatar->hashName();
+            $photo = upload($avatar,public_path('uploads/personal_photo'));
         } else {
-            $photo = null;
+            $photo =null;
         }
-
         $user = User::create([
             'name' => $request->name,
             'national_id' => $request->national_id,
@@ -131,10 +129,9 @@ class UserController extends Controller
 
         if ($request->file('photo')) {
             $avatar = $request->file('photo');
-            $avatar->store('uploads/personal_photo/', 'public');
-            $photo = $avatar->hashName();
+            $photo = upload($avatar,public_path('uploads/personal_photo'));
         } else {
-            $photo = null;
+            $photo = $user->photo;
         }
 
         // Update user details
