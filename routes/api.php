@@ -55,7 +55,7 @@ Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, '
 ///invest-user
 Route::post('/invest-user', [ApartmentController::class, 'store']);
 //reports booked
-Route::get('reports-booked', [BookedApartmentController::class, 'reportsBooked']);
+Route::get('user-booked', [BookedApartmentController::class, 'userBooked']);
 
 //////payments
 Route::post('/callback', [BookedApartmentController::class, 'callback'])->name('callback');
@@ -63,7 +63,6 @@ Route::post('/error', [BookedApartmentController::class, 'error'])->name('error'
 ///user profile
 Route::get('/user-review', [UserProfileController::class, 'reviews']);
 Route::get('/user-favorit', [UserProfileController::class, 'favorit']);
-Route::get('/user-booked', [UserProfileController::class, 'booked']);
 Route::get('/user-settings', [UserProfileController::class, 'settings']);
 });
 //apartments

@@ -183,7 +183,7 @@ class BookedApartmentController extends Controller
 
         return response()->json(['error' => 'There is no booked found'], 403);
     }
-    public function reportsBooked(Request $request)
+    public function userBooked(Request $request)
     {
 
         $user= Auth::guard('app_users')->user();
