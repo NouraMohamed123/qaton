@@ -186,7 +186,8 @@ class BookedApartmentController extends Controller
     public function reportsBooked(Request $request)
     {
 
-        $BookedApartments =   Booked_apartment::where('status', $request->status)->get();
+        $user= Auth::guard('app_users')->user();
+        $BookedApartments =   Booked_apartment::where('user_id',$user->id)->where('status', $request->status)->get();
         return BookedResource::collection($BookedApartments);
     }
 
