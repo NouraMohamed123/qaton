@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\AppUser;
 
 use Carbon\Carbon;
+use App\Models\Area;
 use App\Models\Room;
 use App\Models\AppUsers;
 use App\Models\Apartment;
@@ -13,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\ApartmentRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\ApartmentResource;
+use Illuminate\Support\Facades\Validator;
 
 class ApartmentController extends Controller
 {
@@ -21,16 +23,28 @@ class ApartmentController extends Controller
      */
     public function search(Request $request)
     {
+        $validator = Validator::make($request->all(), [
+            'city_id' => 'required|exists:cities,id',
+            'check_in_date'=> 'required|date',
+            'check_out_date'=> 'required|date|after:check_in_date',
+            'childs'=>'required',
+            'childs'=>'required',
+        ]);
 
-        $area_id= checkPoints($request->lat, $request->lon);
-
-       if( $area_id > 0 ){
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors(),
+            ], 422);
+        }
+        $areas_id  =  Area::where('city_id', $request->city_id)->pluck('id');
+       if( $areas_id  ){
         $checkInDate = Carbon::parse($request->check_in_date);
         $checkOutDate = Carbon::parse($request->check_out_date);
         $adults = $request->adults;
         $childs = $request->childs;
 
-        $apartments = \App\Models\Apartment::where('status', 1)->where('area_id', $area_id)->with(['BookedApartments'=>function($BookedApartments) use ($checkInDate,$checkOutDate){
+        $apartments = \App\Models\Apartment::where('status', 1)->whereIn('area_id',  $areas_id )->with(['BookedApartments'=>function($BookedApartments) use ($checkInDate,$checkOutDate){
             $BookedApartments->where(function($q) use ($checkInDate,$checkOutDate){
                 $q->where(function($qq) use ($checkInDate,$checkOutDate){
                     $qq->where('date_from','<=',$checkInDate)->where('date_to','>',$checkInDate);
@@ -39,7 +53,7 @@ class ApartmentController extends Controller
                 });
             });
         }])->get();
-        // dd( $apartments);
+       //  dd( $apartments);
         foreach ($apartments as $apartment) {
             if($apartment->BookedApartments->count() > 0){
                 return response()->json(['error' => 'Some apartment has already booked'],403 );
@@ -53,9 +67,12 @@ class ApartmentController extends Controller
             // dd($apartment->rooms);
                 return $apartment->rooms->where('adult', '>=', $adults)->where('child', '>=', $childs)->isNotEmpty();
             });
+            if ( $available_apartments) {
+                return response()->json(['isSuccess' => true,'data'=> ApartmentResource::collection($available_apartments)  ], 200);
 
+            }
+            return response()->json(['error' => 'There is no rooms suitable for you '],403 );
 
-            return response()->json(['isSuccess' => true,'data'=> ApartmentResource::collection($available_apartments)  ], 200);
 
         }
        }else{

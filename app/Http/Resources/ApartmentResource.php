@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -12,10 +13,16 @@ class ApartmentResource extends JsonResource
      *
      * @return array<string, mixed>
      */
-    public function toArray(Request $request): array
+    public function toArray($request): array
     {
+        $settings = Setting::pluck('value', 'key')->toArray();
+        $taxAddedValue = $settings['tax_added_value'];
+        $total_price = $taxAddedValue ? $this->price + $taxAddedValue : $this->price;
+
         return array_merge(parent::toArray($request), [
             'features' => json_decode($this->features, true),
+            'tax' =>   $taxAddedValue ,
+            'total_price' => $total_price,
             'additional_features' => json_decode($this->additional_features, true),
             'images' => $this->images->map(function ($image) {
                 return [
