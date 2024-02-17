@@ -27,7 +27,7 @@ class ApartmentController extends Controller
             'city_id' => 'required|exists:cities,id',
             'check_in_date'=> 'required|date',
             'check_out_date'=> 'required|date|after:check_in_date',
-            'childs'=>'required',
+            'adults'=>'required',
             'childs'=>'required',
         ]);
 
