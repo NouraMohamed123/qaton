@@ -30,11 +30,11 @@ class PaymentGatewayController extends Controller
         $myfatoorah = PaymentGeteway::where([
             ['keyword', 'myfatoorah'],
         ])->first();
+      //  dd($myfatoorah);
         $myfatoorah->status = $request->status;
         $information = [];
         $information['api_token'] = $request->api_token;
         $information['text'] = 'myfatoorah account.';
-
         $myfatoorah->information = json_encode($information);
 
         $myfatoorah->save();
