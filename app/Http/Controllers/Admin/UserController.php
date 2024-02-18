@@ -73,6 +73,7 @@ class UserController extends Controller
             'email' => $request->email,
             'roles_name' => $request->roles_name,
             'password' => Hash::make($request->password),
+
         ]);
 
         $user->assignRole([$request->input('roles_name')]);
