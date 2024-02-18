@@ -18,6 +18,10 @@ class Apartment extends Model
     {
         return $this->hasMany(Review::class);
     }
+    public function favorites()
+    {
+        return $this->hasMany(Favorit::class, 'apartment_id', 'id');
+    }
     public function BookedApartments()
     {
         return $this->hasMany(Booked_apartment::class);

@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers\AppUser;
 
-use App\Http\Controllers\Controller;
 use App\Models\Favorit;
+use App\Models\Apartment;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\ApartmentResource;
 use Illuminate\Support\Facades\Validator;
 
 class FavoriteController extends Controller
@@ -21,19 +23,18 @@ class FavoriteController extends Controller
     // }
     public function index()
     {
-        // Get the authenticated user using the app_users guard
         $user = Auth::guard('app_users')->user();
-    
-        // Check if a user is authenticated
         if (!$user) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
-    
-        // Retrieve reviews along with their associated favorit for the authenticated user
-        $favorit = Favorit::where('user_id', $user->id)->with('apartment')->get();
-    
-        // Return the list of reviews with associated favorit
-        return response()->json(['favorit' => $favorit], 200);
+
+
+        $apartments = Apartment::whereHas('favorites', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->get();
+
+
+        return response()->json(['data'=> ApartmentResource::collection( $apartments) ], 200);
     }
 
 

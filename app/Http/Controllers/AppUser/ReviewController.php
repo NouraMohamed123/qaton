@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\AppUser;
 
 use App\Models\Review;
+use App\Models\Apartment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ReviewRequest;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\ApartmentResource;
 use Illuminate\Support\Facades\Validator;
 
 class ReviewController extends Controller
@@ -14,25 +16,26 @@ class ReviewController extends Controller
     /**
      * Display a listing of the resource.
      */
-   
+
      public function index()
      {
-         // Get the authenticated user using the app_users guard
+
          $user = Auth::guard('app_users')->user();
-     
-         // Check if a user is authenticated
+
          if (!$user) {
              return response()->json(['error' => 'User not authenticated'], 401);
          }
-     
-         // Retrieve reviews along with their associated apartments for the authenticated user
-         $reviews = Review::where('user_id', $user->id)->with('apartment')->get();
-     
-         // Return the list of reviews with associated apartments
-         return response()->json(['reviews' => $reviews], 200);
+
+
+         $apartments = Apartment::whereHas('reviews', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->get();
+
+
+        return response()->json(['data'=> ApartmentResource::collection( $apartments) ], 200);
      }
         //
-    
+
 
     /**
      * Show the form for creating a new resource.
