@@ -20,10 +20,10 @@ class ApartmentResource extends JsonResource
         $total_price = $taxAddedValue ? $this->price + $taxAddedValue : $this->price;
 
         return array_merge(parent::toArray($request), [
-            'features' => json_decode($this->features, true),
+            'features' => json_decode($this->features),
             'tax' =>   $taxAddedValue ,
             'total_price' => $total_price,
-            'additional_features' => json_decode($this->additional_features, true),
+            'additional_features' => json_decode($this->additional_features),
             'images' => $this->images->map(function ($image) {
                 return [
                     'id' => $image->id,

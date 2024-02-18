@@ -101,7 +101,7 @@ public function login(Request $request)
 
         $user = AppUsers::create([
             'name' => $request->name,
-            'phone' => $request->phone,
+            'phone' => "009665" . $request->phone,
             'email' => $request->email,
             'password' => bcrypt($request->password),
         ]);

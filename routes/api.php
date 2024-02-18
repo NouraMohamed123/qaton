@@ -8,8 +8,9 @@ use App\Http\Controllers\AppUser\AuthController;
 use App\Http\Controllers\AppUser\HomeController;
 use App\Http\Controllers\AppUser\ReviewController;
 
-use App\Http\Controllers\AppUser\FavoriteController;
+use App\Http\Controllers\AppUser\AppUsersController;
 
+use App\Http\Controllers\AppUser\FavoriteController;
 use App\Http\Controllers\AppUser\ApartmentController;
 use App\Http\Controllers\AppUser\UserProfileController;
 use App\Http\Controllers\AppUser\BookedApartmentController;
@@ -30,7 +31,8 @@ Route::group([
 ], function ($router) {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/login', [AuthController::class, 'login']);
-    Route::post('/login-mobile', [AuthController::class, 'login']);
+    Route::post('/check_number', [AppUsersController::class, 'check_number']);
+    Route::post('/check_opt', [AppUsersController::class, 'check_opt']);
     Route::post('/register', [AuthController::class, 'register']);
 });
 
