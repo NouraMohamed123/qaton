@@ -13,11 +13,27 @@ class FavoriteController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Favorit $favorit)
+    // public function index(Favorit $favorit)
+    // {
+    //     $user = Auth::guard('app_users')->user();
+    //     $favorites = $user->favorit;
+    //     return response()->json($favorites);
+    // }
+    public function index()
     {
+        // Get the authenticated user using the app_users guard
         $user = Auth::guard('app_users')->user();
-        $favorites = $user->favorit;
-        return response()->json($favorites);
+    
+        // Check if a user is authenticated
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+    
+        // Retrieve reviews along with their associated favorit for the authenticated user
+        $favorit = Favorit::where('user_id', $user->id)->with('apartment')->get();
+    
+        // Return the list of reviews with associated favorit
+        return response()->json(['favorit' => $favorit], 200);
     }
 
 

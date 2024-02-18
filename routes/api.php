@@ -44,9 +44,11 @@ Route::group([
 Route::post('/review', [ReviewController::class, 'store']);
 Route::post('/review/{review}', [ReviewController::class, 'update']);
 Route::delete('/review/{review}', [ReviewController::class, 'destroy']);
+Route::get('/reviews', [ReviewController::class, 'index']);
 //favorit route
 Route::post('/favorit', [FavoriteController::class, 'store']);
 Route::post('/update-favorit', [FavoriteController::class, 'update']);
+Route::get('/favorits', [FavoriteController::class, 'index']);
 //////booked
 Route::get('/booked', [BookedApartmentController::class, 'index']);
 Route::get('/booked/{booked}', [BookedApartmentController::class, 'show']);
