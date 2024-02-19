@@ -2,64 +2,89 @@
 
 namespace App\Http\Controllers\AppUser;
 
-use App\Http\Controllers\Controller;
+use App\Models\Apartment;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\ApartmentResource;
+use App\Models\AppUsers;
+use Illuminate\Support\Facades\Validator;
 
 class UserProfileController extends Controller
 {
+    public function myApartments()
+    {
+        $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+        $apartments =  Apartment::where('owner_id', $user->id)->get();
+        // dd($apartments);
+        if ( $apartments->count() > 0 ) {
+            return response()->json(['data'=> ApartmentResource::collection( $apartments) ], 200);
+        }
+        return response()->json(['error' => 'User not has investment apartments'], 401);
+
+    }
+
+    public function SolidApartments()
+    {
+        $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+        $apartments = Apartment::whereHas('BookedApartments', function ($query) {
+            $query->where('paid', 1);
+        })->where('owner_id', $user->id)->get();
+
+        if ( $apartments->count() > 0 ) {
+            return response()->json(['data'=> ApartmentResource::collection( $apartments) ], 200);
+
+        }
+        return response()->json(['error' => ' not exist  apartments solid'], 401);
+    }
+
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        //
+        $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+        return response()->json(['data'=>  $user ], 200);
+    }
+    public function updateProfile(Request $request)
+{
+    $user = Auth::guard('app_users')->user();
+    if (!$user) {
+        return response()->json(['error' => 'User not authenticated'], 401);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    $user->name = $request->input('name');
+    $user->email = $request->input('email');
+    $user->phone ="009665" . $request->phone;
+
+    $user->save();
+
+    return response()->json(['message' => 'Profile updated successfully', 'data' => $user]);
+}
+    public  function deactive_account(Request $request)
     {
-        //
+        $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+
+        if ($user) {
+            $user->status = 0;
+            $user->save();
+            return response()->json(['success' => "true"], 200);
+
+        } else {
+            return response()->json([ 'error' => "you do not have access"], 200);
+        }
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
 }

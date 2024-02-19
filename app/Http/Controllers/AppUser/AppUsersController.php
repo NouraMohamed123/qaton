@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
-
+use Tymon\JWTAuth\Facades\JWTAuth;
 class AppUsersController extends Controller
 {
     public function check_number(Request $request)
@@ -77,7 +77,13 @@ class AppUsersController extends Controller
         if($request->phone == "93783093")
         {
             $user = AppUsers::where('phone', $phone)->first();
-            return response()->json(['success' => "true", 'user' => $user], 200);
+            $token = JWTAuth::fromUser($user);
+
+            return response()->json([
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            ]);
         }
 
         $user = AppUsers::where('phone', $phone)->where('otp',$request->otp)->first();
@@ -88,9 +94,15 @@ class AppUsersController extends Controller
                 $user->name = $request->name;
                 $user->save();
             }
-            return response()->json(['success' => "true", 'user' => $user], 200);
+            $token = JWTAuth::fromUser($user);
+
+            return response()->json([
+                'access_token' => $token,
+                'token_type' => 'bearer',
+                'expires_in' => JWTAuth::factory()->getTTL() * 60,
+            ]);
         }else{
-            return response()->json(['success' => "false", 'error' => 'wrong data'], 200);
+            return response()->json([ 'error' => 'wrong data'], 200);
         }
     }
     public function update_user_password(Request $request)
@@ -228,25 +240,5 @@ class AppUsersController extends Controller
             return false;
         }
     }
-    public  function delete_account(Request $request)
-    {
-        $validator = Validator::make($request->all(), [
-            'token' => ['required'],
-        ]);
 
-        if ($validator->fails()) {
-            return response()->json(['success' => "false", 'error' => 'Empty fields'], 200);
-        }
-
-        $user = AppUsers::where('api_token', $request->token)->first();
-        if ($user) {
-
-            $user->status = 0;
-            $user->save();
-            return response()->json(['success' => "true", 'error' => ""], 200);
-
-        } else {
-            return response()->json(['success' => "false", 'error' => "you do not have access"], 200);
-        }
-    }
 }

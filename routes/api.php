@@ -56,18 +56,19 @@ Route::post('/booked', [BookedApartmentController::class, 'store']);
 Route::post('/booked/{Booked_apartment}', [BookedApartmentController::class, 'update']);
 Route::get('/canceld-booked/{Booked_apartment}', [BookedApartmentController::class, 'canceld']);
 Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, 'destroy']);
+Route::get('user-booked', [BookedApartmentController::class, 'userBooked']);
 ///invest-user
 Route::post('/invest-user', [ApartmentController::class, 'store']);
-//reports booked
-Route::get('user-booked', [BookedApartmentController::class, 'userBooked']);
 
 //////payments
 Route::post('/callback', [BookedApartmentController::class, 'callback'])->name('callback');
 Route::post('/error', [BookedApartmentController::class, 'error'])->name('error');
 ///user profile
-Route::get('/user-review', [UserProfileController::class, 'reviews']);
-Route::get('/user-favorit', [UserProfileController::class, 'favorit']);
-Route::get('/user-settings', [UserProfileController::class, 'settings']);
+Route::get('/user-profile', [UserProfileController::class, 'index']);
+Route::post('/update-profile', [UserProfileController::class, 'updateProfile']);
+Route::get('/deactive-account', [UserProfileController::class, 'deactive_account']);
+Route::get('/my-apartments', [UserProfileController::class, 'myApartments']);//owner
+Route::get('/sold-apartments', [UserProfileController::class, 'SolidApartments']);//owner
 });
 //apartments
 Route::post('/search/apartments', [ApartmentController::class, 'search']);
@@ -79,4 +80,6 @@ Route::get('/terms', [HomeController::class, 'terms']);
 //areas
 Route::get('/cities', [HomeController::class, 'cities']);
 Route::get('/areas', [HomeController::class, 'areas']);
+
+
 require __DIR__ . '/dashboard.php';
