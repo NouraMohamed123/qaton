@@ -6,12 +6,13 @@ use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Admin\TermsController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\PrivacyController;
+use App\Http\Controllers\Admin\ReportsController;
+use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ApartmentController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
-use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\Admin\TermsController;
 
 Route::group([
     'prefix' => 'auth'
@@ -92,6 +93,9 @@ Route::post('/setting', [SettingController::class, 'store']);
 //payments getway
 Route::get('/payments-getway', [PaymentGatewayController::class, 'index']);
 Route::post('/myFatoorah-update', [PaymentGatewayController::class, 'MyfatoorahUpdate']);
+//reports
+Route::get('/all-order', [ReportsController::class, 'all_orders']);
+Route::get('/all-payments', [ReportsController::class, 'all_payments']);
 });
 
 

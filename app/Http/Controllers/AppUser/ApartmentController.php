@@ -67,7 +67,7 @@ class ApartmentController extends Controller
             // dd($apartment->rooms);
                 return $apartment->rooms->where('adult', '>=', $adults)->where('child', '>=', $childs)->isNotEmpty();
             });
-            if ( $available_apartments) {
+            if ( $available_apartments->count() > 0 ) {
                 return response()->json(['isSuccess' => true,'data'=> ApartmentResource::collection($available_apartments)  ], 200);
 
             }

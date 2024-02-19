@@ -9,4 +9,8 @@ class OrderPayment extends Model
 {
     use HasFactory;
     protected $guarded =[];
+    public function booked()
+    {
+        return $this->belongsTo(Booked_apartment::class);
+    }
 }
