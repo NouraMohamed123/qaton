@@ -49,7 +49,7 @@ class RoleController extends Controller
     public function show(Role $role)
     {
 
-        $role =  $role->with('permissions')->first();
+        $role =  Role::with('permissions')->where('id', $role->id)->first();
 
         return response()->json($role);
     }
