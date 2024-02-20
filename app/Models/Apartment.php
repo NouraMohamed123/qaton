@@ -30,4 +30,8 @@ class Apartment extends Model
     {
         return $this->hasMany(Image::class);
     }
+    public function area()
+    {
+        return $this->belongsTo(Area::class);
+    }
 }

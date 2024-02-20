@@ -81,7 +81,7 @@ class AppUsersController extends Controller
 
             return response()->json([
                 'access_token' => $token,
-                'token_type' => 'bearer',
+                "data" => $user,
                 'expires_in' => JWTAuth::factory()->getTTL() * 60,
             ]);
         }

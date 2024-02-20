@@ -66,8 +66,7 @@ public function login(Request $request)
 
         return response()->json([
             'access_token' => $token,
-            "name" => $name,
-            "id" => $id,
+            "data" => $user,
             'expires_in' => JWTAuth::factory()->getTTL() * 60,
         ]);
     }
@@ -110,7 +109,7 @@ public function login(Request $request)
 
         return response()->json([
             'access_token' => $token,
-            'token_type' => 'bearer',
+            "data" => $user,
             'expires_in' => JWTAuth::factory()->getTTL() * 60,
         ]);
     }

@@ -34,7 +34,7 @@ class AreaController extends Controller
         $area = new Area();
         $area->name = $request->name;
         $area->city_id = $request->city_id;
-        $area->boundaries = $request->boundaries;
+
         $area->save();
         return response()->json(['isSuccess' => true,'data'=> new AreaResource($area)], 200);
     }
@@ -63,7 +63,7 @@ class AreaController extends Controller
         $area = new Area();
         $area->name = $request->name;
         $area->city_id = $request->city_id;
-        $area->boundaries = $request->boundaries;
+
         $area->save();
         return response()->json(['isSuccess' => true,'data'=> new AreaResource($area)], 200);
     }

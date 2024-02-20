@@ -19,11 +19,20 @@ class ApartmentResource extends JsonResource
         $taxAddedValue = $settings['tax_added_value'];
         $total_price = $taxAddedValue ? $this->price + $taxAddedValue : $this->price;
 
+        $ratingSum = $this->reviews->sum('rating');
+        $adultsSum = $this->rooms->sum('adult');
+        $bedsSum = $this->rooms->sum('beds');
+        $area_name = $this->area->name;
+
         return array_merge(parent::toArray($request), [
             'features' => json_decode($this->features),
-            'tax' =>   $taxAddedValue ,
-            'total_price' => $total_price,
             'additional_features' => json_decode($this->additional_features),
+            'tax' => $taxAddedValue,
+            'total_price' => $total_price,
+            'area_name'=>   $area_name,
+            'rating' => $ratingSum,
+            'adults' => $adultsSum,
+            'beds' => $bedsSum,
             'images' => $this->images->map(function ($image) {
                 return [
                     'id' => $image->id,

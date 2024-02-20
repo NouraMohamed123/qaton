@@ -44,7 +44,7 @@ class ApartmentController extends Controller
         $adults = $request->adults;
         $childs = $request->childs;
 
-        $apartments = \App\Models\Apartment::where('status', 1)->whereIn('area_id',  $areas_id )->with(['BookedApartments'=>function($BookedApartments) use ($checkInDate,$checkOutDate){
+        $apartments = \App\Models\Apartment::with('reviews')->where('status', 1)->whereIn('area_id',  $areas_id )->with(['BookedApartments'=>function($BookedApartments) use ($checkInDate,$checkOutDate){
             $BookedApartments->where(function($q) use ($checkInDate,$checkOutDate){
                 $q->where(function($qq) use ($checkInDate,$checkOutDate){
                     $qq->where('date_from','<=',$checkInDate)->where('date_to','>',$checkInDate);
@@ -85,7 +85,15 @@ class ApartmentController extends Controller
     public function store(Request $request)
     {
         try {
-
+            $validatedData = $request->validate([
+                'name' => 'required|string',
+                'price' => 'required|numeric',
+                'bathrooms' => 'required|integer',
+                'lounges' => 'required|integer',
+                'view' => 'required|string',
+                'city_id' => 'required|exists:areas,id',
+                'max_rooms' => 'nullable|integer',
+            ]);
             DB::beginTransaction();
 
           $user =  AppUsers::where('id',Auth::guard('app_users')->user()->id)->first();
