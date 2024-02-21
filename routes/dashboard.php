@@ -64,7 +64,7 @@ Route::get('/apartment/{apartment}', [ApartmentController::class, 'show']);
 Route::post('/apartment', [ApartmentController::class, 'store']);
 Route::post('/apartment/{apartment}', [ApartmentController::class, 'update']);
 Route::delete('/apartment/{apartment}', [ApartmentController::class, 'destroy']);
-
+Route::post('/change-status', [ApartmentController::class, 'changeStatus']);
 /////////about_us
 Route::get('/about_us', [AboutUsController::class, 'index']);
 Route::get('/about_us/{about_us}', [AboutUsController::class, 'show']);

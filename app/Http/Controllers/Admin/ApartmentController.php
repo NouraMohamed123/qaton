@@ -190,4 +190,10 @@ class ApartmentController extends Controller
         }
         return response()->json(['error' => 'no found'], 403);
     }
+     public function changeStatus(Request $request){
+       $apartment =  Apartment::where('id', $request->id)->first();
+        $apartment->status = $request->status;
+        $apartment->save();
+        return response()->json(['isSuccess' => true, 'data' => new ApartmentResource($apartment)], 200);
+    }
 }
