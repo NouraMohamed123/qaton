@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AreaResource;
 use App\Http\Resources\CityResource;
+use App\Http\Resources\OfferResource;
 use App\Http\Resources\TermsResource;
 use App\Http\Resources\AboutUsResource;
 use App\Http\Resources\PrivacyResource;
@@ -53,7 +54,7 @@ class HomeController extends Controller
     public function offers()
     {
         $offers =  Offer::get();
-        return response()->json(['isSuccess' => true,'data'=> $offers], 200);
+        return OfferResource::collection($offers);
     }
 
     /**

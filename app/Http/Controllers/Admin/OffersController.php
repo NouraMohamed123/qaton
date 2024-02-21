@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\OfferResource;
 use App\Models\Offer;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\File;
 class OffersController extends Controller
 {
     /**
@@ -14,7 +15,7 @@ class OffersController extends Controller
     public function index()
     {
      $offers =  Offer::get();
-     return response()->json(['isSuccess' => true,'data'=> $offers], 200);
+     return OfferResource::collection($offers);
     }
 
     /**
@@ -40,7 +41,7 @@ class OffersController extends Controller
         $offer->desc = $request->desc;
         $offer->image = $image;
         $offer->save();
-        return response()->json(['isSuccess' => true,'data'=>  $offer], 200);
+        return response()->json(['isSuccess' => true,'data'=>new OfferResource( $offer)], 200);
     }
 
     /**
@@ -48,7 +49,7 @@ class OffersController extends Controller
      */
     public function show(Offer $offer)
     {
-        return response()->json(['isSuccess' => true,'data'=>$offer], 200);
+        return response()->json(['isSuccess' => true,'data'=>new OfferResource( $offer)], 200);
     }
 
     /**
@@ -78,7 +79,7 @@ class OffersController extends Controller
         $offer->desc = $request->desc;
         $offer->image = $image;
         $offer->save();
-        return response()->json(['isSuccess' => true,'data'=> $offer], 200);
+        return response()->json(['isSuccess' => true,'data'=> new OfferResource( $offer)], 200);
     }
 
     /**
