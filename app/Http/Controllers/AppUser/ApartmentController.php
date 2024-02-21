@@ -111,6 +111,7 @@ class ApartmentController extends Controller
                 'area_id' => $request->area_id,
                 'max_rooms' => $request->max_rooms,
                 'owner_id'=>Auth::guard('app_users')->user()->id,
+                'status'=>0,
             ];
 
 

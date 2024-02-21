@@ -32,7 +32,7 @@ return new class extends Migration
             $table->integer('max_guests')->nullable();
             $table->integer('max_rooms')->nullable();
             $table->foreign('owner_id')->references('id')->on('app_users')->nullable()->onDelete('cascade');
-            $table->tinyInteger('status')->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
         });
     }
