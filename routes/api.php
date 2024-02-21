@@ -61,8 +61,8 @@ Route::get('user-booked', [BookedApartmentController::class, 'userBooked']);
 Route::post('/invest-user', [ApartmentController::class, 'store']);
 
 //////payments
-Route::post('callback', [BookedApartmentController::class, 'callback'])->name('callback');
-Route::post('error', [BookedApartmentController::class, 'error'])->name('error');
+
+
 ///user profile
 Route::get('/user-profile', [UserProfileController::class, 'index']);
 Route::post('/update-profile', [UserProfileController::class, 'updateProfile']);
@@ -82,5 +82,6 @@ Route::get('/cities', [HomeController::class, 'cities']);
 Route::get('/areas', [HomeController::class, 'areas']);
 //offers
 Route::get('/offers', [HomeController::class, 'offers']);
-
+Route::get('callback', [BookedApartmentController::class, 'callback'])->name('callback');
+Route::get('error', [BookedApartmentController::class, 'error'])->name('error');
 require __DIR__ . '/dashboard.php';

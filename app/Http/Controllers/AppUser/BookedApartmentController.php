@@ -8,10 +8,13 @@ use App\Models\OrderPayment;
 use Illuminate\Http\Request;
 use App\Models\Booked_apartment;
 use App\Services\FatoorahServices;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\BookedResource;
 use Illuminate\Support\Facades\Validator;
+use PhpParser\Node\Stmt\TryCatch;
+
 class BookedApartmentController extends Controller
 {
     private $fatoorah_services;
@@ -96,6 +99,7 @@ class BookedApartmentController extends Controller
                 "Languagn" => 'en',
                 "DisplayCurrencyIna" => 'SAR'
             ];
+            // dd( $data);
             $response = $this->fatoorah_services->sendPayment($data);
             if (isset($response['IsSuccess']))
                 if ($response['IsSuccess'] == true) {
@@ -208,31 +212,43 @@ class BookedApartmentController extends Controller
 
     public function callback(Request $request)
     {
-        \Illuminate\Support\Facades\Log::info('Request:', [
-            'method' => $request->method(),
-            'url' => $request->fullUrl(),
-            'parameters' => $request->all(),
-        ]);
-      dd($request);
-        $apiKey = 'rLtt6JWvbUHDDhsZnfpAhpYk4dxYDQkbcPTyGaKp2TYqQgG7FGZ5Th_WD53Oq8Ebz6A53njUoo1w3pjU1D4vs_ZMqFiz_j0urb_BH9Oq9VZoKFoJEDAbRZepGcQanImyYrry7Kt6MnMdgfG5jn4HngWoRdKduNNyP4kzcp3mRv7x00ahkm9LAK7ZRieg7k1PDAnBIOG3EyVSJ5kK4WLMvYr7sCwHbHcu4A5WwelxYK0GMJy37bNAarSJDFQsJ2ZvJjvMDmfWwDVFEVe_5tOomfVNt6bOg9mexbGjMrnHBnKnZR1vQbBtQieDlQepzTZMuQrSuKn-t5XZM7V6fCW7oP-uXGX-sMOajeX65JOf6XVpk29DP6ro8WTAflCDANC193yof8-f5_EYY-3hXhJj7RBXmizDpneEQDSaSz5sFk0sV5qPcARJ9zGG73vuGFyenjPPmtDtXtpx35A-BVcOSBYVIWe9kndG3nclfefjKEuZ3m4jL9Gg1h2JBvmXSMYiZtp9MR5I6pvbvylU_PP5xJFSjVTIz7IQSjcVGO41npnwIxRXNRxFOdIUHn0tjQ-7LwvEcTXyPsHXcMD8WtgBh-wxR8aKX7WPSsT1O8d8reb2aR7K3rkV3K82K_0OgawImEpwSvp9MNKynEAJQS6ZHe_J_l77652xwPNxMRTMASk1ZsJL';
+
+        $apiKey =  config('services.myfatoorah.api_token');
         $postFields = [
             'Key'     => $request->paymentId,
             'KeyType' => 'paymentId'
         ];
         $response = $this->fatoorah_services->callAPI("https://apitest.myfatoorah.com/v2/getPaymentStatus", $apiKey, $postFields);
         $response = json_decode($response);
+        // dd( $response);
         if (!isset($response->Data->InvoiceId))
             return response()->json(["error" => 'error', 'status' => false], 404);
         $InvoiceId =  $response->Data->InvoiceId;
         $payment =    OrderPayment::where('invoice_id',  $InvoiceId)->first();
+         $booked =Booked_apartment::where('id', $payment->booked_id)->first();
         if ($response->IsSuccess == true) {
             if ($response->Data->InvoiceStatus == "Paid")
                 if ( $payment->price == $response->Data->InvoiceValue) {
-                    $payment->invoice_status = "Paid";
-                    $payment->is_success = true;
-                    $payment->Transaction_date = $response->Data->createDate;
-                    $payment->save();
-                    return response()->json(['isSuccess' => true,'Data'=>'payment success'], 200);
+                    try {
+                        DB::beginTransaction();
+
+                        $payment->invoice_status = "Paid";
+                        $payment->is_success = true;
+                        $payment->Transaction_date = $response->Data->CreatedDate;
+                        $payment->save();
+
+                        $booked->paid = 1;
+                        $booked->status = 'recent';
+                        $booked->save();
+
+                        DB::commit();
+
+                        return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
+                    } catch (\Throwable $th) {
+                        DB::rollBack();
+                        return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
+                    }
+
                 }
         }
 
@@ -241,6 +257,6 @@ class BookedApartmentController extends Controller
 
     public function error(Request $request)
     {
-        dd($request);
+        return response()->json(["error" => 'error', 'Data'=>'payment faild'], 404);
     }
 }
