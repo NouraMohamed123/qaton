@@ -80,6 +80,7 @@ Route::get('/terms', [HomeController::class, 'terms']);
 //areas
 Route::get('/cities', [HomeController::class, 'cities']);
 Route::get('/areas', [HomeController::class, 'areas']);
-
+//offers
+Route::get('/offers', [HomeController::class, 'offers']);
 
 require __DIR__ . '/dashboard.php';

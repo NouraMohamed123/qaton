@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ApartmentController;
+use App\Http\Controllers\Admin\OffersController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 
 Route::group([
@@ -96,6 +97,14 @@ Route::post('/myFatoorah-update', [PaymentGatewayController::class, 'MyfatoorahU
 //reports
 Route::get('/all-order', [ReportsController::class, 'all_orders']);
 Route::get('/all-payments', [ReportsController::class, 'all_payments']);
+
+//offers
+
+Route::get('/offers', [OffersController::class, 'index']);
+Route::get('/offers/{offer}', [OffersController::class, 'show']);
+Route::post('/offers', [OffersController::class, 'store']);
+Route::post('/offers/{offer}', [OffersController::class, 'update']);
+Route::delete('/offers/{offer}', [OffersController::class, 'destroy']);
 });
 
 

@@ -16,6 +16,11 @@ class PaymentGatewayController extends Controller
         $data['myfatoorah'] = PaymentGeteway::where([
             ['keyword', 'myfatoorah'],
         ])->first();
+        if ($data['myfatoorah']) {
+            $information = json_decode($data['myfatoorah']->information, true);
+
+            $data['myfatoorah']->information = $information;
+        }
         return response()->json([
             "isSuccess" => true,
             'data' => $data
@@ -34,7 +39,6 @@ class PaymentGatewayController extends Controller
         $myfatoorah->status = $request->status;
         $information = [];
         $information['api_token'] = $request->api_token;
-        $information['text'] = 'myfatoorah account.';
         $myfatoorah->information = json_encode($information);
 
         $myfatoorah->save();
