@@ -36,7 +36,7 @@ class AreaController extends Controller
         $area->city_id = $request->city_id;
 
         $area->save();
-        return response()->json(['isSuccess' => true,'data'=> new AreaResource($area)], 200);
+        return response()->json(['isSuccess' => true,'data'=> $area], 200);
     }
 
     /**
@@ -44,7 +44,7 @@ class AreaController extends Controller
      */
     public function show( Area $area)
     {
-        return new AreaResource($area);
+        return response()->json(['isSuccess' => true,'data'=> $area], 200);
     }
 
     /**
@@ -60,12 +60,12 @@ class AreaController extends Controller
      */
     public function update(AreaRequest $request, Area $area)
     {
-        $area = new Area();
+
         $area->name = $request->name;
         $area->city_id = $request->city_id;
 
         $area->save();
-        return response()->json(['isSuccess' => true,'data'=> new AreaResource($area)], 200);
+        return response()->json(['isSuccess' => true,'data'=>  $area], 200);
     }
 
     /**
