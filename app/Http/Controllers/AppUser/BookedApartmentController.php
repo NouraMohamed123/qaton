@@ -27,7 +27,7 @@ class BookedApartmentController extends Controller
     }
     public function index()
     {
-        $booked =  Booked_apartment::with('Apartment')->get();
+        $booked =  Booked_apartment::with('Apartment','user')->get();
         return BookedResource::collection($booked);
     }
     /**
