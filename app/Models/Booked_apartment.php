@@ -13,4 +13,12 @@ class Booked_apartment extends Model
     {
         return $this->belongsTo(Apartment::class);
     }
+    public function getStatusAttribute()
+    {
+        if ($this->date_from <= now()) {
+            return 'past';
+        }
+
+        return $this->attributes['status'];
+    }
 }
