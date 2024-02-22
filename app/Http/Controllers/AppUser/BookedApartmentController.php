@@ -233,7 +233,7 @@ class BookedApartmentController extends Controller
                         DB::beginTransaction();
 
                         $payment->invoice_status = "Paid";
-                        $payment->is_success = true;
+                        $payment->is_success = 1;
                         $payment->Transaction_date = $response->Data->CreatedDate;
                         $payment->save();
 

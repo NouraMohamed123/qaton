@@ -17,6 +17,7 @@ class BookedResource extends JsonResource
 {
     return array_merge(parent::toArray($request), [
         'apartment' => new ApartmentResource($this->apartment),
+        'user_name' => $this->user->name
     ]);
 }
 
