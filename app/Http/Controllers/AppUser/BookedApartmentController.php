@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers\AppUser;
 
+use App\Events\BookedUserEvent;
 use Carbon\Carbon;
+use App\Models\User;
 use App\Models\Apartment;
 use App\Models\OrderPayment;
 use Illuminate\Http\Request;
 use App\Models\Booked_apartment;
+use App\Notifications\BookedUser;
+use PhpParser\Node\Stmt\TryCatch;
 use App\Services\FatoorahServices;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\BookedResource;
 use Illuminate\Support\Facades\Validator;
-use PhpParser\Node\Stmt\TryCatch;
+use Illuminate\Support\Facades\Notification;
 
 class BookedApartmentController extends Controller
 {
@@ -27,7 +31,7 @@ class BookedApartmentController extends Controller
     }
     public function index()
     {
-        $booked =  Booked_apartment::with('Apartment','user')->get();
+        $booked =  Booked_apartment::with('Apartment', 'user')->get();
         return BookedResource::collection($booked);
     }
     /**
@@ -37,8 +41,8 @@ class BookedApartmentController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'apartment_list' => 'required',
-            'check_in_date'=> 'required|date',
-            'check_out_date'=> 'required|date|after:check_in_date',
+            'check_in_date' => 'required|date',
+            'check_out_date' => 'required|date|after:check_in_date',
         ]);
 
         if ($validator->fails()) {
@@ -79,15 +83,28 @@ class BookedApartmentController extends Controller
         }
 
         $totalPrice = $apartment->price * $totalDays;
-
+        $user = Auth::guard('app_users')->user();
         $booked =  Booked_apartment::create([
-            'user_id' => Auth::guard('app_users')->user()->id,
+            'user_id' => $user->id,
             'apartment_id' => $apartment->id,
             'total_price' => $totalPrice,
             'date_from' => $checkInDate,
             'date_to' => $checkOutDate
         ]);
-
+        ///
+        if ($paymentMethod == 'cash') {
+            $booked->paid = 1;
+            $booked->status = 'recent';
+            $booked->save();
+            // send notification to admin
+            $admins = User::all();
+            Notification::send($admins, new BookedUser($user, $booked->apartment));
+            // send notification to user
+            // Notification::send($user, new BookedUser($user, $booked->apartment));
+             ///broadcast event booked user
+             BookedUserEvent::dispatch($user, $booked->apartment);
+            return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
+        }
         if ($paymentMethod && $paymentMethod == 'fatoorah') {
             $data = [
                 "CustomerName" => Auth::guard('app_users')->user()->name,
@@ -107,11 +124,11 @@ class BookedApartmentController extends Controller
                     $InvoiceId  = $response['Data']['InvoiceId'];
                     $InvoiceURL = $response['Data']['InvoiceURL'];
                     OrderPayment::create([
-                        'customer_name'=> Auth::guard('app_users')->user()->name,
-                        'invoice_id'=>$InvoiceId,
-                        'invoice_url'=>$InvoiceURL,
-                        'booked_id'=> $booked->id,
-                        'price'=>$totalPrice
+                        'customer_name' => Auth::guard('app_users')->user()->name,
+                        'invoice_id' => $InvoiceId,
+                        'invoice_url' => $InvoiceURL,
+                        'booked_id' => $booked->id,
+                        'price' => $totalPrice
                     ]);
                 }
             return $response['Data']['InvoiceURL'];
@@ -203,8 +220,8 @@ class BookedApartmentController extends Controller
     public function userBooked(Request $request)
     {
 
-        $user= Auth::guard('app_users')->user();
-        $BookedApartments =   Booked_apartment::where('user_id',$user->id)->where('status', $request->status)->get();
+        $user = Auth::guard('app_users')->user();
+        $BookedApartments =   Booked_apartment::where('user_id', $user->id)->where('status', $request->status)->get();
         return BookedResource::collection($BookedApartments);
     }
 
@@ -225,10 +242,10 @@ class BookedApartmentController extends Controller
             return response()->json(["error" => 'error', 'status' => false], 404);
         $InvoiceId =  $response->Data->InvoiceId;
         $payment =    OrderPayment::where('invoice_id',  $InvoiceId)->first();
-         $booked =Booked_apartment::where('id', $payment->booked_id)->first();
+        $booked = Booked_apartment::where('id', $payment->booked_id)->first();
         if ($response->IsSuccess == true) {
             if ($response->Data->InvoiceStatus == "Paid")
-                if ( $payment->price == $response->Data->InvoiceValue) {
+                if ($payment->price == $response->Data->InvoiceValue) {
                     try {
                         DB::beginTransaction();
 
@@ -241,22 +258,30 @@ class BookedApartmentController extends Controller
                         $booked->status = 'recent';
                         $booked->save();
 
-                        DB::commit();
+                        /////
+                        $user = Auth::guard('app_users')->user();
+                        // send notification to admins
+                        $admins = User::all();
+                        Notification::send($admins, new BookedUser($user, $booked->apartment));
+                        // // send notification to user
+                        // Notification::send($user, new BookedUser($user, $booked->apartment));
 
+                     ///broadcast event booked user
+                      BookedUserEvent::dispatch($user, $booked->apartment);
+                        DB::commit();
                         return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
                     } catch (\Throwable $th) {
                         DB::rollBack();
                         return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
                     }
-
                 }
         }
 
-        return response()->json(["error" => 'error', 'Data'=>'payment faild'], 404);
+        return response()->json(["error" => 'error', 'Data' => 'payment faild'], 404);
     }
 
     public function error(Request $request)
     {
-        return response()->json(["error" => 'error', 'Data'=>'payment faild'], 404);
+        return response()->json(["error" => 'error', 'Data' => 'payment faild'], 404);
     }
 }

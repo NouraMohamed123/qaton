@@ -11,7 +11,7 @@ class Review extends Model
     protected $guarded =[];
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(AppUsers::class);
     }
     public function apartment()
     {

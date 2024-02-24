@@ -14,7 +14,7 @@ class Booked_apartment extends Model
         return $this->belongsTo(AppUsers::class);
     }
 
-    public function Apartment()
+    public function apartment()
     {
         return $this->belongsTo(Apartment::class);
     }
