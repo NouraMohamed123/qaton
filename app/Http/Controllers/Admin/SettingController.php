@@ -54,7 +54,7 @@ class SettingController extends Controller
             ], 422);
         }
 
-        foreach ($request->all() as $key => $input) {
+        foreach ($validator->validated() as $key => $input) {
 
             if (request()->hasFile('site_logo') && $request->file('site_logo')->isValid()) {
 
