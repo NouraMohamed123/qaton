@@ -45,6 +45,8 @@ class SettingController extends Controller
             'maintenance_mode' => '',
             'siteMaintenanceMsg' => '',
             'tax_added_value' => '',
+            'site_name_en' => '',
+            'cr' => '',
         ]);
 
         if ($validator->fails()) {
