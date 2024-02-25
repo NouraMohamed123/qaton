@@ -47,6 +47,7 @@ class SettingController extends Controller
             'tax_added_value' => '',
             'site_name_en' => '',
             'cr' => '',
+            'vat' => '',
         ]);
 
         if ($validator->fails()) {
