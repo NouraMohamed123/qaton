@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booked_apartment;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
@@ -58,8 +59,13 @@ class OrderController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function orderCount()
     {
-        //
+        $count = Booked_apartment::count();
+
+        return response()->json([
+            "message" => "عملية العرض تمت بنجاح",
+            'data' => $count
+        ], 200);
     }
 }

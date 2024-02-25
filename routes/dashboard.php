@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ApartmentController;
 use App\Http\Controllers\Admin\NotificationController;
+use App\Http\Controllers\Admin\OrderController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 
 Route::group([
@@ -66,6 +67,7 @@ Route::post('/apartment', [ApartmentController::class, 'store']);
 Route::post('/apartment/{apartment}', [ApartmentController::class, 'update']);
 Route::delete('/apartment/{apartment}', [ApartmentController::class, 'destroy']);
 Route::post('/change-status', [ApartmentController::class, 'changeStatus']);
+Route::get('apartmentCount', [ApartmentController::class, 'apartmentCount']);
 /////////about_us
 Route::get('/about_us', [AboutUsController::class, 'index']);
 Route::get('/about_us/{about_us}', [AboutUsController::class, 'show']);
@@ -97,6 +99,7 @@ Route::get('/payments-getway', [PaymentGatewayController::class, 'index']);
 Route::post('/myFatoorah-update', [PaymentGatewayController::class, 'MyfatoorahUpdate']);
 //reports
 Route::get('/all-order', [ReportsController::class, 'all_orders']);
+Route::get('orderCount', [OrderController::class, 'orderCount']);
 Route::get('/all-payments', [ReportsController::class, 'all_payments']);
 
 //offers
