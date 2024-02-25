@@ -54,7 +54,7 @@ class SettingController extends Controller
             ], 422);
         }
 
-        foreach ($request->except('site_logo') as $key => $input) {
+        foreach ($request->all() as $key => $input) {
 
             if (request()->hasFile('site_logo') && $request->file('site_logo')->isValid()) {
 
