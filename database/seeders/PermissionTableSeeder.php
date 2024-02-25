@@ -15,10 +15,10 @@ class PermissionTableSeeder extends Seeder
     {
         $permissions = [
            // "user",
-            "users-list",
-            "update-user",
-            "delete-user",
-            "add-user",
+            // "users-list",
+            // "update-user",
+            // "delete-user",
+            // "add-user",
             "about",
             "about-list",
             "update-about",
