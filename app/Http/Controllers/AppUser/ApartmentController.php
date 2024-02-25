@@ -81,7 +81,38 @@ class ApartmentController extends Controller
 
 
     }
+   public function allApartments(Request $request){
+    $validator = Validator::make($request->all(), [
+        'city_id' => 'required|exists:cities,id',
 
+    ]);
+
+    if ($validator->fails()) {
+        return response()->json([
+            'status' => false,
+            'message' => $validator->errors(),
+        ], 422);
+    }
+    $areas_id  =  Area::where('city_id', $request->city_id)->pluck('id');
+   if( $areas_id  ){
+
+
+    $apartments = \App\Models\Apartment::with('reviews')->where('status', 1)->whereIn('area_id',  $areas_id )->get();
+
+   //  dd( $apartments);
+    foreach ($apartments as $apartment) {
+        if($apartment->BookedApartments->count() > 0){
+            return response()->json(['error' => 'Some apartment has already booked'],403 );
+        }
+    }
+    if ($apartments->count() <= 0) {
+        return response()->json(['error' => 'There is no apartment found'],403 );
+    }
+   }else{
+    return response()->json(['error' => 'locton not found'],403 );
+   }
+
+   }
     public function store(Request $request)
     {
         try {

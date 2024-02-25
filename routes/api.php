@@ -71,6 +71,9 @@ Route::get('/deactive-account', [UserProfileController::class, 'deactive_account
 Route::get('/my-apartments', [UserProfileController::class, 'myApartments']);//owner
 Route::get('/sold-apartments', [UserProfileController::class, 'SolidApartments']);//owner
 });
+
+//apartments
+Route::post('/all-apartments', [ApartmentController::class, 'allApartments']);
 //apartments
 Route::post('/search/apartments', [ApartmentController::class, 'search']);
 
