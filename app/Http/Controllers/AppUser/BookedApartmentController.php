@@ -101,8 +101,11 @@ class BookedApartmentController extends Controller
             Notification::send($admins, new BookedUser($user, $booked->apartment));
             // send notification to user
              Notification::send($user, new BookedUser($user, $booked->apartment));
+                 //notification to user
+                 $booked->sendDateFromNotification();
              ///broadcast event booked user
              BookedUserEvent::dispatch($user, $booked->apartment);
+
             return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
         }
         if ($paymentMethod && $paymentMethod == 'fatoorah') {
@@ -263,11 +266,13 @@ class BookedApartmentController extends Controller
                         // send notification to admins
                         $admins = User::all();
                         Notification::send($admins, new BookedUser($user, $booked->apartment));
-                        // // send notification to user
+                       // send notification to user
                          Notification::send($user, new BookedUser($user, $booked->apartment));
-
+                            //notification to user
+                            $booked->sendBookingNotification();
                      ///broadcast event booked user
                       BookedUserEvent::dispatch($user, $booked->apartment);
+
                         DB::commit();
                         return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
                     } catch (\Throwable $th) {

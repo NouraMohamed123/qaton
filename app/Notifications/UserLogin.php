@@ -10,13 +10,13 @@ use Illuminate\Notifications\Notification;
 class UserLogin extends Notification
 {
     use Queueable;
-
+    private $user;
     /**
      * Create a new notification instance.
      */
-    public function __construct()
+    public function __construct($newUser)
     {
-        //
+        $this->user = $newUser;
     }
 
     /**
@@ -26,7 +26,7 @@ class UserLogin extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**
@@ -48,7 +48,7 @@ class UserLogin extends Notification
     public function toArray(object $notifiable): array
     {
         return [
-            //
+            'message' => 'Your check-in time is today at 4 p.m'. $this->user->name,
         ];
     }
 }
