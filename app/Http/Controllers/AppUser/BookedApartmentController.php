@@ -100,7 +100,7 @@ class BookedApartmentController extends Controller
             $admins = User::all();
             Notification::send($admins, new BookedUser($user, $booked->apartment));
             // send notification to user
-            // Notification::send($user, new BookedUser($user, $booked->apartment));
+             Notification::send($user, new BookedUser($user, $booked->apartment));
              ///broadcast event booked user
              BookedUserEvent::dispatch($user, $booked->apartment);
             return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
@@ -264,7 +264,7 @@ class BookedApartmentController extends Controller
                         $admins = User::all();
                         Notification::send($admins, new BookedUser($user, $booked->apartment));
                         // // send notification to user
-                        // Notification::send($user, new BookedUser($user, $booked->apartment));
+                         Notification::send($user, new BookedUser($user, $booked->apartment));
 
                      ///broadcast event booked user
                       BookedUserEvent::dispatch($user, $booked->apartment);

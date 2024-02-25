@@ -13,6 +13,7 @@ use App\Http\Controllers\AppUser\AppUsersController;
 use App\Http\Controllers\AppUser\FavoriteController;
 use App\Http\Controllers\AppUser\ApartmentController;
 use App\Http\Controllers\AppUser\UserProfileController;
+use App\Http\Controllers\APPUser\NotificationController;
 use App\Http\Controllers\AppUser\BookedApartmentController;
 
 
@@ -84,4 +85,9 @@ Route::get('/areas', [HomeController::class, 'areas']);
 Route::get('/offers', [HomeController::class, 'offers']);
 Route::get('callback', [BookedApartmentController::class, 'callback'])->name('callback');
 Route::get('error', [BookedApartmentController::class, 'error'])->name('error');
+
+///notifications
+Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
+Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
+Route::get('/notification-clear', [NotificationController::class, 'Clear']);
 require __DIR__ . '/dashboard.php';

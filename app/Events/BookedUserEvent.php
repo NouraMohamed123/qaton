@@ -33,7 +33,7 @@ class BookedUserEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            new PrivateChannel('user-channel'),
         ];
     }
 }

@@ -7,12 +7,13 @@ use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\TermsController;
+use App\Http\Controllers\Admin\OffersController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ApartmentController;
-use App\Http\Controllers\Admin\OffersController;
+use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 
 Route::group([
@@ -105,6 +106,12 @@ Route::get('/offers/{offer}', [OffersController::class, 'show']);
 Route::post('/offers', [OffersController::class, 'store']);
 Route::post('/offers/{offer}', [OffersController::class, 'update']);
 Route::delete('/offers/{offer}', [OffersController::class, 'destroy']);
+
+
+///notifications
+Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
+Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
+Route::get('/notification-clear', [NotificationController::class, 'Clear']);
 });
 
 
