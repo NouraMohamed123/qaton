@@ -147,14 +147,20 @@ class ApartmentController extends Controller
                 }
             }
             foreach ($request->rooms as $roomData) {
-                $room = new Room();
-                $room->room_number = $roomData['room_number'];
-                $room->beds = $roomData['beds'];
-                $room->adult = $roomData['adult'];
-                $room->child = $roomData['child'];
-                $room->apartment_id = $apartment->id;
-                $room->save();
+                $room = Room::updateOrCreate(
+                    [
+
+                        'apartment_id' => $apartment->id,
+                    ],
+                    [
+                        'room_number' => $roomData['room_number'],
+                        'beds' => $roomData['beds'],
+                        'adult' => $roomData['adult'],
+                        'child' => $roomData['child'],
+                    ]
+                );
             }
+
             DB::commit();
             return response()->json(['isSuccess' => true, 'data' => new ApartmentResource($apartment)], 200);
         } catch (\Exception $e) {
