@@ -102,7 +102,7 @@ class BookedApartmentController extends Controller
             // send notification to user
              Notification::send($user, new BookedUser($user, $booked->apartment));
                  //notification to user
-                 $booked->sendDateFromNotification();
+                //  $booked->sendDateFromNotification();
              ///broadcast event booked user
              BookedUserEvent::dispatch($user, $booked->apartment);
 
@@ -269,7 +269,7 @@ class BookedApartmentController extends Controller
                        // send notification to user
                          Notification::send($user, new BookedUser($user, $booked->apartment));
                             //notification to user
-                            $booked->sendBookingNotification();
+                            // $booked->sendBookingNotification();
                      ///broadcast event booked user
                       BookedUserEvent::dispatch($user, $booked->apartment);
 
