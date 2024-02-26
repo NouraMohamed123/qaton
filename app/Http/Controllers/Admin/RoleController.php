@@ -13,7 +13,7 @@ class RoleController extends Controller
     public function index(Request $request)
     {
         // Retrieve roles with permissions and paginate the results
-        $roles = Role::with('permissions')->paginate($request->get('per_page', 10));
+        $roles = Role::with('permissions')->paginate($request->get('per_page', 50));
 
         // Modify the structure of the data
         $data = $roles->map(function ($role) {
