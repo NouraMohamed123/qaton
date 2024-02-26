@@ -24,7 +24,6 @@ class NotificationController extends Controller
 
         if(Auth::guard('users')->user()->notifications){
             $notifications  =   Auth::guard('users')->user()->notifications()->delete();
-
             return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
         }
 

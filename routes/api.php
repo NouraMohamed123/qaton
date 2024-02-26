@@ -13,7 +13,7 @@ use App\Http\Controllers\AppUser\AppUsersController;
 use App\Http\Controllers\AppUser\FavoriteController;
 use App\Http\Controllers\AppUser\ApartmentController;
 use App\Http\Controllers\AppUser\UserProfileController;
-use App\Http\Controllers\APPUser\NotificationController;
+use App\Http\Controllers\AppUser\NotificationController;
 use App\Http\Controllers\AppUser\BookedApartmentController;
 
 
