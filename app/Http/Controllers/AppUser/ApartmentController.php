@@ -122,7 +122,7 @@ class ApartmentController extends Controller
                 'bathrooms' => 'required|integer',
                 'lounges' => 'required|integer',
                 'view' => 'required|string',
-                'city_id' => 'required|exists:areas,id',
+                'area_id' => 'required|exists:areas,id',
                 'max_rooms' => 'nullable|integer',
             ]);
             DB::beginTransaction();

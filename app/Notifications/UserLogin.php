@@ -1,15 +1,16 @@
 <?php
 
 namespace App\Notifications;
-
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class UserLogin extends Notification
+
+class UserLogin extends Notification /* implements ShouldQueue */
 {
-    use Queueable;
+  use Queueable;
+
     private $user;
     /**
      * Create a new notification instance.
@@ -17,6 +18,7 @@ class UserLogin extends Notification
     public function __construct($newUser)
     {
         $this->user = $newUser;
+
     }
 
     /**

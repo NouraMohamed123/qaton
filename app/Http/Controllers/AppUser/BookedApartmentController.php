@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers\AppUser;
 
-use App\Events\BookedUserEvent;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Apartment;
 use App\Models\OrderPayment;
 use Illuminate\Http\Request;
+use App\Events\BookedUserEvent;
 use App\Models\Booked_apartment;
+use App\Notifications\UserLogin;
 use App\Notifications\BookedUser;
 use PhpParser\Node\Stmt\TryCatch;
 use App\Services\FatoorahServices;
@@ -102,7 +103,11 @@ class BookedApartmentController extends Controller
             // send notification to user
              Notification::send($user, new BookedUser($user, $booked->apartment));
                  //notification to user
-                //  $booked->sendDateFromNotification();
+                 $notificationDate = now()->addMinutes(300);
+
+                 $user->notify((new UserLogin($user))->delay( $notificationDate));
+
+
              ///broadcast event booked user
              BookedUserEvent::dispatch($user, $booked->apartment);
 
