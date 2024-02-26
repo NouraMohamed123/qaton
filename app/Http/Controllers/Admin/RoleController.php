@@ -27,19 +27,17 @@ class RoleController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'permission' => 'required',
+            'permissions' => 'required',
         ]);
-        // $role = Role::create(['name' => $request->name]);
-        // $role->syncRoles($request->roles);
+        
         $role = Role::create(['name' => $request->input('name')]);
-        $role->syncPermissions($request->input('permission'));
+        $role->syncPermissions($request->input('permissions'));
         return response()->json([
             'message' => 'true',
             'data' => $role,
-
-        ], 200);
+           
+        ]);
     }
-
     /**
      * Display the specified resource.
      *
@@ -76,11 +74,11 @@ class RoleController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'permission' => 'required',
+            'permissions' => 'required',
         ]);
 
 
-        $role->syncPermissions($request->input('permission'));
+        $role->syncPermissions($request->input('permissions'));
         $role->update(['name' => $request->name]);
 
         return response()->json([
