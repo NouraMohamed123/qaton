@@ -49,36 +49,38 @@ class SettingController extends Controller
             'cr' => '',
             'vat' => '',
         ]);
+
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
                 'message' => $validator->errors(),
             ], 422);
         }
-    
-        $settings = [];
-    
+
         foreach ($validator->validated() as $key => $input) {
-            if ($key === 'site_logo' && $request->hasFile('site_logo') && $request->file('site_logo')->isValid()) {
-                $file = $request->file('site_logo');
-                $fileName = 'custom_name.' . $file->getClientOriginalExtension(); // Define your custom file name here
-                $filePath = $file->storeAs('uploads/settings', $fileName, 'public');
-    
-                $input = $fileName; // Store the file path in input
+
+            if (request()->hasFile('site_logo') && $request->file('site_logo')->isValid()) {
+
+                $avatar = $request->file('site_logo');
+                $image = upload($avatar, public_path('uploads/settings'));
+                $input = $image;
             }
-    
-            Setting::updateOrCreate(['key' => $key], ['value' => $input]);
+
+            $settings =  Setting::updateOrCreate(
+                [
+                    'key' => $key,
+                ],
+                [
+                    'value' => $input,
+                ]
+            );
         }
-    
-        // Fetch the stored settings after the update
-        $storedSettings = Setting::pluck('value', 'key')->toArray();
-    
-        // Update the site_logo URL in the settings array if it exists
-        if (isset($storedSettings['site_logo'])) {
-            $storedSettings['site_logo'] = asset('storage/' . $storedSettings['site_logo']);
-        }
-    
-        return response()->json(['isSuccess' => true, 'data' => $storedSettings], 200);
+        $settings = Setting::pluck('value', 'key')
+            ->toArray();
+
+        $image = asset('uploads/settings/' .  $settings['site_logo']);
+        $settings['site_logo'] =    $image;
+        return response()->json(['isSuccess' => true, 'data' =>    $settings], 200);
     }
 
     /**

@@ -12,10 +12,29 @@ class RoleController extends Controller
 {
     public function index(Request $request)
     {
+        // Retrieve roles with permissions and paginate the results
         $roles = Role::with('permissions')->paginate($request->get('per_page', 10));
-        return response()->json($roles);
 
+        // Modify the structure of the data
+        $data = $roles->map(function ($role) {
+            // Extract permissions from the role
+            $permissions = $role->permissions->pluck('name');
+
+            // Return role data with permissions
+            return [
+                'role' => [
+                    'id' => $role->id,
+                    'name' => $role->name,
+
+                ],
+                'permissions' => $permissions->toArray(),
+            ];
+        });
+
+        // Return the modified data as JSON
+        return response()->json($data);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -48,10 +67,21 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
+        $role = Role::with('permissions')->where('id', $role->id)->first();
 
-        $role =  Role::with('permissions')->where('id', $role->id)->first();
+        // Extract permissions from the role
+        $permissions = $role->permissions->pluck('name');
 
-        return response()->json($role);
+        // Create a new array with custom structure
+        $data = [
+            'role' => [
+                'id' => $role->id,
+                'name' => $role->name,
+            ],
+            'permissions' => $permissions->toArray(),
+        ];
+
+        return response()->json($data);
     }
 
     /**
@@ -61,7 +91,7 @@ class RoleController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request,Role $role)
+    public function update(Request $request, Role $role)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
