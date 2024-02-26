@@ -12,7 +12,7 @@ class RoleController extends Controller
 {
     public function index(Request $request)
     {
-        $roles = Role::with('permissions')->paginate($request->get('per_page', 10));
+        $roles = Role::with('permissions')->paginate($request->get('per_page', 50));
         return response()->json($roles);
 
     }
@@ -48,10 +48,21 @@ class RoleController extends Controller
      */
     public function show(Role $role)
     {
+        $role = Role::with('permissions')->where('id', $role->id)->first();
 
-        $role =  Role::with('permissions')->where('id', $role->id)->first();
+        // Extract permissions from the role
+        $permissions = $role->permissions->pluck('name');
 
-        return response()->json($role);
+        // Create a new array with custom structure
+        $data = [
+            'role' => [
+                'id' => $role->id,
+                'name' => $role->name,
+            ],
+            'permissions' => $permissions->toArray(),
+        ];
+
+        return response()->json($data);
     }
 
     /**

@@ -202,4 +202,14 @@ class ApartmentController extends Controller
         $apartment->save();
         return response()->json(['isSuccess' => true, 'data' => new ApartmentResource($apartment)], 200);
     }
+    public function apartmentCount()
+    {
+        $count = Apartment::count();
+
+        return response()->json([
+         
+            "message" => "عملية العرض تمت بنجاح",
+            'data' => $count
+        ], 200);
+    }
 }
