@@ -12,7 +12,7 @@ class RoleController extends Controller
 {
     public function index(Request $request)
     {
-        $roles = Role::with('permissions')->paginate($request->get('per_page', 10));
+        $roles = Role::with('permissions')->paginate($request->get('per_page', 50));
         return response()->json($roles);
 
     }
