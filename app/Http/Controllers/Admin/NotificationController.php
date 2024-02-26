@@ -13,11 +13,21 @@ class NotificationController extends Controller
         return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
     }
     public function MarkASRead(){
-     $notifications  =   Auth::guard('users')->user()->notifications->markAsRead();
-        return response()->json(['isSuccess' => true], 200);
+        if(Auth::guard('users')->user()->notifications){
+            $notifications  =   Auth::guard('users')->user()->notifications->markAsRead();
+
+            return response()->json(['isSuccess' => true], 200);
+        }
+
     }
     public function Clear(){
-        $notifications  =   Auth::guard('users')->user()->notifications()->delete();
-        return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
+
+        if(Auth::guard('users')->user()->notifications){
+            $notifications  =   Auth::guard('users')->user()->notifications()->delete();
+
+            return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
+        }
+
+        return response()->json(['isSuccess' => false,'error' => 'user it has no notification'], 200);
     }
 }
