@@ -11,6 +11,7 @@ use App\Events\BookedUserEvent;
 use App\Models\Booked_apartment;
 use App\Notifications\UserLogin;
 use App\Notifications\BookedUser;
+use App\Notifications\UserLogout;
 use PhpParser\Node\Stmt\TryCatch;
 use App\Services\FatoorahServices;
 use Illuminate\Support\Facades\DB;
@@ -101,15 +102,16 @@ class BookedApartmentController extends Controller
             $admins = User::all();
             Notification::send($admins, new BookedUser($user, $booked->apartment));
             // send notification to user
-             Notification::send($user, new BookedUser($user, $booked->apartment));
-                 //notification to user
-                 $notificationDate = now()->addMinutes(300);
+            Notification::send($user, new BookedUser($user, $booked->apartment));
+            //notification to login user
+            $notificationDate = Carbon::parse($booked->date_from);
+            $user->notify((new UserLogin($user, $booked))->delay($notificationDate));
 
-                 $user->notify((new UserLogin($user))->delay( $notificationDate));
-
-
-             ///broadcast event booked user
-             BookedUserEvent::dispatch($user, $booked->apartment);
+            //notification to logout user
+            $notificationDate = Carbon::parse($booked->date_to);
+            $user->notify((new UserLogout($user, $booked))->delay($notificationDate));
+            ///broadcast event booked user
+            BookedUserEvent::dispatch($user, $booked->apartment);
 
             return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
         }
@@ -271,12 +273,18 @@ class BookedApartmentController extends Controller
                         // send notification to admins
                         $admins = User::all();
                         Notification::send($admins, new BookedUser($user, $booked->apartment));
-                       // send notification to user
-                         Notification::send($user, new BookedUser($user, $booked->apartment));
-                            //notification to user
-                            // $booked->sendBookingNotification();
-                     ///broadcast event booked user
-                      BookedUserEvent::dispatch($user, $booked->apartment);
+                        // send notification to user
+                        Notification::send($user, new BookedUser($user, $booked->apartment));
+                        //notification to login user
+                        $notificationDate = Carbon::parse($booked->date_from);
+                        $user->notify((new UserLogin($user, $booked))->delay($notificationDate));
+
+                        //notification to logout user
+                        $notificationDate = Carbon::parse($booked->date_to);
+                        $user->notify((new UserLogout($user, $booked))->delay($notificationDate));
+                         ///broadcast event booked user
+                        ///broadcast event booked user
+                        BookedUserEvent::dispatch($user, $booked->apartment);
 
                         DB::commit();
                         return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
