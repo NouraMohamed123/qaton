@@ -8,6 +8,7 @@ use App\Models\Term;
 use App\Models\Offer;
 use App\Models\AboutUs;
 use App\Models\Privacy;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AreaResource;
@@ -46,6 +47,14 @@ class HomeController extends Controller
     {
         $terms = Area::get();
         return AreaResource::collection($terms);
+    }
+    public function settings()
+    {
+        $settings = Setting::pluck('value', 'key')
+            ->toArray();
+        $image = asset('uploads/settings/' .  $settings['site_logo']);
+        $settings['site_logo'] =    $image;
+        return  $settings;
     }
 
     /**
