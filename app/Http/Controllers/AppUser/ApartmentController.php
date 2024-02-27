@@ -82,17 +82,7 @@ class ApartmentController extends Controller
 
     }
    public function allApartments(Request $request){
-    $validator = Validator::make($request->all(), [
-        'city_id' => 'required|exists:cities,id',
 
-    ]);
-
-    if ($validator->fails()) {
-        return response()->json([
-            'status' => false,
-            'message' => $validator->errors(),
-        ], 422);
-    }
     $areas_id  =  Area::where('city_id', $request->city_id)->pluck('id');
    if( $areas_id  ){
 
