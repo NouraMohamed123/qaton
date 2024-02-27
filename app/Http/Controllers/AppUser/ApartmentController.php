@@ -89,12 +89,7 @@ class ApartmentController extends Controller
 
     $apartments = \App\Models\Apartment::with('reviews')->where('status', 1)->whereIn('area_id',  $areas_id )->get();
 
-   //  dd( $apartments);
-    foreach ($apartments as $apartment) {
-        if($apartment->BookedApartments->count() > 0){
-            return response()->json(['error' => 'Some apartment has already booked'],403 );
-        }
-    }
+          return response()->json(['isSuccess' => true,'data'=> $apartments  ], 200);
     if ($apartments->count() <= 0) {
         return response()->json(['error' => 'There is no apartment found'],403 );
     }
