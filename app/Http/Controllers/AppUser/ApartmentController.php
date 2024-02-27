@@ -83,19 +83,14 @@ class ApartmentController extends Controller
     }
    public function allApartments(Request $request){
 
-    $areas_id  =  Area::where('city_id', $request->city_id)->pluck('id');
-   if( $areas_id  ){
 
-
-    $apartments = \App\Models\Apartment::with('reviews')->where('status', 1)->whereIn('area_id',  $areas_id )->get();
+    $apartments = \App\Models\Apartment::with('reviews')->where('status', 1)->get();
 
           return response()->json(['isSuccess' => true,'data'=> ApartmentResource::collection( $apartments )  ], 200);
     if ($apartments->count() <= 0) {
         return response()->json(['error' => 'There is no apartment found'],403 );
     }
-   }else{
-    return response()->json(['error' => 'locton not found'],403 );
-   }
+
 
    }
     public function store(Request $request)
