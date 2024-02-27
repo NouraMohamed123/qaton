@@ -73,7 +73,7 @@ Route::get('/sold-apartments', [UserProfileController::class, 'SolidApartments']
 });
 
 //apartments
-Route::post('/all-apartments', [ApartmentController::class, 'allApartments']);
+Route::get('/all-apartments', [ApartmentController::class, 'allApartments']);
 //apartments
 Route::post('/search/apartments', [ApartmentController::class, 'search']);
 
