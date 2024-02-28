@@ -70,6 +70,7 @@ Route::post('/update-profile', [UserProfileController::class, 'updateProfile']);
 Route::get('/deactive-account', [UserProfileController::class, 'deactive_account']);
 Route::get('/my-apartments', [UserProfileController::class, 'myApartments']);//owner
 Route::get('/sold-apartments', [UserProfileController::class, 'SolidApartments']);//owner
+
 });
 
 //apartments
@@ -82,6 +83,7 @@ Route::get('/about_us', [HomeController::class, 'about_us']);
 Route::get('/privacy', [HomeController::class, 'privacy']);
 Route::get('/terms', [HomeController::class, 'terms']);
 Route::get('/setting', [HomeController::class, 'settings']);
+Route::get('/payment-getway', [HomeController::class, 'paymentGetway']);
 //areas
 Route::get('/cities', [HomeController::class, 'cities']);
 Route::get('/areas', [HomeController::class, 'areas']);

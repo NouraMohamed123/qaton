@@ -10,6 +10,7 @@ use App\Models\AboutUs;
 use App\Models\Privacy;
 use App\Models\Setting;
 use Illuminate\Http\Request;
+use App\Models\PaymentGeteway;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\AreaResource;
 use App\Http\Resources\CityResource;
@@ -66,12 +67,19 @@ class HomeController extends Controller
         return OfferResource::collection($offers);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
+
+    public function paymentGetway()
     {
-        //
+        $data['myfatoorah'] = PaymentGeteway::where([
+            ['keyword', 'myfatoorah'],
+        ])->first();
+        if ($data['myfatoorah']) {
+            $data['myfatoorah']->image = asset('uploads/myfatoorah/' . $data['myfatoorah']->image) ;
+        }
+        return response()->json([
+            "isSuccess" => true,
+            'data' => $data
+        ], 200);
     }
 
     /**
