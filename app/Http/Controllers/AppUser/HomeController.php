@@ -75,11 +75,14 @@ class HomeController extends Controller
         ])->first();
         if ($data['myfatoorah']) {
             $data['myfatoorah']->image = asset('uploads/myfatoorah/' . $data['myfatoorah']->image) ;
-            $data['myfatoorah']->keyword =  $data['myfatoorah']->keyword;
         }
+
         return response()->json([
             "isSuccess" => true,
-            'data' =>   $data['myfatoorah']
+            'data' =>   [
+                'keyword'=>$data['myfatoorah']->keyword,
+                'image'=>$data['myfatoorah']->image,
+            ]
         ], 200);
     }
 
