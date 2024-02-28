@@ -28,7 +28,8 @@ class AppUsers extends Authenticatable implements JWTSubject
         'address',
         'city_id',
         'otp',
-        'type'
+        'type',
+        'image'
     ];
 
     protected $hidden = [

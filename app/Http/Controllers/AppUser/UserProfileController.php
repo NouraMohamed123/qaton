@@ -50,6 +50,9 @@ class UserProfileController extends Controller
     public function index()
     {
         $user = Auth::guard('app_users')->user();
+        if($user->image){
+            $user->image = asset('uploads/user/' .  $user->image)  ;
+        }
         if (!$user) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
