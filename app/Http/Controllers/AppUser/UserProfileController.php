@@ -65,7 +65,18 @@ class UserProfileController extends Controller
     $user->name = $request->input('name');
     $user->email = $request->input('email');
     $user->phone ="009665" . $request->phone;
-
+    if (request()->has('image') &&  request('image') != '') {
+        $avatar = request()->file('image');
+        if ($avatar->isValid()) {
+            $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
+            $avatarPath = public_path('/uploads/user');
+            $avatar->move($avatarPath, $avatarName);
+            $image  = $avatarName;
+        }
+    } else {
+        $image = $user->image;
+    }
+    $user->image =$image;
     $user->save();
 
     return response()->json(['message' => 'Profile updated successfully', 'data' => $user]);
