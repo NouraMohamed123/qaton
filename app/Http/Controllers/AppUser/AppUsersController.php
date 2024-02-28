@@ -18,7 +18,7 @@ class AppUsersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => "false", 'error' => 'Empty fields'], 200);
+            return response()->json(['success' => "false",'error' => $validator->errors()],422);
         }
 
         //check if the phone is exists
@@ -40,7 +40,7 @@ class AppUsersController extends Controller
                 }
 
                 if ($user->status == 0) {
-                    return response()->json(['success' => "false", 'is_new' => false], 200);
+                    return response()->json(['success' => "false", 'is_new' => false], 403);
                 }
             } else {
                 //create user
@@ -48,7 +48,7 @@ class AppUsersController extends Controller
                     'name' => 'new_user',
                     'phone' => $phone,
                     'otp' => $otp,
-                    'api_token' => Str::random(100),
+                    'api_token' => JWTAuth::fromUser($user),
                 ]);
             }
 
@@ -57,7 +57,7 @@ class AppUsersController extends Controller
 
             return response()->json(['success' => "true", 'is_new' => $is_new_user], 200);
         } catch (\Exception $e) {
-            return response()->json(['success' => "false", 'is_new' => false], 200);
+            return response()->json(['success' => "false", 'is_new' => false],403);
         }
 
     }
@@ -69,17 +69,17 @@ class AppUsersController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['success' => "false", 'error' => 'Empty fields'], 200);
+            return response()->json(['success' => "false", 'error' => $validator->errors()], 422);
         }
 
         $phone = "009665". $request->phone;
         if($request->phone == "93783093")
         {
             $user = AppUsers::where('phone', $phone)->first();
-            $token = JWTAuth::fromUser($user);
+
 
             return response()->json([
-                'access_token' => $token,
+                'access_token' =>  $user->api_token,
                 "data" => $user,
                 'expires_in' => JWTAuth::factory()->getTTL() * 60,
             ]);
@@ -93,16 +93,14 @@ class AppUsersController extends Controller
                 $user->name = $request->name;
                 $user->save();
             }
-            $token = JWTAuth::fromUser($user);
-
             return response()->json([
-                'access_token' => $token,
+                'access_token' =>  $user->api_token,
                 'token_type' => 'bearer',
                 "data" => $user,
                 'expires_in' => JWTAuth::factory()->getTTL() * 60,
             ]);
         }else{
-            return response()->json([ 'error' => 'wrong data'], 200);
+            return response()->json([ 'error' => 'wrong data'], 403);
         }
     }
     public function update_user_password(Request $request)
@@ -132,10 +130,10 @@ class AppUsersController extends Controller
 
                 return response()->json(['success' => "true", 'user' => $user], 200);
             } else {
-                return response()->json(['success' => "false", 'error' => "you do not have access"], 200);
+                return response()->json(['success' => "false", 'error' => "you do not have access"], 403);
             }
         } else {
-            return response()->json(['success' => "false", 'error' => "you do not have access 1"], 200);
+            return response()->json(['success' => "false", 'error' => "you do not have access 1"], 403);
         }
     }
     public function login(Request $request)
