@@ -60,7 +60,7 @@ class ApartmentController extends Controller
                 'video' => $video,
                 'parking' => $request->parking,
                 'max_guests' => $request->max_guests,
-                'status' => $request->status,
+                'status' => 1,
             ];
 
 
@@ -207,7 +207,7 @@ class ApartmentController extends Controller
         $count = Apartment::count();
 
         return response()->json([
-         
+
             "message" => "عملية العرض تمت بنجاح",
             'data' => $count
         ], 200);

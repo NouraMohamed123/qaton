@@ -20,6 +20,7 @@ class PaymentGatewayController extends Controller
             $information = json_decode($data['myfatoorah']->information, true);
 
             $data['myfatoorah']->information = $information;
+            $data['myfatoorah']->image = asset('uploads/myfatoorah/' . $data['myfatoorah']->image) ;
         }
         return response()->json([
             "isSuccess" => true,
@@ -40,7 +41,18 @@ class PaymentGatewayController extends Controller
         $information = [];
         $information['api_token'] = $request->api_token;
         $myfatoorah->information = json_encode($information);
-
+        if (request()->has('image') &&  request('image') != '') {
+            $avatar = request()->file('image');
+            if ($avatar->isValid()) {
+                $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
+                $avatarPath = public_path('/uploads/myfatoorah');
+                $avatar->move($avatarPath, $avatarName);
+                $image  = $avatarName;
+            }
+        } else {
+            $image = $myfatoorah->image;
+        }
+        $myfatoorah->image = $image;
         $myfatoorah->save();
 
         return response()->json([
