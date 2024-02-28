@@ -23,7 +23,7 @@ class UserProfileController extends Controller
         if ( $apartments->count() > 0 ) {
             return response()->json(['data'=> ApartmentResource::collection( $apartments) ], 200);
         }
-        return response()->json(['error' => 'User not has investment apartments'], 401);
+        return response()->json(['error' => 'User not has investment apartments'], 422);
 
     }
 
@@ -41,7 +41,7 @@ class UserProfileController extends Controller
             return response()->json(['data'=> ApartmentResource::collection( $apartments) ], 200);
 
         }
-        return response()->json(['error' => ' not exist  apartments solid'], 401);
+        return response()->json(['error' => ' not exist  apartments solid'], 422);
     }
 
     /**
