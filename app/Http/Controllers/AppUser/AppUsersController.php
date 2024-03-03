@@ -29,7 +29,7 @@ class AppUsersController extends Controller
 
         //generate OTP
         // $otp = str_pad(mt_rand(1, 9999), 4, '0', STR_PAD_LEFT);
-        $otp = 123;
+        $otp = 1234;
         try {
             if ($user) {
                 //save code in database
