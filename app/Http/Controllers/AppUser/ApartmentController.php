@@ -56,11 +56,11 @@ class ApartmentController extends Controller
        //  dd( $apartments);
         foreach ($apartments as $apartment) {
             if($apartment->BookedApartments->count() > 0){
-                return response()->json(['error' => 'Some apartment has already booked'],403 );
+                return response()->json(['error' => 'لقد تم حجز  الشقق بالفعل'],403 );
             }
         }
         if ($apartments->count() <= 0) {
-            return response()->json(['error' => 'There is no apartment found'],403 );
+            return response()->json(['error' => 'لم يتم العثور على شقة'],403 );
         }else{
 
           $available_apartments = $apartments->filter(function ($apartment) use ($adults, $childs) {
@@ -71,12 +71,12 @@ class ApartmentController extends Controller
                 return response()->json(['isSuccess' => true,'data'=> ApartmentResource::collection($available_apartments)  ], 200);
 
             }
-            return response()->json(['error' => 'There is no rooms suitable for you '],403 );
+            return response()->json(['error' => 'لا توجد غرف مناسبة لك '],403 );
 
 
         }
        }else{
-        return response()->json(['error' => 'locton not found'],403 );
+        return response()->json(['error' => 'الموقع غير موجود'],403 );
        }
 
 
