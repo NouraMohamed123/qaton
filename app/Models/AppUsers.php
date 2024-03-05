@@ -49,5 +49,9 @@ class AppUsers extends Authenticatable implements JWTSubject
     {
         return [];
     }
+    public function notifiable()
+    {
+        return $this->morphMany(ManualNotification::class,'notifiable');
+    }
 }
 

@@ -17,7 +17,7 @@ use Tymon\JWTAuth\Traits\JWTSubject as JWTSubjectTrait;
 class User extends Authenticatable implements JWTSubject
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles , HasPermissions  ;
-  
+
 
     /**
      * The attributes that are mass assignable.
@@ -33,7 +33,7 @@ class User extends Authenticatable implements JWTSubject
         'photo',
         'password',
         'roles_name',
-        
+
     ];
 
     /**
@@ -67,5 +67,9 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+    public function notifiable()
+    {
+        return $this->morphMany(ManualNotification::class,'notifiable');
     }
 }
