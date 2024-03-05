@@ -17,6 +17,7 @@ use App\Http\Controllers\Admin\ApartmentController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\admin\ManualNotificationController;
+use App\Http\Controllers\admin\PriceController;
 
 Route::group([
     'prefix' => 'auth'
@@ -69,6 +70,7 @@ Route::post('/apartment/{apartment}', [ApartmentController::class, 'update']);
 Route::delete('/apartment/{apartment}', [ApartmentController::class, 'destroy']);
 Route::post('/change-status', [ApartmentController::class, 'changeStatus']);
 Route::get('apartmentCount', [ApartmentController::class, 'apartmentCount']);
+Route::post('/prices', [PriceController::class, 'store']);
 /////////about_us
 Route::get('/about_us', [AboutUsController::class, 'index']);
 Route::get('/about_us/{about_us}', [AboutUsController::class, 'show']);

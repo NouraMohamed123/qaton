@@ -36,6 +36,7 @@ class PriceController extends Controller
             $price->date = $priceData['date'];
             $price->save();
         }
+        return response()->json(['isSuccess' => true], 200);
     }
 
     /**
