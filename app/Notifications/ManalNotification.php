@@ -14,9 +14,10 @@ class ManalNotification extends Notification
     /**
      * Create a new notification instance.
      */
-    public function __construct( private $message)
+    private $message;
+    public function __construct($message)
     {
-        //
+      $this->message = $message;
     }
 
     /**
@@ -26,7 +27,7 @@ class ManalNotification extends Notification
      */
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['database'];
     }
 
     /**

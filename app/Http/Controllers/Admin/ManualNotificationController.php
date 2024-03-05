@@ -35,6 +35,7 @@ class ManualNotificationController extends Controller
      {
 
          $notificationDate = $request->date;
+         $message = $request->message;
          $user = null;
 
          if ($request->app_user_id) {
@@ -46,17 +47,17 @@ class ManualNotificationController extends Controller
          if ($user ) {
 
             $user->notifiable()->create([
-                'type' => $request->type ,
+                'type' => $request->type,
                 'date' => $request->date,
                 'message' => $request->message,
             ]);
 
 
-             if ($notificationDate) {
-                 $user->notify((new ManualNotification($request->message))->delay($notificationDate));
-             } else {
-                 $user->notify((new ManualNotification($request->message)));
-             }
+            //  if ($notificationDate) {
+            //      $user->notify(new ManualNotification($message))->delay($notificationDate);
+            //  } else {
+            //      $user->notify(new ManualNotification($message));
+            //  }
          }
      }
     /**
