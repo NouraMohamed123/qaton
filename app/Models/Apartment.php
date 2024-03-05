@@ -34,4 +34,8 @@ class Apartment extends Model
     {
         return $this->belongsTo(Area::class);
     }
+    public function prices()
+    {
+        return $this->hasMany(price::class);
+    }
 }
