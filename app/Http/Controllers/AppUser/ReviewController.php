@@ -58,6 +58,14 @@ class ReviewController extends Controller
             'apartment_id' => $request->apartment_id,
             'descriptions' => $request->descriptions,
             'rating' => $request->rating,
+            'comfort_rating' => $request->comfort_rating,
+            'location_rating' => $request->location_rating,
+            'facilities_rating' => $request->facilities_rating,
+            'cleanliness_rating' => $request->cleanliness_rating,
+            'staff_rating' => $request->staff_rating,
+            'liked' => $request->liked,
+            'disliked' => $request->disliked,
+            'describe_stay' => $request->describe_stay,
         ]);
         return response()->json(['isSuccess' => true, 'data' =>  $reviews], 200);
     }
@@ -90,6 +98,14 @@ class ReviewController extends Controller
             'apartment_id' => $request->apartment_id,
             'descriptions' => $request->descriptions,
             'rating' => $request->rating,
+            'comfort_rating' => $request->comfort_rating,
+            'location_rating' => $request->location_rating,
+            'facilities_rating' => $request->facilities_rating,
+            'cleanliness_rating' => $request->cleanliness_rating,
+            'staff_rating' => $request->staff_rating,
+            'liked' => $request->liked,
+            'disliked' => $request->disliked,
+            'describe_stay' => $request->describe_stay,
         ]);
         return response()->json(['isSuccess' => true, 'data' =>   $review], 200);
     }

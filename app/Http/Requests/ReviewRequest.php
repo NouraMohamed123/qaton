@@ -24,7 +24,15 @@ class ReviewRequest extends FormRequest
         return [
             'apartment_id' => 'required|exists:apartments,id',
             'descriptions' => 'nullable|string',
-            'rating' => 'required',
+            'rating' => 'required|numeric|min:0|max:10',
+            'comfort_rating' => 'required|numeric|min:0|max:10',
+            'location_rating' => 'required|numeric|min:0|max:10',
+            'facilities_rating' => 'required|numeric|min:0|max:10',
+            'cleanliness_rating' => 'required|numeric|min:0|max:10',
+            'staff_rating' => 'required|numeric|min:0|max:10',
+            'liked' => 'nullable|string',
+            'disliked' => 'nullable|string',
+            'describe_stay' => 'nullable|string',
         ];
     }
 }
