@@ -41,11 +41,7 @@ class UserProfileController extends Controller
         }
         return response()->json(['error' => ' not exist  apartments solid'], 422);
     }
-    public function all()
-    {
-        $users =  AppUsers::all();
-        return response()->json(['data' => $users], 200);
-    }
+
     /**
      * Display a listing of the resource.
      */

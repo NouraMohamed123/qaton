@@ -81,4 +81,9 @@ class AreaController extends Controller
 
 
     }
+    public function cityArea($id){
+        $areas =  Area::where('city_id',$id)->get();
+        return AreaResource::collection($areas);
+    }
+
 }

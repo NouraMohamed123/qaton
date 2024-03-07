@@ -7,17 +7,18 @@ use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\admin\PriceController;
 use App\Http\Controllers\Admin\TermsController;
 use App\Http\Controllers\Admin\OffersController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\SettingController;
+use App\Http\Controllers\admin\ContacUsController;
 use App\Http\Controllers\Admin\ApartmentController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\admin\ManualNotificationController;
-use App\Http\Controllers\admin\PriceController;
 
 Route::group([
     'prefix' => 'auth'
@@ -60,7 +61,7 @@ Route::get('/area/{area}', [AreaController::class, 'show']);
 Route::post('/area', [AreaController::class, 'store']);
 Route::post('/area/{area}', [AreaController::class, 'update']);
 Route::delete('/area/{area}', [AreaController::class, 'destroy']);
-
+Route::get('/areas/{city_id}', [AreaController::class, 'cityArea']);
 //apartment route
 
 Route::get('/apartment', [ApartmentController::class, 'index']);
@@ -121,6 +122,9 @@ Route::get('/notification-clear', [NotificationController::class, 'Clear']);
 
 ///manual notifications
 Route::post('/manual-notifications', [ManualNotificationController::class, 'store']);
+///contact us
+Route::get('/contact-us', [ContacUsController::class, 'index']);
+//
+Route::get('/app-users', [UserController::class, 'All']);
 });
-
 

@@ -2,17 +2,18 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Models\User;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use App\Http\Resources\UserResource;
-use Illuminate\Support\Facades\DB;
+use App\Models\AppUsers;
 use Illuminate\Support\Arr;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 
 class UserController extends Controller
@@ -190,5 +191,11 @@ class UserController extends Controller
             "message" => "عملية العرض تمت بنجاح",
             'data' => $count
         ], 200);
+    }
+
+    public function All()
+    {
+        $users =  AppUsers::all();
+        return response()->json(['data' => $users], 200);
     }
 }

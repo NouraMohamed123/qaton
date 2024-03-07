@@ -70,7 +70,12 @@ Route::post('/update-profile', [UserProfileController::class, 'updateProfile']);
 Route::get('/deactive-account', [UserProfileController::class, 'deactive_account']);
 Route::get('/my-apartments', [UserProfileController::class, 'myApartments']);//owner
 Route::get('/sold-apartments', [UserProfileController::class, 'SolidApartments']);//owner
-Route::get('/app-users', [UserProfileController::class, 'all']);
+
+
+///notifications
+Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
+Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
+Route::get('/notification-clear', [NotificationController::class, 'Clear']);
 });
 
 //apartments
@@ -92,8 +97,11 @@ Route::get('/offers', [HomeController::class, 'offers']);
 Route::get('callback', [BookedApartmentController::class, 'callback'])->name('callback');
 Route::get('error', [BookedApartmentController::class, 'error'])->name('error');
 
-///notifications
-Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
-Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
-Route::get('/notification-clear', [NotificationController::class, 'Clear']);
+
+
+
+/////home page web
+
+Route::post('/contact-us', [App\Http\Controllers\HomeController::class, 'contactUs']);
+Route::get('/home-settings', [App\Http\Controllers\HomeController::class, 'Settings']);
 require __DIR__ . '/dashboard.php';
