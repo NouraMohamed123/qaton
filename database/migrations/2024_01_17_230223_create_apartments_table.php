@@ -19,9 +19,6 @@ return new class extends Migration
             $table->integer('bathrooms');
             $table->integer('lounges');
             $table->boolean('dining_session');
-            // $table->boolean('balcony');
-            // $table->boolean('yard');
-            // $table->boolean('terrace');
             $table->json('features')->nullable();
             $table->enum('view',['street','passage','park','promenade'])->default('street');
             $table->json('additional_features')->nullable();
@@ -33,6 +30,16 @@ return new class extends Migration
             $table->integer('max_rooms')->nullable();
             $table->foreign('owner_id')->references('id')->on('app_users')->nullable()->onDelete('cascade');
             $table->tinyInteger('status')->default(1);
+            $table->tinyInteger('beds_childs')->default(0);
+
+            ////////////////////////////////////
+            $table->string('website_link')->nullable();
+            $table->string('login_instructions')->nullable();
+            $table->string('internet_name')->nullable();
+            $table->string('internet_password')->nullable();
+            $table->string('instructions_prohibitions')->nullable();
+            $table->string('apartment_features')->nullable();
+            $table->json('contact_numbers')->nullable();
             $table->timestamps();
         });
     }

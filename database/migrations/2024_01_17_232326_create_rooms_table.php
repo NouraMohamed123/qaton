@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('room_number');
             $table->integer('beds');
-            $table->integer('adult')->nullable();
-            $table->integer('child')->nullable();
+            $table->enum('bathrooms',['external','basement'])->default('external');
             $table->unsignedBigInteger('apartment_id');
             $table->foreign('apartment_id')->references('id')->on('apartments')->onDelete('cascade');
             $table->timestamps();
