@@ -20,11 +20,10 @@ class UserProfileController extends Controller
         }
         $apartments =  Apartment::where('owner_id', $user->id)->get();
         // dd($apartments);
-        if ( $apartments->count() > 0 ) {
-            return response()->json(['data'=> ApartmentResource::collection( $apartments) ], 200);
+        if ($apartments->count() > 0) {
+            return response()->json(['data' => ApartmentResource::collection($apartments)], 200);
         }
         return response()->json(['error' => 'User not has investment apartments'], 422);
-
     }
 
     public function SolidApartments()
@@ -37,53 +36,56 @@ class UserProfileController extends Controller
             $query->where('paid', 1);
         })->where('owner_id', $user->id)->get();
 
-        if ( $apartments->count() > 0 ) {
-            return response()->json(['data'=> ApartmentResource::collection( $apartments) ], 200);
-
+        if ($apartments->count() > 0) {
+            return response()->json(['data' => ApartmentResource::collection($apartments)], 200);
         }
         return response()->json(['error' => ' not exist  apartments solid'], 422);
     }
-
+    public function all()
+    {
+        $users =  AppUsers::all();
+        return response()->json(['data' => $users], 200);
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
         $user = Auth::guard('app_users')->user();
-        if($user->image){
-            $user->image = asset('uploads/user/' .  $user->image)  ;
+        if ($user->image) {
+            $user->image = asset('uploads/user/' .  $user->image);
         }
         if (!$user) {
             return response()->json(['error' => 'User not authenticated'], 401);
         }
-        return response()->json(['data'=>  $user ], 200);
+        return response()->json(['data' =>  $user], 200);
     }
     public function updateProfile(Request $request)
-{
-    $user = Auth::guard('app_users')->user();
-    if (!$user) {
-        return response()->json(['error' => 'User not authenticated'], 401);
-    }
-
-    $user->name = $request->input('name');
-    $user->email = $request->input('email');
-    $user->phone ="009665" . $request->phone;
-    if (request()->has('image') &&  request('image') != '') {
-        $avatar = request()->file('image');
-        if ($avatar->isValid()) {
-            $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
-            $avatarPath = public_path('/uploads/user');
-            $avatar->move($avatarPath, $avatarName);
-            $image  = $avatarName;
+    {
+        $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
         }
-    } else {
-        $image = $user->image;
-    }
-    $user->image =$image;
-    $user->save();
 
-    return response()->json(['message' => 'Profile updated successfully', 'data' => $user]);
-}
+        $user->name = $request->input('name');
+        $user->email = $request->input('email');
+        $user->phone = "009665" . $request->phone;
+        if (request()->has('image') &&  request('image') != '') {
+            $avatar = request()->file('image');
+            if ($avatar->isValid()) {
+                $avatarName = time() . '.' . $avatar->getClientOriginalExtension();
+                $avatarPath = public_path('/uploads/user');
+                $avatar->move($avatarPath, $avatarName);
+                $image  = $avatarName;
+            }
+        } else {
+            $image = $user->image;
+        }
+        $user->image = $image;
+        $user->save();
+
+        return response()->json(['message' => 'Profile updated successfully', 'data' => $user]);
+    }
     public  function deactive_account(Request $request)
     {
         $user = Auth::guard('app_users')->user();
@@ -95,10 +97,8 @@ class UserProfileController extends Controller
             $user->status = 0;
             $user->save();
             return response()->json(['success' => "true"], 200);
-
         } else {
-            return response()->json([ 'error' => "you do not have access"], 200);
+            return response()->json(['error' => "you do not have access"], 200);
         }
     }
-
 }

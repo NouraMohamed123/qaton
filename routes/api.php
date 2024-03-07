@@ -70,7 +70,7 @@ Route::post('/update-profile', [UserProfileController::class, 'updateProfile']);
 Route::get('/deactive-account', [UserProfileController::class, 'deactive_account']);
 Route::get('/my-apartments', [UserProfileController::class, 'myApartments']);//owner
 Route::get('/sold-apartments', [UserProfileController::class, 'SolidApartments']);//owner
-
+Route::get('/app-users', [UserProfileController::class, 'all']);
 });
 
 //apartments
