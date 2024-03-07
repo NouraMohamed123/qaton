@@ -24,6 +24,7 @@ return new class extends Migration
             $table->json('additional_features')->nullable();
             $table->unsignedBigInteger('area_id');
             $table->foreign('area_id')->references('id')->on('areas')->onDelete('cascade');
+            $table->string('main_image')->nullable();
             $table->string('video')->nullable();
             $table->enum('parking',['external','basement'])->default('external');
             $table->integer('max_guests')->nullable();
@@ -31,7 +32,6 @@ return new class extends Migration
             $table->foreign('owner_id')->references('id')->on('app_users')->nullable()->onDelete('cascade');
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('beds_childs')->default(0);
-
             ////////////////////////////////////
             $table->string('website_link')->nullable();
             $table->string('login_instructions')->nullable();
