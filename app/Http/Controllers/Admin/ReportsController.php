@@ -67,8 +67,9 @@ class ReportsController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function reservation_request()
     {
-        //
+        $booked =  Booked_apartment::where('status','pending')->with('Apartment')->get();
+        return BookedResource::collection($booked);
     }
 }

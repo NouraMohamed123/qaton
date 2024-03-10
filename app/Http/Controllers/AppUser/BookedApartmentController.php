@@ -119,7 +119,10 @@ class BookedApartmentController extends Controller
         $settings = Setting::pluck('value', 'key')
         ->toArray();
         if(!$settings['available_bookings'] == 1){
-            return response()->json(['messsage' => '  طلب حجز'], 200);
+            $booked::update([
+                'status'=>'pending'
+            ]);
+            return response()->json(['messsage' => 'طلب حجز'], 200);
 
         }
         if ($paymentMethod && $paymentMethod == 'fatoorah') {

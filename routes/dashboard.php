@@ -105,7 +105,7 @@ Route::post('/myFatoorah-update', [PaymentGatewayController::class, 'MyfatoorahU
 Route::get('/all-order', [ReportsController::class, 'all_orders']);
 Route::get('orderCount', [OrderController::class, 'orderCount']);
 Route::get('/all-payments', [ReportsController::class, 'all_payments']);
-
+Route::get('/reservation-request', [ReportsController::class, 'reservation_request']);
 //offers
 
 Route::get('/offers', [OffersController::class, 'index']);
