@@ -25,10 +25,9 @@ class ApartmentController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'city_id' => 'required|exists:cities,id',
-            'check_in_date'=> 'required|date',
-            'check_out_date'=> 'required|date|after:check_in_date',
-            'adults'=>'required',
-            'childs'=>'required',
+            'check_in_date' => 'required|date',
+            'check_out_date' => 'required|date|after:check_in_date',
+            'max_guests' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -38,61 +37,52 @@ class ApartmentController extends Controller
             ], 422);
         }
         $areas_id  =  Area::where('city_id', $request->city_id)->pluck('id');
-       if( $areas_id  ){
-        $checkInDate = Carbon::parse($request->check_in_date);
-        $checkOutDate = Carbon::parse($request->check_out_date);
-        $adults = $request->adults;
-        $childs = $request->childs;
+        if ($areas_id) {
+            $checkInDate = Carbon::parse($request->check_in_date);
+            $checkOutDate = Carbon::parse($request->check_out_date);
+            $adults = $request->adults;
+            $childs = $request->childs;
 
-        $apartments = \App\Models\Apartment::with('reviews')->where('status', 1)->whereIn('area_id',  $areas_id )->with(['BookedApartments'=>function($BookedApartments) use ($checkInDate,$checkOutDate){
-            $BookedApartments->where(function($q) use ($checkInDate,$checkOutDate){
-                $q->where(function($qq) use ($checkInDate,$checkOutDate){
-                    $qq->where('date_from','<=',$checkInDate)->where('date_to','>',$checkInDate);
-                })->orWhere(function($qqq) use ($checkInDate,$checkOutDate){
-                    $qqq->where('date_from','<=',$checkOutDate)->where('date_to','>=',$checkOutDate);
+            $apartments = \App\Models\Apartment::with('reviews')->where('status', 1)->whereIn('area_id',  $areas_id)->with(['BookedApartments' => function ($BookedApartments) use ($checkInDate, $checkOutDate) {
+                $BookedApartments->where(function ($q) use ($checkInDate, $checkOutDate) {
+                    $q->where(function ($qq) use ($checkInDate, $checkOutDate) {
+                        $qq->where('date_from', '<=', $checkInDate)->where('date_to', '>', $checkInDate);
+                    })->orWhere(function ($qqq) use ($checkInDate, $checkOutDate) {
+                        $qqq->where('date_from', '<=', $checkOutDate)->where('date_to', '>=', $checkOutDate);
+                    });
                 });
-            });
-        }])->get();
-       //  dd( $apartments);
-        foreach ($apartments as $apartment) {
-            if($apartment->BookedApartments->count() > 0){
-                return response()->json(['error' => 'لقد تم حجز  الشقق بالفعل'],403 );
+            }])->get();
+            //  dd( $apartments);
+            foreach ($apartments as $apartment) {
+                if ($apartment->BookedApartments->count() > 0) {
+                    return response()->json(['error' => 'لقد تم حجز  الشقق بالفعل'], 403);
+                }
             }
+            if ($apartments->count() <= 0) {
+                return response()->json(['error' => 'لم يتم العثور على شقة'], 403);
+            } else {
+
+                $available_apartments = $apartments->where('max_guests', '>=', $request->max_guests);
+                if ($available_apartments->count() > 0) {
+                    return response()->json(['isSuccess' => true, 'data' => ApartmentResource::collection($available_apartments)], 200);
+                }
+                return response()->json(['error' => 'لا توجد غرف مناسبة لك '], 403);
+            }
+        } else {
+            return response()->json(['error' => 'الموقع غير موجود'], 403);
         }
+    }
+    public function allApartments(Request $request)
+    {
+
+
+        $apartments = \App\Models\Apartment::with('reviews')->where('status', 1)->get();
+
+        return response()->json(['isSuccess' => true, 'data' => ApartmentResource::collection($apartments)], 200);
         if ($apartments->count() <= 0) {
-            return response()->json(['error' => 'لم يتم العثور على شقة'],403 );
-        }else{
-
-          $available_apartments = $apartments->filter(function ($apartment) use ($adults, $childs) {
-            // dd($apartment->rooms);
-                return $apartment->rooms->where('adult', '>=', $adults)->where('child', '>=', $childs)->isNotEmpty();
-            });
-            if ( $available_apartments->count() > 0 ) {
-                return response()->json(['isSuccess' => true,'data'=> ApartmentResource::collection($available_apartments)  ], 200);
-
-            }
-            return response()->json(['error' => 'لا توجد غرف مناسبة لك '],403 );
-
-
+            return response()->json(['error' => 'There is no apartment found'], 403);
         }
-       }else{
-        return response()->json(['error' => 'الموقع غير موجود'],403 );
-       }
-
-
     }
-   public function allApartments(Request $request){
-
-
-    $apartments = \App\Models\Apartment::with('reviews')->where('status', 1)->get();
-
-          return response()->json(['isSuccess' => true,'data'=> ApartmentResource::collection( $apartments )  ], 200);
-    if ($apartments->count() <= 0) {
-        return response()->json(['error' => 'There is no apartment found'],403 );
-    }
-
-
-   }
     public function store(Request $request)
     {
         try {
@@ -107,12 +97,12 @@ class ApartmentController extends Controller
             ]);
             DB::beginTransaction();
 
-          $user =  AppUsers::where('id',Auth::guard('app_users')->user()->id)->first();
-          if($user){
-            $user->update([
-                'type'=>1,
-              ]);
-          }
+            $user =  AppUsers::where('id', Auth::guard('app_users')->user()->id)->first();
+            if ($user) {
+                $user->update([
+                    'type' => 1,
+                ]);
+            }
             $data = [
                 'name' => $request->name,
                 'price' => $request->price,
@@ -121,8 +111,8 @@ class ApartmentController extends Controller
                 'view' => $request->view,
                 'area_id' => $request->area_id,
                 'max_rooms' => $request->max_rooms,
-                'owner_id'=>Auth::guard('app_users')->user()->id,
-                'status'=>0,
+                'owner_id' => Auth::guard('app_users')->user()->id,
+                'status' => 0,
             ];
 
 
@@ -135,10 +125,10 @@ class ApartmentController extends Controller
                     }
                 }
             }
-           DB::commit();
-           return response()->json(['isSuccess' => true], 200);
+            DB::commit();
+            return response()->json(['isSuccess' => true], 200);
         } catch (\Exception $e) {
-             DB::rollback();
+            DB::rollback();
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }

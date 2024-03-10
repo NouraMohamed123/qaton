@@ -4,6 +4,7 @@ namespace App\Http\Controllers\AppUser;
 
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Setting;
 use App\Models\Apartment;
 use App\Models\OrderPayment;
 use Illuminate\Http\Request;
@@ -114,6 +115,12 @@ class BookedApartmentController extends Controller
             BookedUserEvent::dispatch($user, $booked->apartment);
 
             return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
+        }
+        $settings = Setting::pluck('value', 'key')
+        ->toArray();
+        if(!$settings['available_bookings'] == 1){
+            return response()->json(['messsage' => '  طلب حجز'], 200);
+
         }
         if ($paymentMethod && $paymentMethod == 'fatoorah') {
             $data = [
