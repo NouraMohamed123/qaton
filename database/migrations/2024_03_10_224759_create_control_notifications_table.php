@@ -13,6 +13,9 @@ return new class extends Migration
     {
         Schema::create('control_notifications', function (Blueprint $table) {
             $table->id();
+            $table->enum('type',[1,2,3,4]);
+            $table->time('time')->nullable();
+            $table->text('message')->nullable();
             $table->timestamps();
         });
     }

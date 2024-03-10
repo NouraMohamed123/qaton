@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\ControlNotification;
+use App\Http\Controllers\Controller;
 
 class ControlNotificationController extends Controller
 {
@@ -12,7 +13,8 @@ class ControlNotificationController extends Controller
      */
     public function index()
     {
-        //
+        $notifications = ControlNotification::all();
+        return response()->json($notifications);
     }
 
     /**
@@ -20,7 +22,7 @@ class ControlNotificationController extends Controller
      */
     public function create()
     {
-        //
+
     }
 
     /**
@@ -28,7 +30,8 @@ class ControlNotificationController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $notification = ControlNotification::create($request->all());
+        return response()->json($notification, 200);
     }
 
     /**
@@ -50,16 +53,19 @@ class ControlNotificationController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request, ControlNotification $notification )
     {
-        //
+
+        $notification->update($request->all());
+        return response()->json($notification);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy(ControlNotification $notification)
     {
-        //
+
+        return response()->json(['isSuccess' => true], 200);
     }
 }

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('manual_notifications', function (Blueprint $table) {
             $table->id();
-            $table->enum('type',[1,2,3,4]);
+            $table->enum('type',[1,2,3,4]);//1حجز //
             $table->morphs('notifiable');
             $table->date('date')->nullable();
             $table->text('message')->nullable();
