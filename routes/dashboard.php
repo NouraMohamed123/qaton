@@ -72,6 +72,7 @@ Route::delete('/apartment/{apartment}', [ApartmentController::class, 'destroy'])
 Route::post('/change-status', [ApartmentController::class, 'changeStatus']);
 Route::get('apartmentCount', [ApartmentController::class, 'apartmentCount']);
 Route::post('/prices', [PriceController::class, 'store']);
+Route::post('/apartments/{id}/copy', [ApartmentController::class, 'copyApartment']);
 /////////about_us
 Route::get('/about_us', [AboutUsController::class, 'index']);
 Route::get('/about_us/{about_us}', [AboutUsController::class, 'show']);

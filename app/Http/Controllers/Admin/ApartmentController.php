@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\File;
 use App\Http\Requests\ApartmentRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\ApartmentResource;
+use App\Models\Image;
 
 class ApartmentController extends Controller
 {
@@ -196,8 +197,9 @@ class ApartmentController extends Controller
         }
         return response()->json(['error' => 'no found'], 403);
     }
-     public function changeStatus(Request $request){
-       $apartment =  Apartment::where('id', $request->id)->first();
+    public function changeStatus(Request $request)
+    {
+        $apartment =  Apartment::where('id', $request->id)->first();
         $apartment->status = $request->status;
         $apartment->save();
         return response()->json(['isSuccess' => true, 'data' => new ApartmentResource($apartment)], 200);
@@ -211,5 +213,57 @@ class ApartmentController extends Controller
             "message" => "عملية العرض تمت بنجاح",
             'data' => $count
         ], 200);
+    }
+    public function copyApartment($id)
+    {
+
+
+        $old_apartment = Apartment::find($id);
+        // Check if the apartment exists
+        if (!$old_apartment) {
+            return response()->json(['error' => 'Apartment not found'], 404);
+        }
+
+        $data = [
+            'name' => $old_apartment->name,
+            'unit_space' => $old_apartment->unit_space,
+            'price' => $old_apartment->price,
+            'bathrooms' => $old_apartment->bathrooms,
+            'lounges' => $old_apartment->lounges,
+            'dining_session' => $old_apartment->dining_session,
+            'features' => json_encode($old_apartment->features),
+            'view' => $old_apartment->view,
+            'additional_features' => json_encode($old_apartment->additional_features),
+            'area_id' => $old_apartment->area_id,
+            'video' => $old_apartment->video,
+            'parking' => $old_apartment->parking,
+            'max_guests' => $old_apartment->max_guests,
+
+            'status' => 1,
+        ];
+
+        
+        $apartment =  Apartment::create($data);
+        $old_images = Image::where('apartment_id', $id)->get();
+        foreach ($old_images as $old_image) {
+            // Create a new image for the new apartment
+            $new_image = new Image();
+            $new_image->image = $old_image->image; // Assuming 'image' is the attribute storing the image path
+            $new_image->apartment_id = $apartment->id;
+            $new_image->save();
+        }
+    
+
+        foreach ($old_apartment->rooms as $roomData) {
+            $room = new Room();
+            $room->room_number = $roomData['room_number'];
+            $room->beds = $roomData['beds'];
+            $room->adult = $roomData['adult'];
+            $room->child = $roomData['child'];
+            $room->apartment_id = $apartment->id;
+            $room->save();
+        }
+
+        return response()->json(['isSuccess' => true, 'data' => new ApartmentResource($apartment)], 200);
     }
 }
