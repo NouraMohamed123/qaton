@@ -14,6 +14,7 @@ return new class extends Migration
         Schema::create('apartments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
+            $table->string('code')->nullable();
             $table->string('unit_space')->nullable();
             $table->string('price');
             $table->integer('bathrooms');
@@ -24,7 +25,6 @@ return new class extends Migration
             $table->json('additional_features')->nullable();
             $table->unsignedBigInteger('area_id');
             $table->foreign('area_id')->references('id')->on('areas')->onDelete('cascade');
-            $table->string('main_image')->nullable();
             $table->string('video')->nullable();
             $table->enum('parking',['external','basement'])->default('external');
             $table->integer('max_guests')->nullable();
@@ -32,7 +32,7 @@ return new class extends Migration
             $table->foreign('owner_id')->references('id')->on('app_users')->nullable()->onDelete('cascade');
             $table->tinyInteger('status')->default(1);
             $table->tinyInteger('beds_childs')->default(0);
-            ////////////////////////////////////
+            ////////////////////////////////////access data
             $table->string('website_link')->nullable();
             $table->string('login_instructions')->nullable();
             $table->string('internet_name')->nullable();
@@ -40,6 +40,8 @@ return new class extends Migration
             $table->string('instructions_prohibitions')->nullable();
             $table->string('apartment_features')->nullable();
             $table->json('contact_numbers')->nullable();
+            $table->string('access_video')->nullable();
+            $table->string('secret_door')->nullable();
             $table->timestamps();
         });
     }
