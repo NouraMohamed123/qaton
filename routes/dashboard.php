@@ -20,7 +20,7 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\admin\ManualNotificationController;
 use App\Http\Controllers\Admin\ControlNotificationController;
-
+use App\Http\Controllers\Admin\InformationController;
 
 Route::group([
     'prefix' => 'auth'
@@ -135,5 +135,11 @@ Route::delete('/control-notification/{notification}', [OffersController::class, 
 Route::get('/contact-us', [ContacUsController::class, 'index']);
 //
 Route::get('/app-users', [UserController::class, 'All']);
+//Information
+Route::get('information', [InformationController::class, 'index']);
+Route::post('information', [InformationController::class, 'store']);
+Route::get('information/{Information}', [InformationController::class, 'show']);
+Route::post('information/{Information}', [InformationController::class, 'update']);
+Route::delete('information/{Information}', [InformationController::class, 'destroy']);
 });
 
