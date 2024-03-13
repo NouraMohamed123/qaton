@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Resources\ReviewResource;
+use App\Http\Resources\ReviewsResource;
 use App\Models\Review;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -18,7 +19,7 @@ class ReviewController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Reviews retrieved successfully',
-            'data' => ReviewResource::collection($reviews),
+            'data' => ReviewsResource::collection($reviews),
         ], Response::HTTP_OK);
     }
 
@@ -29,7 +30,7 @@ class ReviewController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Review retrieved successfully',
-            'data' => new ReviewResource($review),
+            'data' => new ReviewsResource($review),
         ], Response::HTTP_OK);
     }
     public function destroy($id)
