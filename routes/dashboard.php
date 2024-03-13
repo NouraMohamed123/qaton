@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\SettingController;
-use App\Http\Controllers\admin\ContacUsController;
+use App\Http\Controllers\Admin\ContacUsController;
 use App\Http\Controllers\Admin\ApartmentController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
