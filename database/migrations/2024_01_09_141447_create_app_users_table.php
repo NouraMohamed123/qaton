@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('app_users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
-            $table->string('email')->unique();
-            $table->string('password');
-            $table->string('api_token');
+            $table->string('name')->nullable();
+            $table->string('email')->unique()->nullable();
+            $table->string('password')->nullable();
+            $table->string('api_token')->nullable();
             $table->string('image')->nullable();
             $table->string('phone')->unique();
-            $table->integer('otp')->nullable();
+            $table->integer('otp');
             $table->integer('type')->default(0);//0 user,1 owner
             $table->timestamps();
         });
