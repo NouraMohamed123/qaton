@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\admin\ManualNotificationController;
 use App\Http\Controllers\Admin\ControlNotificationController;
 use App\Http\Controllers\Admin\InformationController;
+use App\Http\Controllers\Admin\ReviewController;
 
 Route::group([
     'prefix' => 'auth'
@@ -141,5 +142,9 @@ Route::post('information', [InformationController::class, 'store']);
 Route::get('information/{Information}', [InformationController::class, 'show']);
 Route::post('information/{Information}', [InformationController::class, 'update']);
 Route::delete('information/{Information}', [InformationController::class, 'destroy']);
+//reviews
+Route::get('/reviews', [ReviewController::class, 'index']);
+Route::get('/reviews/{id}', [ReviewController::class, 'show']);
+Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
 });
 
