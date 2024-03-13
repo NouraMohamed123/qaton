@@ -30,6 +30,12 @@ class ControlNotificationController extends Controller
      */
     public function store(Request $request)
     {
+        $validatedData = $request->validate([
+            'type' => 'required|in:booking,entry_day,exit_day',
+            'time' => 'nullable|date_format:H:i',
+            'message' => 'nullable|string',
+        ]);
+
         $notification = ControlNotification::create($request->all());
         return response()->json($notification, 200);
     }
@@ -55,7 +61,11 @@ class ControlNotificationController extends Controller
      */
     public function update(Request $request, ControlNotification $notification )
     {
-
+        $validatedData = $request->validate([
+            'type' => 'required|in:booking,entry_day,exit_day',
+            'time' => 'nullable|date_format:H:i',
+            'message' => 'nullable|string',
+        ]);
         $notification->update($request->all());
         return response()->json($notification);
     }

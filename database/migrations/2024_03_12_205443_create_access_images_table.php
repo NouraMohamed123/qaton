@@ -11,11 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('control_notifications', function (Blueprint $table) {
+        Schema::create('access_images', function (Blueprint $table) {
             $table->id();
-            $table->enum('type',['booking','entry_day','exit_day']);
-            $table->time('time')->nullable();
-            $table->text('message')->nullable();
+            $table->unsignedBigInteger('apartment_id');
+            $table->foreign('apartment_id')->references('id')->on('apartments')->onDelete('cascade');
+            $table->string('image');
             $table->timestamps();
         });
     }
@@ -25,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('control_notifications');
+        Schema::dropIfExists('access_images');
     }
 };

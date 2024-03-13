@@ -19,6 +19,8 @@ use App\Http\Controllers\Admin\ApartmentController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\admin\ManualNotificationController;
+use App\Http\Controllers\Admin\ControlNotificationController;
+
 
 Route::group([
     'prefix' => 'auth'
@@ -123,6 +125,12 @@ Route::get('/notification-clear', [NotificationController::class, 'Clear']);
 
 ///manual notifications
 Route::post('/manual-notifications', [ManualNotificationController::class, 'store']);
+//control notification
+
+Route::get('/control-notification', [ControlNotificationController::class, 'index']);
+Route::post('/control-notification', [ControlNotificationController::class, 'store']);
+Route::post('/control-notification/{notification}', [OffersController::class, 'update']);
+Route::delete('/control-notification/{notification}', [OffersController::class, 'destroy']);
 ///contact us
 Route::get('/contact-us', [ContacUsController::class, 'index']);
 //
