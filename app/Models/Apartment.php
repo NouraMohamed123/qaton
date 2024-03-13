@@ -30,6 +30,10 @@ class Apartment extends Model
     {
         return $this->hasMany(Image::class);
     }
+    public function AccessImages()
+    {
+        return $this->hasMany(AccessImage::class);
+    }
     public function area()
     {
         return $this->belongsTo(Area::class);

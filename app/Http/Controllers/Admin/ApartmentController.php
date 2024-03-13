@@ -47,8 +47,14 @@ class ApartmentController extends Controller
             } else {
                 $video = null;
             }
+            if ($request->hasFile('access_video') && $request->file('access_video')->isValid()) {
+                $access_video =  upload($request->file('access_video'), public_path('uploads/apartments/access_video'));
+            } else {
+                $access_video = null;
+            }
             $data = [
                 'name' => $request->name,
+                'code'=> $request->code,
                 'unit_space' => $request->unit_space,
                 'price' => $request->price,
                 'bathrooms' => $request->bathrooms,
@@ -62,6 +68,17 @@ class ApartmentController extends Controller
                 'parking' => $request->parking,
                 'max_guests' => $request->max_guests,
                 'status' => 1,
+                'beds_childs' => $request->beds_childs,
+                ////////////access data
+                'access_video'=> $access_video,
+                'website_link'=> $request->website_link,
+                'login_instructions'=> $request->login_instructions,
+                'internet_name'=>$request->internet_name,
+                'internet_password'=>$request->internet_password,
+                'instructions_prohibitions'=>$request->instructions_prohibitions,
+                'apartment_features'=>$request->apartment_features,
+                'contact_numbers'=>json_encode($request->contact_numbers),
+                'secret_door'=>$request->secret_door,
             ];
 
 
@@ -74,12 +91,19 @@ class ApartmentController extends Controller
                     }
                 }
             }
+            if ($request->hasFile('access_images')) {
+                foreach ($request->file('access_images') as $image) {
+                    if ($image->isValid()) {
+                        $uploadedImage = upload($image, public_path('uploads/apartments-access'));
+                        $apartment->AccessImages()->create(['image' => $uploadedImage]);
+                    }
+                }
+            }
             foreach ($request->rooms as $roomData) {
                 $room = new Room();
                 $room->room_number = $roomData['room_number'];
                 $room->beds = $roomData['beds'];
-                $room->adult = $roomData['adult'];
-                $room->child = $roomData['child'];
+                $room->bathrooms = $roomData['bathrooms'];
                 $room->apartment_id = $apartment->id;
                 $room->save();
             }
@@ -121,22 +145,40 @@ class ApartmentController extends Controller
             } else {
                 $video = $apartment->video;
             }
+            if ($request->hasFile('access_video') && $request->file('access_video')->isValid()) {
+                $access_video =  upload($request->file('access_video'), public_path('uploads/apartments/access_video'));
+            } else {
+                $access_video = $apartment->access_video;
+            }
             $data = [
                 'name' => $request->name,
+                'code'=> $request->code,
                 'unit_space' => $request->unit_space,
                 'price' => $request->price,
                 'bathrooms' => $request->bathrooms,
                 'lounges' => $request->lounges,
                 'dining_session' => $request->dining_session,
-                'view' => $request->view,
                 'features' => json_encode($request->features),
+                'view' => $request->view,
                 'additional_features' => json_encode($request->additional_features),
                 'area_id' => $request->area_id,
                 'video' => $video,
                 'parking' => $request->parking,
                 'max_guests' => $request->max_guests,
-                'status' => $request->status,
+                'status' => 1,
+                'beds_childs' => $request->beds_childs,
+                ////////////access data
+                'access_video'=> $access_video,
+                'website_link'=> $request->website_link,
+                'login_instructions'=> $request->login_instructions,
+                'internet_name'=>$request->internet_name,
+                'internet_password'=>$request->internet_password,
+                'instructions_prohibitions'=>$request->instructions_prohibitions,
+                'apartment_features'=>$request->apartment_features,
+                'contact_numbers'=>json_encode($request->contact_numbers),
+                'secret_door'=>$request->secret_door,
             ];
+
 
             $apartment->update($data);
             if ($request->hasFile('images')) {
@@ -144,6 +186,14 @@ class ApartmentController extends Controller
                     if ($image->isValid()) {
                         $uploadedImage = upload($image, public_path('uploads/apartments'));
                         $apartment->images()->create(['image' => $uploadedImage]);
+                    }
+                }
+            }
+            if ($request->hasFile('access_images')) {
+                foreach ($request->file('access_images') as $image) {
+                    if ($image->isValid()) {
+                        $uploadedImage = upload($image, public_path('uploads/apartments-access'));
+                        $apartment->AccessImages()->create(['image' => $uploadedImage]);
                     }
                 }
             }
@@ -156,8 +206,7 @@ class ApartmentController extends Controller
                     [
                         'room_number' => $roomData['room_number'],
                         'beds' => $roomData['beds'],
-                        'adult' => $roomData['adult'],
-                        'child' => $roomData['child'],
+                        'bathrooms' => $roomData['bathrooms'],
                     ]
                 );
             }
@@ -242,7 +291,7 @@ class ApartmentController extends Controller
             'status' => 1,
         ];
 
-        
+
         $apartment =  Apartment::create($data);
         $old_images = Image::where('apartment_id', $id)->get();
         foreach ($old_images as $old_image) {
@@ -252,7 +301,7 @@ class ApartmentController extends Controller
             $new_image->apartment_id = $apartment->id;
             $new_image->save();
         }
-    
+
 
         foreach ($old_apartment->rooms as $roomData) {
             $room = new Room();
