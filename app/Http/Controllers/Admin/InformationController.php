@@ -21,14 +21,17 @@ class InformationController extends Controller
         return response()->json(['Information'=>$information],200);
     }
 
-    public function show(Information $information)
+    public function show($id)
     {
-        if ($information) {
-            return response()->json($information, Response::HTTP_OK);
-        } else {
-            return response()->json(['message' => 'Question not found'], Response::HTTP_NOT_FOUND);
+        $information = Information::find($id);
+    
+        if (!$information) {
+            return response()->json(['message' => 'Information not found'], Response::HTTP_NOT_FOUND);
         }
+    
+        return response()->json($information, Response::HTTP_OK);
     }
+    
 
     public function update(Request $request, Information $information)
     {
