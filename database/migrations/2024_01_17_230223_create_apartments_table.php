@@ -31,6 +31,7 @@ return new class extends Migration
             $table->integer('max_rooms')->nullable();
             // $table->foreign('owner_id')->references('id')->on('app_users')->nullable()->onDelete('cascade');
             $table->tinyInteger('status')->default(1);
+            $table->integer('available')->default(0);
             $table->tinyInteger('beds_childs')->default(0);
             ////////////////////////////////////access data
             $table->string('website_link')->nullable();
