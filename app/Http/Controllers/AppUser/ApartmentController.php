@@ -98,12 +98,11 @@ class ApartmentController extends Controller
         $checkInDate = Carbon::parse($request->check_in_date);
         $checkOutDate = Carbon::parse($request->check_out_date);
 
+        // Fetch apartments with potential bookings to check against
         $apartments = \App\Models\Apartment::with(['reviews', 'BookedApartments' => function ($query) use ($checkInDate, $checkOutDate) {
             $query->where(function ($q) use ($checkInDate, $checkOutDate) {
-                $q->where(function ($qq) use ($checkInDate, $checkOutDate) {
-                    $qq->where('date_from', '<=', $checkOutDate)
-                        ->where('date_to', '>=', $checkInDate);
-                });
+                $q->whereBetween('date_from', [$checkInDate, $checkOutDate])
+                  ->orWhereBetween('date_to', [$checkInDate, $checkOutDate]);
             });
         }])
         ->where('status', 1)
@@ -112,13 +111,17 @@ class ApartmentController extends Controller
 
         $apartments->each(function ($apartment) use ($checkInDate, $checkOutDate) {
             $booked = $apartment->BookedApartments->contains(function ($booking) use ($checkInDate, $checkOutDate) {
-                return Carbon::parse($booking->date_from)->lessThanOrEqualTo($checkOutDate)
-                    && Carbon::parse($booking->date_to)->greaterThanOrEqualTo($checkInDate);
-            });
+                $dateFrom = Carbon::parse($booking->date_from);
+                $dateTo = Carbon::parse($booking->date_to);
 
-            $apartment->available = $booked ? 0 : 1;
-            $apartment->save();
-        });
+                return $dateFrom->lessThanOrEqualTo($checkOutDate)
+                    && $dateTo->greaterThanOrEqualTo($checkInDate);
+
+                });
+
+                $apartment->available = $booked ? 0 : 1;
+                $apartment->save() ;
+            });
 
         $available_apartments = $apartments->where('max_guests', '>=', $request->max_guests);
 
@@ -128,6 +131,7 @@ class ApartmentController extends Controller
 
         return response()->json(['isSuccess' => true, 'data' => ApartmentResource::collection($available_apartments)], 200);
     }
+
 
     public function allApartments(Request $request)
     {
