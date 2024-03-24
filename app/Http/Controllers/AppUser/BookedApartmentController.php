@@ -65,17 +65,18 @@ class BookedApartmentController extends Controller
         }
 
         $apartment = Apartment::where('status', 1)
-            ->where('id', $apartmentId)
-            ->with(['BookedApartments' => function ($BookedApartments) use ($checkInDate, $checkOutDate) {
-                $BookedApartments->where(function ($q) use ($checkInDate, $checkOutDate) {
-                    $q->where(function ($qq) use ($checkInDate, $checkOutDate) {
-                        $qq->where('date_from', '<=', $checkInDate)->where('date_to', '>', $checkInDate);
-                    })->orWhere(function ($qqq) use ($checkInDate, $checkOutDate) {
-                        $qqq->where('date_from', '<=', $checkOutDate)->where('date_to', '>=', $checkOutDate);
-                    });
+        ->where('id', $apartmentId)
+        ->with(['BookedApartments' => function ($BookedApartments) use ($checkInDate, $checkOutDate) {
+            $BookedApartments->where(function ($q) use ($checkInDate, $checkOutDate) {
+                $q->where(function ($qq) use ($checkInDate, $checkOutDate) {
+                    $qq->where('date_from', '<=', $checkInDate)->where('date_to', '>', $checkInDate);
+                })->orWhere(function ($qqq) use ($checkInDate, $checkOutDate) {
+                    $qqq->where('date_from', '<=', $checkOutDate)->where('date_to', '>=', $checkOutDate);
                 });
-            }])
-            ->first();
+            })->where('paid', 1);
+        }])
+        ->first();
+
 
         if (!$apartment) {
             return response()->json(['error' => 'Apartment not found'], 403);

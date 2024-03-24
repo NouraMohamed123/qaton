@@ -23,12 +23,14 @@ class FatoorahServices
             ['keyword', 'myfatoorah'],
         ])->first();
         $myfatoorahConf = json_decode($myfatoorah->information, true);
-        Config::set('services.myfatoorah.api_token',"BnS1HeFjAXsMPkWa5kb3slhzBiF41AE4HbV5y5DTezIRF-rJoe8N4naD8XTkiJ_sNnejH-iTf6mtRO2QarelZpwM1Qh51m_b8CjeQi5JhoXJPUNfiKjj0cVlSfAVejTcB_1SktROjN7CAUE0xflWN16ObmuNF0XmiVj32j4R-eqWWv0583Vc06Z6lJpVrC_pZK9Ck-K5nJgqrO3seUyW9TzcrSMD91khfbpfOY68xJQo-xjQr9C4CcpsUCtnkLo9V7rrpIm6pkFE__2sL-A58kltBuFCQCfJnmW9gOaGAe4Tet3bWD9XUItFnapTGelbzWTK9-2cJNb0fRqa7LGi-6q79_vWOIQTuiCBExmX-CZ0gph0pvTXa2DIsEQVAoYaTuVPi6uMxzwYpfRCUCRhE72Z1bBbpFYWbS2OQqSDl6udPGq2Nbk_wvlNxYAhbXOH-iptqm8mYxzIj7gF4YeDcWjYXab9kjp_2c6ZRD8m20Hsc6MV_r2U9UIH1hwlG0N3xPGEPvdZItXYbnCPf4QQPo_psz0mIc1NL2dG2fNwI39V34NgwuWACkCPcsNPPgZZx72oHOUiF-eNLDRFQoifwON9KIBpb70UmrnBi1TTwB38unBsTXlJMDZSup5u2pQTuJdbxfdYfYNGszKNdCbWoQh2eyCU39Nt5CBYJXJkH18F92h2RTm6WI9dp5GAillvXzIKpZTY57v0XdTsK2JvOrsP7KZB5KSQX3GCBR-BM7AqfZQD");
+        Config::set('services.myfatoorah.api_token',"rLtt6JWvbUHDDhsZnfpAhpYk4dxYDQkbcPTyGaKp2TYqQgG7FGZ5Th_WD53Oq8Ebz6A53njUoo1w3pjU1D4vs_ZMqFiz_j0urb_BH9Oq9VZoKFoJEDAbRZepGcQanImyYrry7Kt6MnMdgfG5jn4HngWoRdKduNNyP4kzcp3mRv7x00ahkm9LAK7ZRieg7k1PDAnBIOG3EyVSJ5kK4WLMvYr7sCwHbHcu4A5WwelxYK0GMJy37bNAarSJDFQsJ2ZvJjvMDmfWwDVFEVe_5tOomfVNt6bOg9mexbGjMrnHBnKnZR1vQbBtQieDlQepzTZMuQrSuKn-t5XZM7V6fCW7oP-uXGX-sMOajeX65JOf6XVpk29DP6ro8WTAflCDANC193yof8-f5_EYY-3hXhJj7RBXmizDpneEQDSaSz5sFk0sV5qPcARJ9zGG73vuGFyenjPPmtDtXtpx35A-BVcOSBYVIWe9kndG3nclfefjKEuZ3m4jL9Gg1h2JBvmXSMYiZtp9MR5I6pvbvylU_PP5xJFSjVTIz7IQSjcVGO41npnwIxRXNRxFOdIUHn0tjQ-7LwvEcTXyPsHXcMD8WtgBh-wxR8aKX7WPSsT1O8d8reb2aR7K3rkV3K82K_0OgawImEpwSvp9MNKynEAJQS6ZHe_J_l77652xwPNxMRTMASk1ZsJL");
+
         Config::set('services.myfatoorah.base_url','https://apitest.myfatoorah.com/');
         $this->base_url =  config('services.myfatoorah.base_url');
+
         $this->headers = [
             "Content-Type" => 'application/json',
-            'authorization' => 'Bearer ' . config('services.myfatoorah.api_token')
+            'authorization' => 'Bearer '.config('services.myfatoorah.api_token')
 
         ];
 
@@ -38,12 +40,15 @@ class FatoorahServices
     {
 
         $request = new Request($mothod, $this->base_url . $url, $this->headers);
+
         if (!$data)
             return false;
         $response = $this->request_client->send($request, ['json' => $data]);
+
         if ($response->getStatusCode() != 200)
             return false;
         $response = json_decode($response->getBody(), true);
+
         return $response;
     }
 
