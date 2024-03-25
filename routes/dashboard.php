@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\admin\ManualNotificationController;
 use App\Http\Controllers\Admin\ControlNotificationController;
+use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\InformationController;
 use App\Http\Controllers\Admin\ReviewController;
 
@@ -146,5 +147,11 @@ Route::delete('information/{Information}', [InformationController::class, 'destr
 Route::get('/reviews', [ReviewController::class, 'index']);
 Route::get('/reviews/{id}', [ReviewController::class, 'show']);
 Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
+//Discount
+Route::get('/discounts', [DiscountController::class, 'index']);
+Route::post('/discounts', [DiscountController::class, 'store']);
+Route::get('/discounts/{discount}', [DiscountController::class, 'show']);
+Route::post('/discounts/{discount}', [DiscountController::class, 'update']);
+Route::delete('/discounts/{discount}', [DiscountController::class, 'destroy']);
 });
 
