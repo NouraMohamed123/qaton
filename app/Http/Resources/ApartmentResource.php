@@ -29,7 +29,7 @@ class ApartmentResource extends JsonResource
             'additional_features' => json_decode($this->additional_features),
             'tax' => $taxAddedValue,
             'total_price' => $total_price,
-            'total_price_nights' => $this->diff_in_days*$total_price,
+            'total_price_nights' => ($this->nights) * $total_price,
             'area_name'=>   $area_name,
             'rating' => $ratingSum,
             'adults' => $adultsSum,
