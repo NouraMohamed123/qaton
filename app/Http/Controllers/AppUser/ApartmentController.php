@@ -97,6 +97,8 @@ class ApartmentController extends Controller
 
         $checkInDate = Carbon::parse($request->check_in_date);
         $checkOutDate = Carbon::parse($request->check_out_date);
+
+
         $diffInDays = $checkOutDate->diffInDays($checkInDate);
 
         // Fetch apartments with potential bookings to check against
@@ -129,8 +131,13 @@ class ApartmentController extends Controller
         if ($available_apartments->isEmpty()) {
             return response()->json(['error' => 'لم يتم العثور على شقة مناسبة'], 403);
         }
+        $available_apartments->each(function ($apartment) use ($checkInDate, $checkOutDate) {
+            $apartment->nights = $checkOutDate->diffInDays($checkInDate);
+        });
+        return response()->json(['isSuccess' => true,
+        'data' => ApartmentResource::collection($available_apartments),
 
-        return response()->json(['isSuccess' => true, 'data' => ApartmentResource::collection($available_apartments)], 200);
+    ], 200);
     }
 
 
