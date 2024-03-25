@@ -97,6 +97,7 @@ class ApartmentController extends Controller
 
         $checkInDate = Carbon::parse($request->check_in_date);
         $checkOutDate = Carbon::parse($request->check_out_date);
+        $diffInDays = $checkOutDate->diffInDays($checkInDate);
 
         // Fetch apartments with potential bookings to check against
         $apartments = \App\Models\Apartment::with(['reviews', 'BookedApartments' => function ($query) use ($checkInDate, $checkOutDate) {

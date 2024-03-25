@@ -60,6 +60,7 @@ class BookedApartmentController extends Controller
         $checkOutDate = Carbon::parse($request->check_out_date);
         $paymentMethod = $request->payment_method;
         $totalDays = $checkInDate->diffInDays($checkOutDate);
+
         if ($checkInDate == $checkOutDate) {
             return response()->json(['error' => 'Check-in and Check-out date should not be the same'], 403);
         }
@@ -86,7 +87,10 @@ class BookedApartmentController extends Controller
             return response()->json(['error' => 'The apartment has already been booked'], 403);
         }
 
-        $totalPrice = $apartment->price * $totalDays;
+        $settings = Setting::pluck('value', 'key')->toArray();
+        $taxAddedValue = $settings['tax_added_value'];
+        $price_with_tax = $taxAddedValue ? $apartment->price + $taxAddedValue : $apartment->price;
+        $totalPrice = $price_with_tax * $totalDays;
         $user = Auth::guard('app_users')->user();
         $booked =  Booked_apartment::create([
             'user_id' => $user->id,
