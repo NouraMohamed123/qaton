@@ -12,14 +12,14 @@ function upload($avatar, $directory)
 }
 //////////////////////////search in area
 
-if (!function_exists('apply_discount')) {
-    function apply_discount($nights)
-    {
-          if($nights>= 7 && $nights < 30){
-            discounts::where('')
-          }elseif($nights>= 30){
+// if (!function_exists('apply_discount')) {
+//     function apply_discount($nights)
+//     {
+//           if($nights>= 7 && $nights < 30){
+//             discounts::where('')
+//           }elseif($nights>= 30){
 
-          }
-          return 0;
-    }
-    }
+//           }
+//           return 0;
+//     }
+//     }
