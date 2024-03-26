@@ -43,4 +43,17 @@ class Apartment extends Model
     {
         return $this->hasMany(price::class);
     }
+    protected $casts = [
+        'unit_space'=>'integer',
+        'price'=>'double',
+        'bathrooms' => 'integer',
+        'lounges' => 'integer',
+        'dining_session' => 'integer',
+        'area_id' => 'integer',
+        'max_guests' => 'integer',
+        'max_rooms' => 'integer',
+        'status' => 'integer',
+        'available' => 'integer',
+        'beds_childs' => 'integer',
+    ];
 }
