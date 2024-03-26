@@ -102,7 +102,7 @@ class ApartmentController extends Controller
         $diffInDays = $checkOutDate->diffInDays($checkInDate);
 
         // Fetch apartments with potential bookings to check against
-        $apartments = \App\Models\Apartment::with(['reviews', 'BookedApartments' => function ($query) use ($checkInDate, $checkOutDate) {
+        $apartments = \App\Models\Apartment::with(['reviews','prices','rooms','BookedApartments' => function ($query) use ($checkInDate, $checkOutDate) {
             $query->where(function ($q) use ($checkInDate, $checkOutDate) {
                 $q->whereBetween('date_from', [$checkInDate, $checkOutDate])
                   ->orWhereBetween('date_to', [$checkInDate, $checkOutDate]);
