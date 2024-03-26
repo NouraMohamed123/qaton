@@ -17,24 +17,24 @@ class ReviewController extends Controller
      * Display a listing of the resource.
      */
 
-     public function index()
-     {
+    public function index()
+    {
 
-         $user = Auth::guard('app_users')->user();
+        $user = Auth::guard('app_users')->user();
 
-         if (!$user) {
-             return response()->json(['error' => 'User not authenticated'], 401);
-         }
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
 
 
-         $apartments = Apartment::whereHas('reviews', function ($query) use ($user) {
+        $apartments = Apartment::whereHas('reviews', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         })->get();
 
 
-        return response()->json(['data'=> ApartmentResource::collection( $apartments) ], 200);
-     }
-        //
+        return response()->json(['data' => ApartmentResource::collection($apartments)], 200);
+    }
+    //
 
 
     /**
@@ -73,10 +73,25 @@ class ReviewController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
-        //
+        $user = Auth::guard('app_users')->user();
+
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
+
+        $apartment = Apartment::where('id', $id)->whereHas('reviews', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->first();
+
+        if (!$apartment) {
+            return response()->json(['error' => 'Apartment not found or not reviewed by the user'], 404);
+        }
+
+        return response()->json(['data' => new ApartmentResource($apartment)], 200);
     }
+
 
     /**
      * Show the form for editing the specified resource.
