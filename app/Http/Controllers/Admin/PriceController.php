@@ -30,12 +30,22 @@ class PriceController extends Controller
     public function store(Request $request)
     {
         foreach ($request->prices as $priceData) {
-            $price = new price();
-            $price->apartment_id = $priceData['apartment_id'];
-            $price->price = $priceData['price'];
-            $price->date = $priceData['date'];
-            $price->save();
+            $existingPrice = Price::where('apartment_id', $priceData['apartment_id'])
+                ->where('date', $priceData['date'])
+                ->first();
+
+            if ($existingPrice) {
+                $existingPrice->price = $priceData['price'];
+                $existingPrice->save();
+            } else {
+                $price = new Price();
+                $price->apartment_id = $priceData['apartment_id'];
+                $price->price = $priceData['price'];
+                $price->date = $priceData['date'];
+                $price->save();
+            }
         }
+
         return response()->json(['isSuccess' => true], 200);
     }
 

@@ -78,8 +78,6 @@ class BookedApartmentController extends Controller
             })->where('paid', 1);
         }])
         ->first();
-
-
         if (!$apartment) {
             return response()->json(['error' => 'Apartment not found'], 403);
         }
