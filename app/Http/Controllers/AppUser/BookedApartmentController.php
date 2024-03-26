@@ -92,8 +92,14 @@ class BookedApartmentController extends Controller
         $price_with_tax = $taxAddedValue ?
         (($price_day ?? $apartment->price) + $taxAddedValue) :
         ($price_day ?? $apartment->price);
-        // if(apply_discount($totalDays) > 0)
-        $totalPrice = $price_with_tax * $totalDays;
+        if(apply_discount($totalDays) > 0){
+
+            $discountPercentage = apply_discount($totalDays) / 100;
+            $discountedPrice = $price_with_tax * $discountPercentage;
+            $totalPrice = ($price_with_tax - $discountedPrice) * $totalDays;
+        }else{
+            $totalPrice = $price_with_tax * $totalDays;
+        }
         $user = Auth::guard('app_users')->user();
         $booked =  Booked_apartment::create([
             'user_id' => $user->id,

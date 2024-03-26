@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('discounts', function (Blueprint $table) {
-            $table->string('type')->nullable()->after('value');
+            $table->enum('type',['monthly','weekly'])->nullable()->after('value');
 
         });
     }
