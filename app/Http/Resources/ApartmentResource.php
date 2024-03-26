@@ -43,6 +43,13 @@ class ApartmentResource extends JsonResource
                     'updated_at' => $image->updated_at,
                 ];
             }),
+            'prices' => $this->prices->map(function ($price) {
+                return [
+                    'price' =>$price->price,
+                    'date' => $price->date,
+
+                ];
+            }),
         ]);
     }
 }
