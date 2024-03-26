@@ -20,7 +20,6 @@ class ApartmentResource extends JsonResource
         $total_price = $taxAddedValue ? $this->price + $taxAddedValue : $this->price;
 
         $ratingSum = $this->reviews->sum('rating');
-        $adultsSum = $this->rooms->sum('adult');
         $bedsSum = $this->rooms->sum('beds');
         $area_name = $this->area->name;
 
@@ -32,7 +31,6 @@ class ApartmentResource extends JsonResource
             'total_price_nights' => ($this->nights) * $total_price,
             'area_name'=>   $area_name,
             'rating' => $ratingSum,
-            'adults' => $adultsSum,
             'beds' => $bedsSum,
             'images' => $this->images->map(function ($image) {
                 return [
