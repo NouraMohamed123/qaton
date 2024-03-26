@@ -19,6 +19,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\BookedResource;
+use App\Models\price;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
 
@@ -86,10 +87,14 @@ class BookedApartmentController extends Controller
         if ($apartment->BookedApartments->count() > 0) {
             return response()->json(['error' => 'The apartment has already been booked'], 403);
         }
-
+       ///////////////logic price
+        $price_day=  price::where('apartment_id', $apartmentId)->where('date', $checkInDate)->value('price');
         $settings = Setting::pluck('value', 'key')->toArray();
         $taxAddedValue = $settings['tax_added_value'];
-        $price_with_tax = $taxAddedValue ? $apartment->price + $taxAddedValue : $apartment->price;
+        $price_with_tax = $taxAddedValue ?
+        (($price_day ?? $apartment->price) + $taxAddedValue) :
+        ($price_day ?? $apartment->price);
+
         $totalPrice = $price_with_tax * $totalDays;
         $user = Auth::guard('app_users')->user();
         $booked =  Booked_apartment::create([
