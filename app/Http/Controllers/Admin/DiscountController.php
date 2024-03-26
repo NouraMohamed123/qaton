@@ -20,6 +20,7 @@ class DiscountController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'value' => 'required|numeric',
+            'type' => 'required|in:monthly,weekly',
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
@@ -40,6 +41,7 @@ class DiscountController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
             'value' => 'required|numeric',
+            'type' => 'required|in:monthly,weekly',
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
