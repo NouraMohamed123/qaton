@@ -53,5 +53,9 @@ class AppUsers extends Authenticatable implements JWTSubject
     {
         return $this->morphMany(ManualNotification::class,'notifiable');
     }
+    protected $casts = [
+        'otp'=>'integer',
+        'type'=>'integer',
+    ];
 }
 

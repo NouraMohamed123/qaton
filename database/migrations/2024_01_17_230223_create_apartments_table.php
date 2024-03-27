@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('code')->nullable();
-            $table->string('unit_space')->nullable();
-            $table->string('price');
+            $table->integer('unit_space')->nullable();
+            $table->double('price');
             $table->integer('bathrooms');
             $table->integer('lounges');
             $table->boolean('dining_session');

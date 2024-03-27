@@ -54,7 +54,8 @@ class PriceController extends Controller
      */
     public function show(string $id)
     {
-        //
+      $prices =  Price::where('apartment_id', $id)->get();
+      return response()->json(['isSuccess' => true,'data'=>$prices], 200);
     }
 
     /**
