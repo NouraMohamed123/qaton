@@ -21,9 +21,9 @@ if (!function_exists('apply_discount')) {
         }
         $discountValue = 0;
 
-        if ($nights >= 7 && $nights < 30) {
+        if ($nights >= 7 && $nights < 28) {
             $discountValue = Discount::where('type', 'weekly')->value('value');
-        } elseif ($nights >= 30) {
+        } elseif ($nights >= 28) {
             $discountValue = Discount::where('type', 'monthly')->value('value');
         }
 

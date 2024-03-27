@@ -100,6 +100,7 @@ class BookedApartmentController extends Controller
         }else{
             $totalPrice = $price_with_tax * $totalDays;
         }
+        /////////////////////
         $user = Auth::guard('app_users')->user();
         $booked =  Booked_apartment::create([
             'user_id' => $user->id,
