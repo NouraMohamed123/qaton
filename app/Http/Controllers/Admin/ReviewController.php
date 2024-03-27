@@ -25,7 +25,7 @@ class ReviewController extends Controller
 
     public function show($apartment_id)
     {
-        $review = Review::where('apartment_id', $apartment_id)->first();
+        $review = Review::where('apartment_id', $apartment_id)->get();
     
         if (!$review) {
             return response()->json(['message' => 'Review not found for the given Apartment ID'], Response::HTTP_NOT_FOUND);
