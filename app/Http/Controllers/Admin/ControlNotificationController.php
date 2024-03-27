@@ -13,8 +13,12 @@ class ControlNotificationController extends Controller
      */
     public function index()
     {
-        $notifications = ControlNotification::all();
-        return response()->json($notifications);
+
+        $data['booking'] = ControlNotification::where('type', 'booking')->first();
+        $data['entry_day'] = ControlNotification::where('type', 'entry_day')->first();
+        $data['exit_day'] = ControlNotification::where('type', 'exit_day')->first();
+
+        return response()->json($data);
     }
 
     /**
