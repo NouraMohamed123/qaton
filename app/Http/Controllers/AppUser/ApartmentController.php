@@ -102,7 +102,7 @@ class ApartmentController extends Controller
         $diffInDays = $checkOutDate->diffInDays($checkInDate);
 
         // Fetch apartments with potential bookings to check against
-        $apartments = \App\Models\Apartment::with(['reviews','favorites','prices','rooms','BookedApartments' => function ($query) use ($checkInDate, $checkOutDate) {
+        $apartments = \App\Models\Apartment::with(['reviews','prices','rooms','BookedApartments' => function ($query) use ($checkInDate, $checkOutDate) {
             $query->where(function ($q) use ($checkInDate, $checkOutDate) {
                 $q->whereBetween('date_from', [$checkInDate, $checkOutDate])
                   ->orWhereBetween('date_to', [$checkInDate, $checkOutDate]);
@@ -116,7 +116,6 @@ class ApartmentController extends Controller
             $booked = $apartment->BookedApartments->contains(function ($booking) use ($checkInDate, $checkOutDate) {
                 $dateFrom = Carbon::parse($booking->date_from);
                 $dateTo = Carbon::parse($booking->date_to);
-
                 return $dateFrom->lessThanOrEqualTo($checkOutDate)
                     && $dateTo->greaterThanOrEqualTo($checkInDate);
 
@@ -133,6 +132,10 @@ class ApartmentController extends Controller
         }
         $available_apartments->each(function ($apartment) use ($checkInDate, $checkOutDate) {
             $apartment->nights = $checkOutDate->diffInDays($checkInDate);
+        });
+        $userId = Auth::guard('app_users')->user()->id;
+        $available_apartments->each(function ($apartment) use ($userId) {
+            $apartment->favorited_by_user = $apartment->favorites->contains('user_id', $userId);
         });
         return response()->json(['isSuccess' => true,
         'data' => ApartmentResource::collection($available_apartments),

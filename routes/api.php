@@ -77,12 +77,15 @@ Route::get('/sold-apartments', [UserProfileController::class, 'SolidApartments']
 Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
 Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
 Route::get('/notification-clear', [NotificationController::class, 'Clear']);
+
+//apartments
+Route::post('/search/apartments', [ApartmentController::class, 'search']);
 });
 
 //apartments
 Route::get('/all-apartments', [ApartmentController::class, 'allApartments']);
-//apartments
-Route::post('/search/apartments', [ApartmentController::class, 'search']);
+
+
 
 //
 Route::get('/about_us', [HomeController::class, 'about_us']);
