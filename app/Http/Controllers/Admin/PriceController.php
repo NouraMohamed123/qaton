@@ -45,7 +45,7 @@ class PriceController extends Controller
             $price->save();
         }
 
-        return response()->json(['isSuccess' => true], 200);
+        return response()->json(['isSuccess' => true , 'data'=> $price], 200);
     }
 
     /**
