@@ -11,8 +11,10 @@ class DiscountController extends Controller
 {
     public function index()
     {
-        $discounts = Discount::paginate(10); 
-        return response()->json($discounts, 200);
+        $data[] = Discount::where('type', 'weekly')->first();
+        $data[] = Discount::where('type', 'monthly')->first();
+
+        return response()->json($data, 200);
     }
 
     public function store(Request $request)
