@@ -57,6 +57,7 @@ class RoleController extends Controller
             'id' => $role->id,
             'name' => $role->name,
             'permissions' => $permissions->toArray(),
+            //'permissions' => $permissions->toArray(),
         ]);
     }
 
