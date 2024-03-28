@@ -42,14 +42,14 @@ class SettingController extends Controller
             'mobile' => '',
             'tiktok' => '',
             'instagram' => '',
-            'maintenance_mode' => 'boolean',
+            'maintenance_mode' => 0,
             'siteMaintenanceMsg' => '',
             'tax_added_value' => '',
             'site_name_en' => '',
             'cr' => '',
             'vat' => '',
-            'available_bookings' => 'boolean',
-            'available_discount' => 'boolean',
+            'available_bookings' => 0,
+            'available_discount' => 0,
         ]);
 
         if ($validator->fails()) {
