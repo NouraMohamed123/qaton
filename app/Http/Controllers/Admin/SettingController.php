@@ -42,7 +42,7 @@ class SettingController extends Controller
             'mobile' => '',
             'tiktok' => '',
             'instagram' => '',
-            'maintenance_mode' => '',
+            'maintenance_mode' => 'boolean',
             'siteMaintenanceMsg' => '',
             'tax_added_value' => '',
             'site_name_en' => '',
