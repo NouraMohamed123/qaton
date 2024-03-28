@@ -132,8 +132,8 @@ Route::post('/manual-notifications', [ManualNotificationController::class, 'stor
 
 Route::get('/control-notifications', [ControlNotificationController::class, 'index']);
 Route::post('/control-notifications', [ControlNotificationController::class, 'store']);
-Route::post('/control-notification/{notification}', [OffersController::class, 'update']);
-Route::delete('/control-notification/{notification}', [OffersController::class, 'destroy']);
+Route::post('/control-notification/{notification}', [ControlNotificationController::class, 'update']);
+Route::delete('/control-notification/{notification}', [ControlNotificationController::class, 'destroy']);
 ///contact us
 Route::get('/contact-us', [ContacUsController::class, 'index']);
 //
