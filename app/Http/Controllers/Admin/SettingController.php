@@ -49,7 +49,7 @@ class SettingController extends Controller
             'cr' => '',
             'vat' => '',
             'available_bookings' => '',
-
+            'available_discount' => '',
         ]);
 
         if ($validator->fails()) {
