@@ -15,4 +15,7 @@ class Area extends Model
     {
         return $this->belongsTo(City::class, 'city_id');
     }
+    protected $casts = [
+        'city_id'=>'integer',
+    ];
 }
