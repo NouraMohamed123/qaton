@@ -13,4 +13,7 @@ class Image extends Model
     {
         return $this->belongsTo(Apartment::class);
     }
+    protected $casts = [
+        'apartment_id'=>'integer',
+    ];
 }
