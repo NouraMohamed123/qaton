@@ -56,6 +56,7 @@ class AppUsers extends Authenticatable implements JWTSubject
     protected $casts = [
         'otp'=>'integer',
         'type'=>'integer',
+        'status'=>'integer',
     ];
 }
 

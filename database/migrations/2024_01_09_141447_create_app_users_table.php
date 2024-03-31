@@ -21,6 +21,7 @@ return new class extends Migration
             $table->string('phone')->unique();
             $table->integer('otp');
             $table->integer('type')->default(0);//0 user,1 owner
+            $table->integer('status')->default(0);
             $table->timestamps();
         });
     }

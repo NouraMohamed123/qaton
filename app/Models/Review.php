@@ -17,4 +17,14 @@ class Review extends Model
     {
         return $this->belongsTo(Apartment::class);
     }
+    protected $casts = [
+        'apartment_id'=>'integer',
+        'user_id'=>'integer',
+        'comfort_rating'=>'integer',
+        'location_rating'=>'integer',
+        'facilities_rating'=>'integer',
+        'cleanliness_rating'=>'integer',
+        'staff_rating'=>'integer',
+
+    ];
 }

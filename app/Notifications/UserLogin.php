@@ -55,4 +55,19 @@ class UserLogin extends Notification  implements ShouldQueue
             'message' => 'Your check-in time is today at 4 p.m'. $this->apartment->name,
         ];
     }
+    // public function toArray(object $notifiable): array
+    // {
+    //     return [
+    //         'message' => 'Your check-in time is today at 4 p.m'. $this->apartment->name,
+    //         'website_link'=>$this->apartment->website_link,
+    //         'login_instructions'=>$this->apartment->login_instructions,
+    //         'internet_name'=>$this->apartment->internet_name,
+    //         'internet_password'=>$this->apartment->internet_password,
+    //         'instructions_prohibitions'=>$this->apartment->instructions_prohibitions,
+    //         'apartment_features'=>$this->apartment->apartment_features,
+    //         'contact_numbers'=>$this->apartment->contact_numbers,
+    //         'access_video'=>asset('uploads/access_video/' . $this->access_video),
+    //         'secret_door'=> $this->apartment->secret_door,
+    //     ];
+    // }
 }
