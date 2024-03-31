@@ -32,6 +32,11 @@ class ApartmentResource extends JsonResource
             'area_name'=>   $area_name,
             'rating' => $ratingSum,
             'beds' => $bedsSum,
+            'reviews' => $this->reviews->map(function ($review) {
+                return array_merge($review->toArray(), [
+                    'user_name' => $review->user->name,
+                ]);
+            }),
             'images' => $this->images->map(function ($image) {
                 return [
                     'id' => $image->id,
