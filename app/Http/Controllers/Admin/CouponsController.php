@@ -14,7 +14,7 @@ class CouponsController extends Controller
      */
     public function index()
     {
-        $coupons = Coupon::all();
+        $coupons = Coupon::get();
         return response()->json($coupons, 201);
 
     }
