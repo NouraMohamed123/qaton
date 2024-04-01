@@ -25,6 +25,7 @@ class Review extends Model
         'facilities_rating'=>'integer',
         'cleanliness_rating'=>'integer',
         'staff_rating'=>'integer',
+        'rating'=>'integer',
 
     ];
 }
