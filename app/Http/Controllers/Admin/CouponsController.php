@@ -67,14 +67,7 @@ class CouponsController extends Controller
      */
     public function update(CouponRequest $request,Coupon $coupon)
     {
-        $coupon->discount_code = $request->discount_code;
-        $coupon->type = $request->type;
-        $coupon->start_date = $request->start_date;
-        $coupon->end_date = $request->end_date;
-        $coupon->discount =  $request->discount;
-        $coupon->discount_percentage =  $request->discount_percentage;
-        $coupon->max_usage = $request->max_usage;
-        $coupon->max_discount_value = $request->max_discount_value;
+        $coupon->update($request->all());
         $coupon->save();
         return response()->json($coupon, 201);
     }
