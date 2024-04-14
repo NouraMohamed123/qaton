@@ -59,6 +59,8 @@ Route::post('/booked/{Booked_apartment}', [BookedApartmentController::class, 'up
 Route::get('/canceld-booked/{Booked_apartment}', [BookedApartmentController::class, 'canceld']);
 Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, 'destroy']);
 Route::get('user-booked', [BookedApartmentController::class, 'userBooked']);
+///coupon
+Route::post('check-coupon', [BookedApartmentController::class, 'checkCoupon']);
 ///invest-user
 Route::post('/invest-user', [ApartmentController::class, 'store']);
 
@@ -80,14 +82,12 @@ Route::get('/notification-clear', [NotificationController::class, 'Clear']);
 
 //apartments
 Route::post('/search/apartments', [ApartmentController::class, 'search']);
+
 });
 
 //apartments
 Route::get('/all-apartments', [ApartmentController::class, 'allApartments']);
-
-
-
-//
+///////////
 Route::get('/about_us', [HomeController::class, 'about_us']);
 Route::get('/privacy', [HomeController::class, 'privacy']);
 Route::get('/terms', [HomeController::class, 'terms']);

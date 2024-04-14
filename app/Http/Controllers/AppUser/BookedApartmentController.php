@@ -96,8 +96,17 @@ class BookedApartmentController extends Controller
         $price_with_tax = $taxAddedValue ?
         (($price_day ?? $apartment->price) + $taxAddedValue) :
         ($price_day ?? $apartment->price);
-        if(apply_discount($totalDays) > 0){
+        if ($request->has('coupon_code')) {
+            $coupon_data = checkCoupon($request->coupon_code, $price_with_tax);
+            if ($coupon_data && $coupon_data['status'] == true) {
+                $discount = $coupon_data['discount'];
+                $price_with_tax -= $discount;
+            } else {
+                return response()->json(['status' => false, 'message' => $coupon_data['message']], 310);
+            }
 
+        }
+        if(apply_discount($totalDays) > 0){
             $discountPercentage = apply_discount($totalDays) / 100;
             $discountedPrice = $price_with_tax * $discountPercentage;
             $totalPrice = ($price_with_tax - $discountedPrice) * $totalDays;
@@ -134,7 +143,6 @@ class BookedApartmentController extends Controller
             $user->notify((new UserLogout($notificationData['message'],$notificationData['time']))->delay($notificationDate));
             ///broadcast event booked user
             BookedUserEvent::dispatch($user, $booked->apartment);
-
             return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
         }
         $settings = Setting::pluck('value', 'key')
@@ -242,7 +250,10 @@ class BookedApartmentController extends Controller
 
         return ['message' => $message, 'time' => $time];
     }
-
+    public function checkCoupon(Request $request)
+    {
+        return checkCoupon($request->couponCode, $request->totalAmount);
+    }
     public function callback(Request $request)
     {
 
@@ -292,7 +303,6 @@ class BookedApartmentController extends Controller
                         $user->notify((new UserLogout($notificationData['message'],$notificationData['time']))->delay($notificationDate));
                          ///broadcast event booked user
                         BookedUserEvent::dispatch($user, $booked->apartment);
-
                         DB::commit();
                         return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
                     } catch (\Throwable $th) {
