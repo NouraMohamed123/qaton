@@ -11,6 +11,7 @@ class BookedUser extends Notification
 {
     use Queueable;
 
+
     private $user;
     private $apartment;
     /**

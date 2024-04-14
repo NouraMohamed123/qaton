@@ -7,18 +7,19 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-class UserLogout extends Notification implements ShouldQueue
+class BookingUser  extends Notification
 {
     use Queueable;
+
+
     private $message;
-    private $time;
+
     /**
      * Create a new notification instance.
      */
-    public function __construct($message,$time)
+    public function __construct($message)
     {
         $this->message = $message;
-        $this->time = $time;
     }
 
     /**
@@ -50,8 +51,7 @@ class UserLogout extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
-            'message' =>$this->message,
-            'time' => 'Your check-out time is today at '. $this->time,
+            'message' =>  $this->message,
         ];
     }
 }
