@@ -22,6 +22,7 @@ use App\Models\ControlNotification;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\BookedResource;
+use App\Models\Point;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
 
@@ -303,6 +304,11 @@ class BookedApartmentController extends Controller
                         $user->notify((new UserLogout($notificationData['message'],$notificationData['time']))->delay($notificationDate));
                          ///broadcast event booked user
                         BookedUserEvent::dispatch($user, $booked->apartment);
+                        ////////insert to points
+                        Point::create([
+                            'booked_id'=> $booked->id,
+                            'point'=> $booked->total_price
+                        ]);
                         DB::commit();
                         return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
                     } catch (\Throwable $th) {
