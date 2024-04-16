@@ -307,6 +307,7 @@ class BookedApartmentController extends Controller
                         ////////insert to points
                         Point::create([
                             'booked_id'=> $booked->id,
+                            'user_id'=> $user->id,
                             'point'=> $booked->total_price
                         ]);
                         DB::commit();

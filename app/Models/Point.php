@@ -9,6 +9,10 @@ class Point extends Model
 {
     use HasFactory;
     protected $guarded =[];
+    public function user()
+    {
+        return $this->belongsTo(AppUsers::class);
+    }
     public function booked()
     {
         return $this->belongsTo(Booked_apartment::class);

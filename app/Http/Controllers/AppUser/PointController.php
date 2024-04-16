@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\APPUser;
 
-use App\Http\Controllers\Controller;
+use App\Models\Point;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 
 class PointController extends Controller
 {
@@ -12,7 +14,12 @@ class PointController extends Controller
      */
     public function index()
     {
-        //
+        $user = Auth::guard('app_users')->user();
+        $points = Point::where('user_id',$user->id)->sum('point');
+        $pointsPerRiyal = 5000;
+        $amountPerRiyal = 100;
+        $riyals = floor($points / $pointsPerRiyal) * $amountPerRiyal;
+
     }
 
     /**

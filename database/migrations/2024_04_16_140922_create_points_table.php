@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('booked_id');
             $table->foreign('booked_id')->references('id')->on('booked_apartments')->onDelete('cascade');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('app_users')->onDelete('cascade');
             $table->integer('point');
             $table->timestamps();
         });
