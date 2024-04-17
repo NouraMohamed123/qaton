@@ -15,7 +15,7 @@ use App\Http\Controllers\AppUser\ApartmentController;
 use App\Http\Controllers\AppUser\UserProfileController;
 use App\Http\Controllers\AppUser\NotificationController;
 use App\Http\Controllers\AppUser\BookedApartmentController;
-
+use App\Http\Controllers\APPUser\PointController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,7 +73,7 @@ Route::post('/update-profile', [UserProfileController::class, 'updateProfile']);
 Route::get('/deactive-account', [UserProfileController::class, 'deactive_account']);
 Route::get('/my-apartments', [UserProfileController::class, 'myApartments']);//owner
 Route::get('/sold-apartments', [UserProfileController::class, 'SolidApartments']);//owner
-
+Route::get('/balance', [PointController::class, 'index']);
 
 ///notifications
 Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);

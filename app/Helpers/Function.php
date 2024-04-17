@@ -61,13 +61,16 @@ if (!function_exists('apply_discount')) {
 
             if ($coupon->type == 'percentage') {
                 $discount = (float) $coupon->discount_percentage;
+                $priceAfterDiscount = $totalAmount - ($totalAmount * $discount);
             } else {
                 $discount = (int) $coupon->discount;
+                $priceAfterDiscount = $totalAmount - $discount;
             }
 
             return [
                 'status' => true,
                 'discount' => $discount,
+                'price_after_discount' => $priceAfterDiscount,
             ];
         }
     }
