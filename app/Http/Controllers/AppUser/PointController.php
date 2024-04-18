@@ -16,11 +16,10 @@ class PointController extends Controller
     {
         $user = Auth::guard('app_users')->user();
         $points = Point::where('user_id',$user->id)->sum('point');
-
         $pointsPerRiyal = 5000;
         $amountPerRiyal = 100;
         $riyals = ($points / $pointsPerRiyal) * $amountPerRiyal;
-        return response()->json(['data' => $riyals]);
+        return response()->json(['riyals' => $riyals,'points'=>$points]);
     }
 
     /**
