@@ -15,7 +15,7 @@ use App\Http\Controllers\AppUser\ApartmentController;
 use App\Http\Controllers\AppUser\UserProfileController;
 use App\Http\Controllers\AppUser\NotificationController;
 use App\Http\Controllers\AppUser\BookedApartmentController;
-use App\Http\Controllers\APPUser\PointController;
+use App\Http\Controllers\AppUser\PointController;
 
 /*
 |--------------------------------------------------------------------------

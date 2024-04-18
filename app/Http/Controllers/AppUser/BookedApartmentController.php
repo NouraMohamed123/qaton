@@ -107,7 +107,7 @@ class BookedApartmentController extends Controller
             }
 
         }
-        if(apply_discount($totalDays) > 0){
+        if(apply_discount($totalDays) > 0 ){
             $discountPercentage = apply_discount($totalDays) / 100;
             $discountedPrice = $price_with_tax * $discountPercentage;
             $totalPrice = ($price_with_tax - $discountedPrice) * $totalDays;
@@ -144,11 +144,16 @@ class BookedApartmentController extends Controller
             $user->notify((new UserLogout($notificationData['message'],$notificationData['time']))->delay($notificationDate));
             ///broadcast event booked user
             BookedUserEvent::dispatch($user, $booked->apartment);
+            Point::create([
+                'booked_id'=> $booked->id,
+                'user_id'=> $user->id,
+                'point'=> $booked->total_price
+            ]);
             return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
         }
         $settings = Setting::pluck('value', 'key')
         ->toArray();
-        if(!$settings['available_bookings'] == 1){
+        if(!$settings['available_bookings'] == '1'){
             $booked::update([
                 'status'=>'pending'
             ]);
