@@ -106,10 +106,13 @@ class BookedApartmentController extends Controller
                 return response()->json(['status' => false, 'message' => $coupon_data['message']], 310);
             }
         }
-
+        if ($request->has('points')) {
         if ($riyals = calculateRiyalsFromPoints($user->id) > 0) {
+
             $taxAddedValue -= $riyals;
         }
+    }
+
         if (!$settings['available_discount'] == '1') {
             if (apply_discount($totalDays) > 0) {
                 $discountPercentage = apply_discount($totalDays) / 100;

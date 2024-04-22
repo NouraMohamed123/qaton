@@ -170,6 +170,7 @@ class TabbyPayment
                     ///broadcast event booked user
                     BookedUserEvent::dispatch($user, $booked->apartment);
                     ////////insert to points
+                    Point::where('user_id', $user->id)->delete();
                     Point::create([
                         'booked_id' => $booked->id,
                         'user_id' => $user->id,

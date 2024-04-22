@@ -17,4 +17,7 @@ class Point extends Model
     {
         return $this->belongsTo(Booked_apartment::class);
     }
+    protected $casts = [
+        'point'=>'integer',
+    ];
 }

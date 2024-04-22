@@ -15,6 +15,9 @@ class PointController extends Controller
     public function index()
     {
         $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
         $points = Point::where('user_id',$user->id)->sum('point');
         $pointsPerRiyal = 5000;
         $amountPerRiyal = 100;
