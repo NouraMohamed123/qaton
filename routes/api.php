@@ -101,6 +101,9 @@ Route::get('/offers', [HomeController::class, 'offers']);
 Route::get('callback', [BookedApartmentController::class, 'callback'])->name('callback');
 Route::get('error', [BookedApartmentController::class, 'error'])->name('error');
 
+Route::get('/tabby-sucess', [BookedApartmentController::class, 'sucess'])->name('success-ur');
+Route::get('/tabby-cancel', [BookedApartmentController::class, 'cancel'])->name('cancel-ur');
+Route::get('/tabby-failure', [BookedApartmentController::class, 'failure'])->name('failure-ur');
 
 
 

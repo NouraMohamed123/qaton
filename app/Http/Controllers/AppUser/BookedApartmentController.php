@@ -4,11 +4,13 @@ namespace App\Http\Controllers\AppUser;
 
 use Carbon\Carbon;
 use App\Models\User;
+use App\Models\Point;
 use App\Models\price;
 use App\Models\Setting;
 use App\Models\Apartment;
 use App\Models\OrderPayment;
 use Illuminate\Http\Request;
+use App\Services\TabbyPayment;
 use App\Events\BookedUserEvent;
 use App\Models\Booked_apartment;
 use App\Notifications\UserLogin;
@@ -22,21 +24,20 @@ use App\Models\ControlNotification;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\BookedResource;
-use App\Models\Point;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
 
 class BookedApartmentController extends Controller
 {
     private $fatoorah_services;
-    private $control_notification;
+    public $tabby;
     /**
      * Display a listing of the resource.
      */
-    public function __construct(FatoorahServices $fatoorahServices  )
+    public function __construct()
     {
-        $this->fatoorah_services = $fatoorahServices;
-
+        $this->fatoorah_services = new FatoorahServices() ;
+        $this->tabby = new TabbyPayment();
     }
     public function index()
     {
@@ -66,23 +67,23 @@ class BookedApartmentController extends Controller
         $checkOutDate = Carbon::parse($request->check_out_date);
         $paymentMethod = $request->payment_method;
         $totalDays = $checkInDate->diffInDays($checkOutDate);
-
+        $user = Auth::guard('app_users')->user();
         if ($checkInDate == $checkOutDate) {
             return response()->json(['error' => 'Check-in and Check-out date should not be the same'], 403);
         }
 
         $apartment = Apartment::where('status', 1)
-        ->where('id', $apartmentId)
-        ->with(['BookedApartments' => function ($BookedApartments) use ($checkInDate, $checkOutDate) {
-            $BookedApartments->where(function ($q) use ($checkInDate, $checkOutDate) {
-                $q->where(function ($qq) use ($checkInDate, $checkOutDate) {
-                    $qq->where('date_from', '<=', $checkInDate)->where('date_to', '>', $checkInDate);
-                })->orWhere(function ($qqq) use ($checkInDate, $checkOutDate) {
-                    $qqq->where('date_from', '<=', $checkOutDate)->where('date_to', '>=', $checkOutDate);
-                });
-            })->where('paid', 1);
-        }])
-        ->first();
+            ->where('id', $apartmentId)
+            ->with(['BookedApartments' => function ($BookedApartments) use ($checkInDate, $checkOutDate) {
+                $BookedApartments->where(function ($q) use ($checkInDate, $checkOutDate) {
+                    $q->where(function ($qq) use ($checkInDate, $checkOutDate) {
+                        $qq->where('date_from', '<=', $checkInDate)->where('date_to', '>', $checkInDate);
+                    })->orWhere(function ($qqq) use ($checkInDate, $checkOutDate) {
+                        $qqq->where('date_from', '<=', $checkOutDate)->where('date_to', '>=', $checkOutDate);
+                    });
+                })->where('paid', 1);
+            }])
+            ->first();
         if (!$apartment) {
             return response()->json(['error' => 'Apartment not found'], 403);
         }
@@ -90,13 +91,12 @@ class BookedApartmentController extends Controller
         if ($apartment->BookedApartments->count() > 0) {
             return response()->json(['error' => 'The apartment has already been booked'], 403);
         }
-       ///////////////logic price
-        $price_day=  price::where('apartment_id', $apartmentId)->where('date', $checkInDate)->value('price');
+        ///////////////logic price
+        $price_day =  price::where('apartment_id', $apartmentId)->where('date', $checkInDate)->value('price');
         $settings = Setting::pluck('value', 'key')->toArray();
         $taxAddedValue = $settings['tax_added_value'];
         $price_with_tax = $taxAddedValue ?
-        (($price_day ?? $apartment->price) + $taxAddedValue) :
-        ($price_day ?? $apartment->price);
+            (($price_day ?? $apartment->price) + $taxAddedValue) : ($price_day ?? $apartment->price);
         if ($request->has('coupon_code')) {
             $coupon_data = checkCoupon($request->coupon_code, $price_with_tax);
             if ($coupon_data && $coupon_data['status'] == true) {
@@ -105,17 +105,22 @@ class BookedApartmentController extends Controller
             } else {
                 return response()->json(['status' => false, 'message' => $coupon_data['message']], 310);
             }
-
         }
-        if(apply_discount($totalDays) > 0 ){
-            $discountPercentage = apply_discount($totalDays) / 100;
-            $discountedPrice = $price_with_tax * $discountPercentage;
-            $totalPrice = ($price_with_tax - $discountedPrice) * $totalDays;
-        }else{
-            $totalPrice = $price_with_tax * $totalDays;
+
+        if ($riyals = calculateRiyalsFromPoints($user->id) > 0) {
+            $taxAddedValue -= $riyals;
+        }
+        if (!$settings['available_discount'] == '1') {
+            if (apply_discount($totalDays) > 0) {
+                $discountPercentage = apply_discount($totalDays) / 100;
+                $discountedPrice = $price_with_tax * $discountPercentage;
+                $totalPrice = ($price_with_tax - $discountedPrice) * $totalDays;
+            } else {
+                $totalPrice = $price_with_tax * $totalDays;
+            }
         }
         /////////////////////
-        $user = Auth::guard('app_users')->user();
+
         $booked =  Booked_apartment::create([
             'user_id' => $user->id,
             'apartment_id' => $apartment->id,
@@ -124,41 +129,40 @@ class BookedApartmentController extends Controller
             'date_to' => $checkOutDate
         ]);
         ///
-        if ($paymentMethod == 'cash') {
-            $booked->paid = 1;
-            $booked->status = 'recent';
-            $booked->save();
-            // send notification to admin
-            $admins = User::all();
-            Notification::send($admins, new BookedUser($user, $booked->apartment));
-            // send notification to user
-            $notificationData = $this->controlNotification('booking');
-            Notification::send($user, new BookingUser($notificationData['message']));
-            //notification to login user
-            $notificationData = $this->controlNotification('entry_day');
-            $notificationDate = Carbon::parse($booked->date_from);
-            $user->notify((new UserLogin($notificationData['message'],$notificationData['time'], $booked))->delay($notificationDate));
-            //notification to logout user
-            $notificationData = $this->controlNotification('exit_day');
-            $notificationDate = Carbon::parse($booked->date_to);
-            $user->notify((new UserLogout($notificationData['message'],$notificationData['time']))->delay($notificationDate));
-            ///broadcast event booked user
-            BookedUserEvent::dispatch($user, $booked->apartment);
-            Point::create([
-                'booked_id'=> $booked->id,
-                'user_id'=> $user->id,
-                'point'=> $booked->total_price
-            ]);
-            return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
-        }
+        // if ($paymentMethod == 'cash') {
+        //     $booked->paid = 1;
+        //     $booked->status = 'recent';
+        //     $booked->save();
+        //     // send notification to admin
+        //     $admins = User::all();
+        //     Notification::send($admins, new BookedUser($user, $booked->apartment));
+        //     // send notification to user
+        //     $notificationData = $this->controlNotification('booking');
+        //     Notification::send($user, new BookingUser($notificationData['message']));
+        //     //notification to login user
+        //     $notificationData = $this->controlNotification('entry_day');
+        //     $notificationDate = Carbon::parse($booked->date_from);
+        //     $user->notify((new UserLogin($notificationData['message'],$notificationData['time'], $booked))->delay($notificationDate));
+        //     //notification to logout user
+        //     $notificationData = $this->controlNotification('exit_day');
+        //     $notificationDate = Carbon::parse($booked->date_to);
+        //     $user->notify((new UserLogout($notificationData['message'],$notificationData['time']))->delay($notificationDate));
+        //     ///broadcast event booked user
+        //     BookedUserEvent::dispatch($user, $booked->apartment);
+        //     Point::create([
+        //         'booked_id'=> $booked->id,
+        //         'user_id'=> $user->id,
+        //         'point'=> $booked->total_price
+        //     ]);
+        //     return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
+        // }
         $settings = Setting::pluck('value', 'key')
-        ->toArray();
-        if(!$settings['available_bookings'] == '1'){
+            ->toArray();
+        if (!$settings['available_bookings'] == '1') {
             $booked::update([
-                'status'=>'pending'
+                'status' => 'pending'
             ]);
             return response()->json(['messsage' => 'طلب حجز'], 200);
-
         }
         if ($paymentMethod && $paymentMethod == 'fatoorah') {
             $data = [
@@ -187,6 +191,41 @@ class BookedApartmentController extends Controller
                     ]);
                 }
             return $response['Data']['InvoiceURL'];
+        } elseif ($paymentMethod && $paymentMethod == 'Tabby') {
+            $items = collect([]);
+            $items->push([
+                'title' => 'title',
+                'quantity' => 1,
+                'unit_price' => 20,
+                'category' => 'Clothes',
+            ]);
+
+            $order_data = [
+                'amount' => $totalPrice,
+                'currency' => 'SAR',
+                'description' => 'description',
+                'full_name' => Auth::guard('app_users')->user()->name ?? 'user_name',
+                'buyer_phone' =>   Auth::guard('app_users')->user()->phone ?? '9665252123',
+                //  'buyer_email' => 'card.success@tabby.ai',//this test
+                'buyer_email' =>    Auth::guard('app_users')->user()->email ?? 'user@gmail.com',
+                'address' => 'Saudi Riyadh',
+                'city' => 'Riyadh',
+                'zip' => '1234',
+                'order_id' => "$booked->id",
+                'registered_since' =>  $booked->created_at,
+                'loyalty_level' => 0,
+                'success-url' => route('success-ur'),
+                'cancel-url' => route('cancel-ur'),
+                'failure-url' => route('failure-ur'),
+                'items' =>  $items,
+            ];
+
+            $payment = $this->tabby->createSession($order_data);
+
+            $id = $payment->id;
+
+            $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
+            return  $redirect_url;
         }
     }
 
@@ -228,6 +267,7 @@ class BookedApartmentController extends Controller
 
         return response()->json(['error' => 'There is no booked found'], 403);
     }
+
     public function userBooked(Request $request)
     {
 
@@ -236,99 +276,29 @@ class BookedApartmentController extends Controller
         return BookedResource::collection($BookedApartments);
     }
 
-    public function controlNotification($type)
-    {
-        $message = '';
-        $time = '';
-        if ($type == 'booking') {
-            $message = ControlNotification::where('type', 'booking')->value('message');
-            $time = ControlNotification::where('type', 'booking')->value('time');
-        } elseif ($type == 'entry_day') {
-            $message = ControlNotification::where('type', 'entry_day')->value('message');
-            $time = ControlNotification::where('type', 'entry_day')->value('time');
-        } elseif ($type == 'exit_day') {
-            $message = ControlNotification::where('type', 'exit_day')->value('message');
-            $time = ControlNotification::where('type', 'exit_day')->value('time');
-        }else{
-            $message = 'Default message';
-            $time = 'Default time';
-        }
 
-        return ['message' => $message, 'time' => $time];
-    }
     public function checkCoupon(Request $request)
     {
         return checkCoupon($request->couponCode, $request->totalAmount);
     }
     public function callback(Request $request)
     {
-
-        $apiKey =  config('services.myfatoorah.api_token');
-        $postFields = [
-            'Key'     => $request->paymentId,
-            'KeyType' => 'paymentId'
-        ];
-        $response = $this->fatoorah_services->callAPI("https://apitest.myfatoorah.com/v2/getPaymentStatus", $apiKey, $postFields);
-        $response = json_decode($response);
-        // dd( $response);
-        if (!isset($response->Data->InvoiceId))
-            return response()->json(["error" => 'error', 'status' => false], 404);
-        $InvoiceId =  $response->Data->InvoiceId;
-        $payment =    OrderPayment::where('invoice_id',  $InvoiceId)->first();
-        $booked = Booked_apartment::where('id', $payment->booked_id)->first();
-        if ($response->IsSuccess == true) {
-            if ($response->Data->InvoiceStatus == "Paid")
-                if ($payment->price == $response->Data->InvoiceValue) {
-                    try {
-                        DB::beginTransaction();
-
-                        $payment->invoice_status = "Paid";
-                        $payment->is_success = 1;
-                        $payment->Transaction_date = $response->Data->CreatedDate;
-                        $payment->save();
-
-                        $booked->paid = 1;
-                        $booked->status = 'recent';
-                        $booked->save();
-
-                        /////
-                        $user = Auth::guard('app_users')->user();
-                        // send notification to admins
-                        $admins = User::all();
-                        Notification::send($admins, new BookedUser($user, $booked->apartment));
-                        // send notification to user
-                        $notificationData = $this->controlNotification('booking');
-                        Notification::send($user, new BookingUser($notificationData['message']));
-                        //notification to login user
-                        $notificationData = $this->controlNotification('entry_day');
-                        $notificationDate = Carbon::parse($booked->date_from);
-                        $user->notify((new UserLogin($notificationData['message'],$notificationData['time'], $booked))->delay($notificationDate));
-                        //notification to logout user
-                        $notificationData = $this->controlNotification('exit_day');
-                        $notificationDate = Carbon::parse($booked->date_to);
-                        $user->notify((new UserLogout($notificationData['message'],$notificationData['time']))->delay($notificationDate));
-                         ///broadcast event booked user
-                        BookedUserEvent::dispatch($user, $booked->apartment);
-                        ////////insert to points
-                        Point::create([
-                            'booked_id'=> $booked->id,
-                            'user_id'=> $user->id,
-                            'point'=> $booked->total_price
-                        ]);
-                        DB::commit();
-                        return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
-                    } catch (\Throwable $th) {
-                        DB::rollBack();
-                        return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
-                    }
-                }
-        }
-
-        return response()->json(["error" => 'error', 'Data' => 'payment faild'], 404);
+        return   $this->fatoorah_services->callback($request);
     }
-
     public function error(Request $request)
     {
         return response()->json(["error" => 'error', 'Data' => 'payment faild'], 404);
+    }
+    public function sucess(Request $request)
+    {
+        return   $this->tabby->calbackPayment($request);
+    }
+    public function cancel(Request $request)
+    {
+        return response()->json(["error" => 'error', 'Data' => 'payment canceld'], 404);
+    }
+    public function failure(Request $request)
+    {
+        return response()->json(["error" => 'error', 'Data' => 'payment failure'], 404);
     }
 }
