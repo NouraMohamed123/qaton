@@ -179,6 +179,7 @@ class TabbyPayment
                     DB::commit();
                     return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
                 } catch (\Throwable $th) {
+                    dd($th->getMessage(), $th->getLine());
                     DB::rollBack();
                     return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
                 }

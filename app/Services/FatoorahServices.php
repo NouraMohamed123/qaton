@@ -89,92 +89,73 @@ class FatoorahServices
         curl_close($curl);
         return $response;
     }
-    public function callback(Request $request)
-    {
+    // public function callback(Request $request)
+    // {
 
-        $apiKey =  config('services.myfatoorah.api_token');
-        $postFields = [
-            'Key'     => $request->paymentId,
-            'KeyType' => 'paymentId'
-        ];
-        $response = $this->callAPI("https://apitest.myfatoorah.com/v2/getPaymentStatus", $apiKey, $postFields);
-        $response = json_decode($response);
-        // dd( $response);
-        if (!isset($response->Data->InvoiceId))
-            return response()->json(["error" => 'error', 'status' => false], 404);
-        $InvoiceId =  $response->Data->InvoiceId;
-        $payment =    OrderPayment::where('invoice_id',  $InvoiceId)->first();
-        $booked = Booked_apartment::where('id', $payment->booked_id)->first();
-        if ($response->IsSuccess == true) {
-            if ($response->Data->InvoiceStatus == "Paid")
-                if ($payment->price == $response->Data->InvoiceValue) {
-                    try {
-                        DB::beginTransaction();
-                        $payment->invoice_status = "Paid";
-                        $payment->is_success = 1;
-                        $payment->Transaction_date = $response->Data->CreatedDate;
-                        $payment->save();
+    //     $apiKey =  config('services.myfatoorah.api_token');
+    //     $postFields = [
+    //         'Key'     => $request->paymentId,
+    //         'KeyType' => 'paymentId'
+    //     ];
+    //     $response = $this->callAPI("https://apitest.myfatoorah.com/v2/getPaymentStatus", $apiKey, $postFields);
+    //     $response = json_decode($response);
+    //     // dd( $response);
+    //     if (!isset($response->Data->InvoiceId))
+    //         return response()->json(["error" => 'error', 'status' => false], 404);
+    //     $InvoiceId =  $response->Data->InvoiceId;
+    //     $payment =    OrderPayment::where('invoice_id',  $InvoiceId)->first();
+    //     $booked = Booked_apartment::where('id', $payment->booked_id)->first();
+    //     if ($response->IsSuccess == true) {
+    //         if ($response->Data->InvoiceStatus == "Paid")
+    //             if ($payment->price == $response->Data->InvoiceValue) {
+    //                 try {
+    //                     DB::beginTransaction();
+    //                     $payment->invoice_status = "Paid";
+    //                     $payment->is_success = 1;
+    //                     $payment->Transaction_date = $response->Data->CreatedDate;
+    //                     $payment->save();
 
-                        $booked->paid = 1;
-                        $booked->status = 'recent';
-                        $booked->save();
+    //                     $booked->paid = 1;
+    //                     $booked->status = 'recent';
+    //                     $booked->save();
 
-                        /////
-                        $user =  $booked->user;
-                        // send notification to admins
-                        $admins = User::all();
-                        Notification::send($admins, new BookedUser($user, $booked->apartment));
-                        // send notification to user
-                        $notificationData = $this->controlNotification('booking');
-                        Notification::send($user, new BookingUser($notificationData['message']));
-                        //notification to login user
-                        $notificationData = $this->controlNotification('entry_day');
-                        $notificationDate = Carbon::parse($booked->date_from);
-                        $user->notify((new UserLogin($notificationData['message'], $notificationData['time'], $booked))->delay($notificationDate));
-                        //notification to logout user
-                        $notificationData = $this->controlNotification('exit_day');
-                        $notificationDate = Carbon::parse($booked->date_to);
-                        $user->notify((new UserLogout($notificationData['message'], $notificationData['time']))->delay($notificationDate));
-                        ///broadcast event booked user
-                        BookedUserEvent::dispatch($user, $booked->apartment);
-                        ////////insert to points
-                        Point::where('user_id', $user->id)->delete();
-                        Point::create([
-                            'booked_id' => $booked->id,
-                            'user_id' => $user->id,
-                            'point' => $booked->total_price
-                        ]);
-                        DB::commit();
-                        return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
-                    } catch (\Throwable $th) {
-                        DB::rollBack();
-                        return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
-                    }
-                }
-        }
+    //                     /////
+    //                     $user =  $booked->user;
+    //                     // send notification to admins
+    //                     $admins = User::all();
+    //                     Notification::send($admins, new BookedUser($user, $booked->apartment));
+    //                     // send notification to user
+    //                     $notificationData = $this->controlNotification('booking');
+    //                     Notification::send($user, new BookingUser($notificationData['message']));
+    //                     //notification to login user
+    //                     $notificationData = $this->controlNotification('entry_day');
+    //                     $notificationDate = Carbon::parse($booked->date_from);
+    //                     $user->notify((new UserLogin($notificationData['message'], $notificationData['time'], $booked))->delay($notificationDate));
+    //                     //notification to logout user
+    //                     $notificationData = $this->controlNotification('exit_day');
+    //                     $notificationDate = Carbon::parse($booked->date_to);
+    //                     $user->notify((new UserLogout($notificationData['message'], $notificationData['time']))->delay($notificationDate));
+    //                     ///broadcast event booked user
+    //                     BookedUserEvent::dispatch($user, $booked->apartment);
+    //                     ////////insert to points
+    //                     Point::where('user_id', $user->id)->delete();
+    //                     Point::create([
+    //                         'booked_id' => $booked->id,
+    //                         'user_id' => $user->id,
+    //                         'point' => $booked->total_price
+    //                     ]);
+    //                     DB::commit();
+    //                     return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
+    //                 } catch (\Throwable $th) {
+    //                     DB::rollBack();
+    //                     return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
+    //                 }
+    //             }
+    //     }
 
 
-        return response()->json(["error" => 'error', 'Data' => 'payment faild'], 404);
-    }
+    //     return response()->json(["error" => 'error', 'Data' => 'payment faild'], 404);
+    // }
 
-    public function controlNotification($type)
-    {
-        $message = '';
-        $time = '';
-        if ($type == 'booking') {
-            $message = ControlNotification::where('type', 'booking')->value('message');
-            $time = ControlNotification::where('type', 'booking')->value('time');
-        } elseif ($type == 'entry_day') {
-            $message = ControlNotification::where('type', 'entry_day')->value('message');
-            $time = ControlNotification::where('type', 'entry_day')->value('time');
-        } elseif ($type == 'exit_day') {
-            $message = ControlNotification::where('type', 'exit_day')->value('message');
-            $time = ControlNotification::where('type', 'exit_day')->value('time');
-        } else {
-            $message = 'Default message';
-            $time = 'Default time';
-        }
 
-        return ['message' => $message, 'time' => $time];
-    }
 }

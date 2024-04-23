@@ -36,7 +36,7 @@ class BookedApartmentController extends Controller
      */
     public function __construct()
     {
-        $this->fatoorah_services = new FatoorahServices() ;
+        $this->fatoorah_services = new FatoorahServices();
         $this->tabby = new TabbyPayment();
     }
     public function index()
@@ -97,7 +97,8 @@ class BookedApartmentController extends Controller
         $taxAddedValue = $settings['tax_added_value'];
         $price_with_tax = $taxAddedValue ?
             (($price_day ?? $apartment->price) + $taxAddedValue) : ($price_day ?? $apartment->price);
-        if ($request->has('coupon_code')) {
+
+        if ($request->has('coupon_code') && !empty($request->coupon_code)) {
             $coupon_data = checkCoupon($request->coupon_code, $price_with_tax);
             if ($coupon_data && $coupon_data['status'] == true) {
                 $discount = $coupon_data['discount'];
@@ -106,22 +107,26 @@ class BookedApartmentController extends Controller
                 return response()->json(['status' => false, 'message' => $coupon_data['message']], 310);
             }
         }
-        if ($request->has('points')) {
-        if ($riyals = calculateRiyalsFromPoints($user->id) > 0) {
 
-            $taxAddedValue -= $riyals;
+        if ($request->points == true) {
+            if ($riyals = calculateRiyalsFromPoints($user->id) > 0) {
+
+                $price_with_tax -= $riyals;
+            }
         }
-    }
 
-        if (!$settings['available_discount'] == '1') {
+        if ($settings['available_discount'] == '1') {
             if (apply_discount($totalDays) > 0) {
                 $discountPercentage = apply_discount($totalDays) / 100;
                 $discountedPrice = $price_with_tax * $discountPercentage;
                 $totalPrice = ($price_with_tax - $discountedPrice) * $totalDays;
-            } else {
-                $totalPrice = $price_with_tax * $totalDays;
             }
+        } else {
+
+            $totalPrice = $price_with_tax * $totalDays;
         }
+
+
         /////////////////////
 
         $booked =  Booked_apartment::create([
@@ -161,10 +166,9 @@ class BookedApartmentController extends Controller
         // }
         $settings = Setting::pluck('value', 'key')
             ->toArray();
-        if (!$settings['available_bookings'] == '1') {
-            $booked::update([
-                'status' => 'pending'
-            ]);
+        if ($settings['available_bookings'] == '1') {
+            $booked->status =  'pending';
+            $booked->save();
             return response()->json(['messsage' => 'طلب حجز'], 200);
         }
         if ($paymentMethod && $paymentMethod == 'fatoorah') {
@@ -286,8 +290,73 @@ class BookedApartmentController extends Controller
     }
     public function callback(Request $request)
     {
-        return   $this->fatoorah_services->callback($request);
+
+        $apiKey =  config('services.myfatoorah.api_token');
+        $postFields = [
+            'Key'     => $request->paymentId,
+            'KeyType' => 'paymentId'
+        ];
+        $response = $this->fatoorah_services->callAPI("https://apitest.myfatoorah.com/v2/getPaymentStatus", $apiKey, $postFields);
+        $response = json_decode($response);
+        // dd( $response);
+        if (!isset($response->Data->InvoiceId))
+            return response()->json(["error" => 'error', 'status' => false], 404);
+        $InvoiceId =  $response->Data->InvoiceId;
+        $payment =    OrderPayment::where('invoice_id',  $InvoiceId)->first();
+        $booked = Booked_apartment::where('id', $payment->booked_id)->first();
+        if ($response->IsSuccess == true) {
+            if ($response->Data->InvoiceStatus == "Paid")
+                if ($payment->price == $response->Data->InvoiceValue) {
+                    try {
+                        DB::beginTransaction();
+
+                        $payment->invoice_status = "Paid";
+                        $payment->is_success = 1;
+                        $payment->Transaction_date = $response->Data->CreatedDate;
+                        $payment->save();
+
+                        $booked->paid = 1;
+                        $booked->status = 'recent';
+                        $booked->save();
+
+                        /////
+                        $user =  $booked->user;
+                        // send notification to admins
+                        $admins = User::all();
+                        Notification::send($admins, new BookedUser($user, $booked->apartment));
+                        // send notification to user
+                        $notificationData = $this->controlNotification('booking');
+                        Notification::send($user, new BookingUser($notificationData['message']));
+                        //notification to login user
+                        $notificationData = $this->controlNotification('entry_day');
+                        $notificationDate = Carbon::parse($booked->date_from);
+                        $user->notify((new UserLogin($notificationData['message'], $notificationData['time'], $booked))->delay($notificationDate));
+                        //notification to logout user
+                        $notificationData = $this->controlNotification('exit_day');
+                        $notificationDate = Carbon::parse($booked->date_to);
+                        $user->notify((new UserLogout($notificationData['message'], $notificationData['time']))->delay($notificationDate));
+                        ///broadcast event booked user
+                        BookedUserEvent::dispatch($user, $booked->apartment);
+                        ////////insert to points
+                        Point::where('user_id', $user->id)->delete();
+                        Point::create([
+                            'booked_id' => $booked->id,
+                            'user_id' => $user->id,
+                            'point' => $booked->total_price
+                        ]);
+                        DB::commit();
+                        return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
+                    } catch (\Throwable $th) {
+                        dd($th->getMessage(), $th->getLine());
+                        DB::rollBack();
+                        return response()->json(["error" => 'error', 'Data' => 'payment failed'], 404);
+                    }
+                }
+        }
+
+        return response()->json(["error" => 'error', 'Data' => 'payment faild'], 404);
     }
+
     public function error(Request $request)
     {
         return response()->json(["error" => 'error', 'Data' => 'payment faild'], 404);
@@ -303,5 +372,25 @@ class BookedApartmentController extends Controller
     public function failure(Request $request)
     {
         return response()->json(["error" => 'error', 'Data' => 'payment failure'], 404);
+    }
+    public function controlNotification($type)
+    {
+        $message = '';
+        $time = '';
+        if ($type == 'booking') {
+            $message = ControlNotification::where('type', 'booking')->value('message');
+            $time = ControlNotification::where('type', 'booking')->value('time');
+        } elseif ($type == 'entry_day') {
+            $message = ControlNotification::where('type', 'entry_day')->value('message');
+            $time = ControlNotification::where('type', 'entry_day')->value('time');
+        } elseif ($type == 'exit_day') {
+            $message = ControlNotification::where('type', 'exit_day')->value('message');
+            $time = ControlNotification::where('type', 'exit_day')->value('time');
+        } else {
+            $message = 'Default message';
+            $time = 'Default time';
+        }
+
+        return ['message' => $message, 'time' => $time];
     }
 }

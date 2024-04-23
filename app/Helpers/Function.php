@@ -39,20 +39,20 @@ if (!function_exists('apply_discount')) {
             $coupon = App\Models\Coupon::where('discount_code', $couponCode)->first();
 
             if (!$coupon) {
-                return ['status' => false, 'message' => 'not exist'];
+                return ['status' => false, 'message' => 'coupon not exist'];
             }
 
             $currentDate = date('Y-m-d');
             if ($currentDate < $coupon->start_date || $currentDate > $coupon->end_date) {
-                return ['status' => false, 'message' => 'date expired'];
+                return ['status' => false, 'message' => 'date expired in coupon'];
             }
 
             if ($coupon->max_usage !== null && $coupon->max_usage <= 0) {
-                return ['status' => false, 'message' => 'max usage reached'];
+                return ['status' => false, 'message' => 'max usage reached in coupon'];
             }
 
             if ($coupon->max_discount_value !== null && $totalAmount > $coupon->max_discount_value) {
-                return ['status' => false, 'message' => 'totalAmount greater than max discount value'];
+                return ['status' => false, 'message' => 'totalAmount greater than max discount value available in coupon'];
             }
 
             // Decrement max_usage in the database
