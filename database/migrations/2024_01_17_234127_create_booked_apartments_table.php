@@ -22,6 +22,7 @@ return new class extends Migration
             $table->integer('total_price');
             $table->enum('status', ['recent','pending', 'past', 'canceled'])->default('canceled');
             $table->integer('paid')->default(0);
+            $table->integer('coupon_id')->default(0);
             $table->timestamps();
         });
     }
