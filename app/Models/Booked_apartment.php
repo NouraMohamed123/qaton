@@ -32,19 +32,23 @@ class Booked_apartment extends Model
 
         return $this->attributes['status'];
     }
-    public function sendDateFromNotification()
+    // public function sendDateFromNotification()
+    // {
+    //     $notificationDate = Carbon::parse($this->date_from)->addMinutes(3); // Add 3 minutes to the date_from value
+    //     $user = AppUsers::find($this->user_id);
+    //     $user->notify((new UserLogin($user))->delay($notificationDate));
+
+    // }
+    // public function sendDateToNotification()
+    // {
+    //     $notificationDate = Carbon::parse($this->date_to);
+    //     $user = AppUsers::find($this->user_id);
+
+    //     Notification::send($user, (new UserLogout()));
+
+    // }
+    public function coupon()
     {
-        $notificationDate = Carbon::parse($this->date_from)->addMinutes(3); // Add 3 minutes to the date_from value
-        $user = AppUsers::find($this->user_id);
-        $user->notify((new UserLogin($user))->delay($notificationDate));
-
-    }
-    public function sendDateToNotification()
-    {
-        $notificationDate = Carbon::parse($this->date_to);
-        $user = AppUsers::find($this->user_id);
-
-        Notification::send($user, (new UserLogout()));
-
+        return $this->belongsTo(Coupon::class);
     }
 }

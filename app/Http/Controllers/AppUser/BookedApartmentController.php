@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Point;
 use App\Models\price;
+use App\Models\Coupon;
 use App\Models\Setting;
 use App\Models\Apartment;
 use App\Models\OrderPayment;
@@ -136,8 +137,11 @@ class BookedApartmentController extends Controller
             'apartment_id' => $apartment->id,
             'total_price' => $totalPrice,
             'date_from' => $checkInDate,
-            'date_to' => $checkOutDate
+            'date_to' => $checkOutDate,
+            'coupon_id' => $coupon_data['id'] ?? 0,
+
         ]);
+
         ///
         // if ($paymentMethod == 'cash') {
         //     $booked->paid = 1;
@@ -181,6 +185,7 @@ class BookedApartmentController extends Controller
                 "CustomerEmail" => Auth::guard('app_users')->user()->email,
                 "CalLBackUrl" => route('callback'),
                 "Errorurl" => route('error'),
+
                 "Languagn" => 'en',
                 "DisplayCurrencyIna" => 'SAR'
             ];
@@ -192,6 +197,7 @@ class BookedApartmentController extends Controller
                     $InvoiceId  = $response['Data']['InvoiceId'];
                     $InvoiceURL = $response['Data']['InvoiceURL'];
                     OrderPayment::create([
+                        'name' => 'fatoorah',
                         'customer_name' => Auth::guard('app_users')->user()->name,
                         'invoice_id' => $InvoiceId,
                         'invoice_url' => $InvoiceURL,
@@ -346,6 +352,12 @@ class BookedApartmentController extends Controller
                             'user_id' => $user->id,
                             'point' => $booked->total_price
                         ]);
+                        //////
+                        if ($booked->coupon_id != 0) {
+                            Coupon::where('id', $booked->coupon_id)->decrement('max_usage');
+                        }
+
+
                         DB::commit();
                         return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
                     } catch (\Throwable $th) {

@@ -7,6 +7,7 @@ use App\Models\Cart;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Point;
+use App\Models\Coupon;
 use App\Models\Booking;
 use App\Models\Membership;
 use App\Events\BookedEvent;
@@ -140,6 +141,7 @@ class TabbyPayment
                 try {
                     DB::beginTransaction();
                     OrderPayment::create([
+                        'name' => 'tabby',
                         'customer_name' => $booked->user->name,
                         'invoice_id' => $request->payment_id,
                         'booked_id' => $booked->id,
@@ -176,6 +178,10 @@ class TabbyPayment
                         'user_id' => $user->id,
                         'point' => $booked->total_price
                     ]);
+                    ///////////
+                    if ($booked->coupon_id != 0) {
+                        Coupon::where('id', $booked->coupon_id)->decrement('max_usage');
+                    }
                     DB::commit();
                     return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
                 } catch (\Throwable $th) {

@@ -56,9 +56,9 @@ if (!function_exists('apply_discount')) {
             }
 
             // Decrement max_usage in the database
-            if ($coupon->max_usage !== null) {
-                $coupon->decrement('max_usage');
-            }
+            // if ($coupon->max_usage !== null) {
+            //     $coupon->decrement('max_usage');
+            // }
 
             if ($coupon->type == 'percentage') {
                 $discount = (float) $coupon->discount_percentage;
@@ -72,6 +72,7 @@ if (!function_exists('apply_discount')) {
                 'status' => true,
                 'discount' => $discount,
                 'price_after_discount' => $priceAfterDiscount,
+                'id' => $coupon->id,
             ];
         }
     }
