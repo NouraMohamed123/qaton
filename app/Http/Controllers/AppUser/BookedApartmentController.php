@@ -116,15 +116,17 @@ class BookedApartmentController extends Controller
         }
 
         if ($settings['available_discount'] == '1') {
+
             if (apply_discount($totalDays) > 0) {
                 $discountPercentage = apply_discount($totalDays) / 100;
                 $discountedPrice = $price_with_tax * $discountPercentage;
                 $totalPrice = ($price_with_tax - $discountedPrice) * $totalDays;
             }
-        } else {
+        }
+
 
             $totalPrice = $price_with_tax * $totalDays;
-        }
+
 
 
         /////////////////////
