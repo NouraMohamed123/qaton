@@ -67,6 +67,26 @@ class PermissionTableSeeder extends Seeder
             "delete-term",
             "add-term",
 
+            "contact-us",
+            "control-notifications",
+            "control-notifications-list",
+            "control-notifications-edit-time",
+            "control-notifications-edit-description",
+            "notifications-show",
+            "notifications-delete",
+            "reports-reservation-requests",
+            "coupons",
+            "coupons-create",
+            "coupons-update",
+            "discounts",
+            "discounts-update",
+            "questions",
+            "questions-create",
+            "questions-update",
+            "questions-delete",
+            "admin-dashboard",
+            "coupons-delete"
+
 
         ];
 
