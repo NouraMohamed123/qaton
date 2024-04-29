@@ -85,7 +85,9 @@ class PermissionTableSeeder extends Seeder
             "questions-update",
             "questions-delete",
             "admin-dashboard",
-            "coupons-delete"
+            "coupons-delete",
+            "discounts-list",
+           "update-discounts"
 
 
         ];
