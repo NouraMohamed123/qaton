@@ -66,9 +66,6 @@ class PermissionTableSeeder extends Seeder
             "update-term",
             "delete-term",
             "add-term",
-            " contact-us",
-            "reports-reservation-requests",
-            "coupons-delete"
 
 
         ];
