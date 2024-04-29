@@ -14,7 +14,7 @@ class PermissionTableSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-           "user",
+            "user",
             "users-list",
             "update-user",
             "delete-user",
@@ -66,6 +66,9 @@ class PermissionTableSeeder extends Seeder
             "update-term",
             "delete-term",
             "add-term",
+            " contact-us",
+            "reports-reservation-requests",
+            "coupons-delete"
 
 
         ];
@@ -74,6 +77,4 @@ class PermissionTableSeeder extends Seeder
             Permission::create(['name' => $permission]);
         }
     }
-
-
 }

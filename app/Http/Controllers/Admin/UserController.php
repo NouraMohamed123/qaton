@@ -51,7 +51,7 @@ class UserController extends Controller
             'phone' => 'required|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'email' => 'required|string|email|max:255' . $request->id,
             'password' => 'required|string|min:8',
-            'roles_name' => 'required',
+            // 'roles_name' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -72,7 +72,7 @@ class UserController extends Controller
             'photo' => $photo,
             'number' => $request->number,
             'email' => $request->email,
-            'roles_name' => $request->roles_name,
+            // 'roles_name' => $request->roles_name,
             'password' => Hash::make($request->password),
 
         ]);
@@ -119,7 +119,7 @@ class UserController extends Controller
             'phone' => 'nullable|regex:/^([0-9\s\-\+\(\)]*)$/|min:10',
             'email' => 'required|unique:users,email,' . $request->id,
             'password' => 'required|string|min:8',
-            'roles_name' => 'required',
+            // 'roles_name' => 'required',
         ]);
 
         if ($validator->fails()) {
@@ -145,7 +145,7 @@ class UserController extends Controller
             'photo' => $photo,
             'number' => $request->number,
             'email' =>$request->email,
-            'roles_name' => $request->roles_name,
+            // 'roles_name' => $request->roles_name,
             'password' => Hash::make($request->password),
         ]);
 
