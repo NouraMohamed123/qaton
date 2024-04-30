@@ -76,9 +76,10 @@ Route::get('/sold-apartments', [UserProfileController::class, 'SolidApartments']
 Route::get('/balance', [PointController::class, 'index']);
 
 ///notifications
-Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
-Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
-Route::get('/notification-clear', [NotificationController::class, 'Clear']);
+Route::get('/notification-read/{type}', [NotificationController::class, 'NotificationRead']);
+Route::get('/notification-markasread/{type}', [NotificationController::class, 'MarkASRead']);
+Route::get('/notification-clear/{type}', [NotificationController::class, 'Clear']);
+
 
 //apartments
 Route::post('/search/apartments', [ApartmentController::class, 'search']);
