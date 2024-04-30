@@ -172,7 +172,7 @@ class BookedApartmentController extends Controller
         // }
         $settings = Setting::pluck('value', 'key')
             ->toArray();
-        if ($settings['available_bookings'] == '1') {
+        if ($settings['available_bookings'] == '0') {
             $booked->status =  'pending';
             $booked->save();
             return response()->json(['messsage' => 'طلب حجز'], 200);
