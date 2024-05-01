@@ -11,8 +11,11 @@ use App\Models\Setting;
 use App\Models\Apartment;
 use App\Models\OrderPayment;
 use Illuminate\Http\Request;
+use App\Events\UserLoginEvent;
 use App\Services\TabbyPayment;
 use App\Events\BookedUserEvent;
+use App\Events\UserLogoutEvent;
+use App\Events\BookingUserEvent;
 use App\Models\Booked_apartment;
 use App\Notifications\UserLogin;
 use App\Notifications\BookedUser;
@@ -24,6 +27,7 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ControlNotification;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Event;
 use App\Http\Resources\BookedResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
@@ -335,14 +339,23 @@ class BookedApartmentController extends Controller
                         // send notification to user
                         $notificationData = $this->controlNotification('booking');
                         Notification::send($user, new BookingUser($notificationData['message']));
+                        BookingUserEvent::dispatch($notificationData['message']);
+
                         //notification to login user
                         $notificationData = $this->controlNotification('entry_day');
                         $notificationDate = Carbon::parse($booked->date_from);
                         $user->notify((new UserLogin($notificationData['message'], $notificationData['time'], $booked))->delay($notificationDate));
+                        UserLoginEvent::dispatch($notificationData['message'], $notificationData['time'], $booked);
                         //notification to logout user
                         $notificationData = $this->controlNotification('exit_day');
                         $notificationDate = Carbon::parse($booked->date_to);
                         $user->notify((new UserLogout($notificationData['message'], $notificationData['time']))->delay($notificationDate));
+
+                        $event = (new UserLogoutEvent($notificationData['message'], $notificationData['time']))
+                         ->delay($notificationDate);
+                         Event::dispatch($event);
+                        UserLogoutEvent::dispatch($notificationData['message'], $notificationData['time']);
+
                         ///broadcast event booked user
                         BookedUserEvent::dispatch($user, $booked->apartment);
                         ////////insert to points
