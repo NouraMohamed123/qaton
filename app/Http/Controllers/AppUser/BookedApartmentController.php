@@ -24,6 +24,7 @@ use PhpParser\Node\Stmt\TryCatch;
 use App\Notifications\BookingUser;
 use App\Services\FatoorahServices;
 use Illuminate\Support\Facades\DB;
+use App\Events\BookingToAdminEvent;
 use App\Models\ControlNotification;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -160,7 +161,7 @@ class BookedApartmentController extends Controller
         //     $notificationDate = Carbon::parse($booked->date_to);
         //     $user->notify((new UserLogout($notificationData['message'],$notificationData['time']))->delay($notificationDate));
         //     ///broadcast event booked user
-        //     BookedUserEvent::dispatch($user, $booked->apartment);
+        //     BookingToAdminEvent::dispatch($user, $booked->apartment);
         //     Point::create([
         //         'booked_id'=> $booked->id,
         //         'user_id'=> $user->id,
@@ -356,7 +357,7 @@ class BookedApartmentController extends Controller
                         UserLogoutEvent::dispatch($notificationData['message'], $notificationData['time']);
 
                         ///broadcast event booked user
-                        BookedUserEvent::dispatch($user, $booked->apartment);
+                        BookingToAdminEvent::dispatch($user, $booked->apartment);
                         ////////insert to points
                         Point::where('user_id', $user->id)->delete();
                         Point::create([

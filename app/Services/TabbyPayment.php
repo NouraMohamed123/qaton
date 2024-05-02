@@ -26,6 +26,7 @@ use App\Notifications\BookedUser;
 use App\Notifications\UserLogout;
 use App\Notifications\BookingUser;
 use Illuminate\Support\Facades\DB;
+use App\Events\BookingToAdminEvent;
 use App\Models\ControlNotification;
 use App\Models\SubscriptionPayment;
 use Illuminate\Support\Facades\Auth;
@@ -182,7 +183,7 @@ class TabbyPayment
                     //      ->delay($notificationDate);
                     //      Event::dispatch($event);
                     ///broadcast event booked user
-                    BookedUserEvent::dispatch($user, $booked->apartment);
+                    BookingToAdminEvent::dispatch($user, $booked->apartment);
                     ////////insert to points
                     Point::where('user_id', $user->id)->delete();
                     Point::create([

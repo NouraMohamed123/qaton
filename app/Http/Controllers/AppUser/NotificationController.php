@@ -13,18 +13,12 @@ class NotificationController extends Controller
         $notifications = [];
 
         if (!empty(Auth::guard('app_users')->user()->notifications)) {
-            $notifications['booking'] = Auth::guard('app_users')->user()->notifications->where('type', 'App\Notifications\BookingUser')->values()->all();
-            $notifications['entry'] = Auth::guard('app_users')->user()->notifications->where('type', 'App\Notifications\UserLogin')->values()->all();
-            $notifications['exit'] = Auth::guard('app_users')->user()->notifications->where('type', 'App\Notifications\UserLogout')->values()->all();
-        } else {
-            $notifications = [
-                'booking' => [],
-                'entry' => [],
-                'exit' => [],
-            ];
-        }
-
+            $notifications = Auth::guard('app_users')->user()->notifications;
         return response()->json(['isSuccess' => true, 'data' => $notifications], 200);
+
+        }
+        return response()->json(['isSuccess' => false, 'data' => $notifications], 200);
+
     }
     public function MarkASRead()
     {

@@ -9,8 +9,9 @@ class ManualNotification extends Model
 {
     use HasFactory;
 
-    protected $guarded = [];
 
+    protected $table = 'manual_notifications_workers';
+    protected $guarded = [];
 
 
 }
