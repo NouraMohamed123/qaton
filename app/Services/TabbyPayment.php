@@ -172,8 +172,8 @@ class TabbyPayment
                     //notification to login user
                     $notificationData = $this->controlNotification('entry_day');
                     $notificationDate = Carbon::parse($booked->date_from);
-                    $user->notify((new UserLogin($notificationData['message'], $notificationData['time']))->delay($notificationDate));
-                    UserLoginEvent::dispatch($notificationData['message'], $notificationData['time']);
+                    $user->notify((new UserLogin($notificationData['message'], $notificationData['time'],$booked))->delay($notificationDate));
+                    UserLoginEvent::dispatch($notificationData['message'], $notificationData['time'],$booked);
 
                     //notification to logout user
                     $notificationData = $this->controlNotification('exit_day');
@@ -221,7 +221,7 @@ class TabbyPayment
             $time = ControlNotification::where('type', 'exit_day')->value('time');
         } else {
             $message = 'Default message';
-            $time = 'Default time';
+            $time = '';
         }
 
         return ['message' => $message, 'time' => $time];
