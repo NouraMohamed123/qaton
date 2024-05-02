@@ -24,6 +24,8 @@ use App\Http\Controllers\Admin\CouponsController;
 use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\InformationController;
 use App\Http\Controllers\Admin\ReviewController;
+use App\Http\Controllers\Admin\PointController;
+
 
 Route::group([
     'prefix' => 'auth'
@@ -163,6 +165,9 @@ Route::post('/coupons', [CouponsController::class, 'store']);
 Route::get('/coupons/{coupon}', [CouponsController::class, 'show']);
 Route::post('/coupons/{coupon}', [CouponsController::class, 'update']);
 Route::delete('/coupons/{coupon}', [CouponsController::class, 'destroy']);
+
+//point
+Route::get('/balance', [PointController::class, 'index']);
 
 });
 

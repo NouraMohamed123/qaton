@@ -58,5 +58,9 @@ class AppUsers extends Authenticatable implements JWTSubject
         'type'=>'integer',
         'status'=>'integer',
     ];
+    public function points()
+    {
+        return $this->hasMany(Point::class, 'app_users_id');
+    }
 }
 
