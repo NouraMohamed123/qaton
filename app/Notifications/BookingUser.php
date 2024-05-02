@@ -52,6 +52,8 @@ class BookingUser  extends Notification
     {
         return [
             'message' =>  $this->message,
+           'key' => 'booking',
+
         ];
     }
 }

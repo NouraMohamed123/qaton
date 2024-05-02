@@ -9,11 +9,8 @@ class ManualNotification extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['type', 'date', 'message'];
+    protected $guarded = [];
 
-    public function notifiable()
-    {
-        return $this->morphTo();
-    }
+
 
 }

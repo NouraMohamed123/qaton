@@ -2,11 +2,14 @@
 
 namespace App\Http\Controllers\admin;
 
+use Carbon\Carbon;
 use App\Models\User;
 use App\Models\AppUsers;
 use Illuminate\Http\Request;
 use App\Models\ManualNotification;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\ManalNotificationWorkers;
 
 class ManualNotificationController extends Controller
 {
@@ -36,29 +39,21 @@ class ManualNotificationController extends Controller
 
          $notificationDate = $request->date;
          $message = $request->message;
-         $user = null;
+         $users = User::whereIn($request->user_ids)->get();
 
-         if ($request->app_user_id) {
-             $user = AppUsers::find($request->app_user_id);
-         } elseif ($request->user_id) {
-             $user = User::find($request->user_id);
-         }
-
-         if ($user ) {
-
-            $user->notifiable()->create([
-                'type' => $request->type,
+           foreach($users as $user){
+            ManualNotification::create([
+                'user_id' => $user->id,
                 'date' => $request->date,
                 'message' => $request->message,
             ]);
+        }
+        $notificationDate = Carbon::parse($request->date);
+
+        $users->notify((new ManalNotificationWorkers($request->message))->delay($notificationDate));
 
 
-            //  if ($notificationDate) {
-            //      $user->notify(new ManualNotification($message))->delay($notificationDate);
-            //  } else {
-            //      $user->notify(new ManualNotification($message));
-            //  }
-         }
+
      }
     /**
      * Display the specified resource.

@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('manual_notifications', function (Blueprint $table) {
             $table->id();
-            $table->enum('type',[1,2,3,4]);//1حجز //
-            $table->morphs('notifiable');
+            $table->unsignedBigInteger('user_id');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->date('date')->nullable();
             $table->text('message')->nullable();
             $table->timestamps();
@@ -26,6 +26,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('manual_notifications');
+        Schema::dropIfExists('manual_notifications_workers');
+
     }
 };
