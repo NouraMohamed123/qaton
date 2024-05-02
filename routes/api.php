@@ -59,6 +59,8 @@ Route::post('/booked/{Booked_apartment}', [BookedApartmentController::class, 'up
 Route::get('/canceld-booked/{Booked_apartment}', [BookedApartmentController::class, 'canceld']);
 Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, 'destroy']);
 Route::get('user-booked', [BookedApartmentController::class, 'userBooked']);
+Route::get('user-booked-details/{id}', [BookedApartmentController::class, 'userBookedDetailsAccess']);
+
 ///coupon
 Route::post('check-coupon', [BookedApartmentController::class, 'checkCoupon']);
 ///invest-user

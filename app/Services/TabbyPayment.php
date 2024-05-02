@@ -31,6 +31,7 @@ use App\Models\SubscriptionPayment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use App\Notifications\AppUserBooking;
+use App\Notifications\BookingToAdmin;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Config;
 use App\Notifications\BookingNotification;
@@ -161,7 +162,7 @@ class TabbyPayment
                     $user =  $booked->user;
                     // send notification to admins
                     $admins = User::all();
-                    Notification::send($admins, new BookedUser($user, $booked->apartment));
+                    Notification::send($admins, new BookingToAdmin($user, $booked->apartment));
                     // send notification to user
                     $notificationData = $this->controlNotification('booking');
                     Notification::send($user, new BookingUser($notificationData['message']));
@@ -170,8 +171,8 @@ class TabbyPayment
                     //notification to login user
                     $notificationData = $this->controlNotification('entry_day');
                     $notificationDate = Carbon::parse($booked->date_from);
-                    $user->notify((new UserLogin($notificationData['message'], $notificationData['time'], $booked))->delay($notificationDate));
-                    UserLoginEvent::dispatch($notificationData['message'], $notificationData['time'], $booked);
+                    $user->notify((new UserLogin($notificationData['message'], $notificationData['time']))->delay($notificationDate));
+                    UserLoginEvent::dispatch($notificationData['message'], $notificationData['time']);
 
                     //notification to logout user
                     $notificationData = $this->controlNotification('exit_day');

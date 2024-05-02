@@ -11,15 +11,15 @@ class UserLogin extends Notification  implements ShouldQueue
 {
   use Queueable;
 
-  private $apartment;
+
   private $message;
   private $time;
     /**
      * Create a new notification instance.
      */
-    public function __construct($message,$time,$apartment)
+    public function __construct($message,$time)
     {
-        $this->apartment = $apartment;
+
         $this->message = $message;
         $this->time = $time;
 
@@ -62,15 +62,16 @@ class UserLogin extends Notification  implements ShouldQueue
         return [
             'message' =>$this->message,
             'time' => 'Your check-in time is today at '. $this->time,
-            'website_link'=>$this->apartment->website_link,
-            'login_instructions'=>$this->apartment->login_instructions,
-            'internet_name'=>$this->apartment->internet_name,
-            'internet_password'=>$this->apartment->internet_password,
-            'instructions_prohibitions'=>$this->apartment->instructions_prohibitions,
-            'apartment_features'=>$this->apartment->apartment_features,
-            'contact_numbers'=>$this->apartment->contact_numbers,
-            'access_video'=>asset('uploads/access_video/' . $this->apartment->access_video),
-            'secret_door'=> $this->apartment->secret_door,
+            'key' => 'entry',
+            // 'website_link'=>$this->apartment->website_link,
+            // 'login_instructions'=>$this->apartment->login_instructions,
+            // 'internet_name'=>$this->apartment->internet_name,
+            // 'internet_password'=>$this->apartment->internet_password,
+            // 'instructions_prohibitions'=>$this->apartment->instructions_prohibitions,
+            // 'apartment_features'=>$this->apartment->apartment_features,
+            // 'contact_numbers'=>$this->apartment->contact_numbers,
+            // 'access_video'=>asset('uploads/access_video/' . $this->apartment->access_video),
+            // 'secret_door'=> $this->apartment->secret_door,
         ];
     }
 }

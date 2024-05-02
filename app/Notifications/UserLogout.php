@@ -52,6 +52,7 @@ class UserLogout extends Notification implements ShouldQueue
         return [
             'message' =>$this->message,
             'time' => 'Your check-out time is today at '. $this->time,
+            'key' => 'exit',
         ];
     }
 }

@@ -27,10 +27,12 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ControlNotification;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Notifications\BookingToAdmin;
 use Illuminate\Support\Facades\Event;
 use App\Http\Resources\BookedResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
+use App\Http\Resources\ApartmentResourceAccess;
 
 class BookedApartmentController extends Controller
 {
@@ -112,14 +114,12 @@ class BookedApartmentController extends Controller
                 return response()->json(['status' => false, 'message' => $coupon_data['message']], 310);
             }
         }
-
         if ($request->points == true) {
             if ($riyals = calculateRiyalsFromPoints($user->id) > 0) {
 
                 $price_with_tax -= $riyals;
             }
         }
-
         if ($settings['available_discount'] == '1') {
 
             if (apply_discount($totalDays) > 0) {
@@ -128,14 +128,8 @@ class BookedApartmentController extends Controller
                 $totalPrice = ($price_with_tax - $discountedPrice) * $totalDays;
             }
         }
-
-
             $totalPrice = $price_with_tax * $totalDays;
-
-
-
         /////////////////////
-
         $booked =  Booked_apartment::create([
             'user_id' => $user->id,
             'apartment_id' => $apartment->id,
@@ -153,7 +147,7 @@ class BookedApartmentController extends Controller
         //     $booked->save();
         //     // send notification to admin
         //     $admins = User::all();
-        //     Notification::send($admins, new BookedUser($user, $booked->apartment));
+        //     Notification::send($admins, new BookingToAdmin($user, $booked->apartment));
         //     // send notification to user
         //     $notificationData = $this->controlNotification('booking');
         //     Notification::send($user, new BookingUser($notificationData['message']));
@@ -189,7 +183,6 @@ class BookedApartmentController extends Controller
                 "CustomerEmail" => Auth::guard('app_users')->user()->email,
                 "CalLBackUrl" => route('callback'),
                 "Errorurl" => route('error'),
-
                 "Languagn" => 'en',
                 "DisplayCurrencyIna" => 'SAR'
             ];
@@ -294,7 +287,14 @@ class BookedApartmentController extends Controller
         $BookedApartments =   Booked_apartment::where('user_id', $user->id)->where('status', $request->status)->get();
         return BookedResource::collection($BookedApartments);
     }
+    public function userBookedDetailsAccess(Request $reques,$id){
+        $user = Auth::guard('app_users')->user();
+        $booked =   Booked_apartment::where('id', $id)->where('user_id', $user->id)->first();
+        return  new ApartmentResourceAccess($booked);
 
+
+
+    }
 
     public function checkCoupon(Request $request)
     {
@@ -335,7 +335,7 @@ class BookedApartmentController extends Controller
                         $user =  $booked->user;
                         // send notification to admins
                         $admins = User::all();
-                        Notification::send($admins, new BookedUser($user, $booked->apartment));
+                        Notification::send($admins, new BookingToAdmin($user, $booked->apartment));
                         // send notification to user
                         $notificationData = $this->controlNotification('booking');
                         Notification::send($user, new BookingUser($notificationData['message']));
@@ -344,13 +344,12 @@ class BookedApartmentController extends Controller
                         //notification to login user
                         $notificationData = $this->controlNotification('entry_day');
                         $notificationDate = Carbon::parse($booked->date_from);
-                        $user->notify((new UserLogin($notificationData['message'], $notificationData['time'], $booked))->delay($notificationDate));
-                        UserLoginEvent::dispatch($notificationData['message'], $notificationData['time'], $booked);
+                        $user->notify((new UserLogin($notificationData['message'], $notificationData['time']))->delay($notificationDate));
+                        UserLoginEvent::dispatch($notificationData['message'], $notificationData['time']);
                         //notification to logout user
                         $notificationData = $this->controlNotification('exit_day');
                         $notificationDate = Carbon::parse($booked->date_to);
                         $user->notify((new UserLogout($notificationData['message'], $notificationData['time']))->delay($notificationDate));
-
                         $event = (new UserLogoutEvent($notificationData['message'], $notificationData['time']))
                          ->delay($notificationDate);
                          Event::dispatch($event);
