@@ -16,6 +16,7 @@ class UserLoginEvent implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $message;
     public $time;
+    private $id;
 
 
 
@@ -24,10 +25,11 @@ class UserLoginEvent implements ShouldBroadcast
     /**
      * Create a new event instance.
      */
-    public function __construct($message,$time,$apartment)
+    public function __construct($message,$time,$booked)
     {
         $this->message = $message;
         $this->time = 'Your check-in time is today at '. $time;
+        $this->id = $booked->id;
 
     }
 

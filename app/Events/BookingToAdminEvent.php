@@ -33,7 +33,7 @@ class BookingToAdminEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('user-channel'),
+            new PrivateChannel('admin-channel'),
         ];
     }
 }
