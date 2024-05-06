@@ -8,7 +8,10 @@ use App\Models\AppUsers;
 use Illuminate\Http\Request;
 use App\Models\ManualNotification;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Notification;
+use App\Events\ManalNotificationWorkersEvent;
 use App\Notifications\ManalNotificationWorkers;
 
 class ManualNotificationController extends Controller
@@ -34,27 +37,36 @@ class ManualNotificationController extends Controller
      */
 
 
-     public function store(Request $request)
-     {
+    public function store(Request $request)
+    {
 
-         $notificationDate = $request->date;
-         $message = $request->message;
-         $users = User::whereIn($request->user_ids)->get();
+        $notificationDate = $request->date;
+        $message = $request->message;
+        $users = User::whereIn('id', $request->user_ids)->get();
 
-           foreach($users as $user){
+        foreach ($users as $user) {
             ManualNotification::create([
                 'user_id' => $user->id,
                 'date' => $request->date,
+                'time'=>$request->time,
                 'message' => $request->message,
             ]);
+            $notificationTime = Carbon::parse($request->time);
+            $hours =$notificationTime->hour;
+            $minutes =$notificationTime->minute;
+            $seconds =$notificationTime->second;
+            $notificationDate = Carbon::parse($request->date)
+                ->addHours($hours)
+                ->addMinutes($minutes)
+                ->addSeconds($seconds);
+            $user->notify((new ManalNotificationWorkers($request->message))->delay($notificationDate));
+            $ManalNotificationWorkersEvent = new ManalNotificationWorkersEvent($request->message);
+            Queue::push(function ($job) use ($ManalNotificationWorkersEvent, $notificationDate) {
+                Event::dispatch($ManalNotificationWorkersEvent);
+                $job->release($notificationDate);
+            });
         }
-        $notificationDate = Carbon::parse($request->date);
-
-        $users->notify((new ManalNotificationWorkers($request->message))->delay($notificationDate));
-
-
-
-     }
+    }
     /**
      * Display the specified resource.
      */

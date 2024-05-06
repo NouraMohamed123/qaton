@@ -15,15 +15,14 @@ class UserLogoutEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $message;
-    public $time;
+
     /**
      * Create a new event instance.
      */
-    public function __construct($message,$time)
+    public function __construct($message)
 
     {
         $this->message =$message;
-        $this->time ='Your check-out time is today at '. $time;
     }
 
     /**

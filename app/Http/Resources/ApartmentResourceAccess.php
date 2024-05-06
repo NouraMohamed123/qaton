@@ -18,7 +18,7 @@ class ApartmentResourceAccess extends JsonResource
         public function toArray(Request $request): array
         {
             return [
-                'access_images' => $this->AccessImages->map(function ($image) {
+                'access_images' => $this->AccessImages ? $this->AccessImages->map(function ($image) {
                     return [
                         'id' => $image->id,
                         'apartment_id' => $image->apartment_id,
@@ -26,8 +26,7 @@ class ApartmentResourceAccess extends JsonResource
                         'created_at' => $image->created_at,
                         'updated_at' => $image->updated_at,
                     ];
-                }),
-
+                }) : [],
              'website_link'=>$this->website_link,
              'login_instructions'=>$this->login_instructions,
              'internet_name'=>$this->internet_name,
@@ -35,8 +34,8 @@ class ApartmentResourceAccess extends JsonResource
              'instructions_prohibitions'=>$this->instructions_prohibitions,
              'apartment_features'=>$this->apartment_features,
              'contact_numbers'=>json_decode($this->contact_numbers),
-
              'secret_door'=> $this->secret_door,
+             'access_video' => $this->access_video ? asset('uploads/access_video/' . $this->access_video) : null,
 
             ];
         }

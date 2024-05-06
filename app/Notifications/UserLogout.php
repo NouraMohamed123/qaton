@@ -11,14 +11,13 @@ class UserLogout extends Notification implements ShouldQueue
 {
     use Queueable;
     private $message;
-    private $time;
     /**
      * Create a new notification instance.
      */
-    public function __construct($message,$time)
+    public function __construct($message)
     {
         $this->message = $message;
-        $this->time = $time;
+
     }
 
     /**
@@ -51,7 +50,6 @@ class UserLogout extends Notification implements ShouldQueue
     {
         return [
             'message' =>$this->message,
-            'time' => 'Your check-out time is today at '. $this->time,
             'key' => 'exit',
         ];
     }

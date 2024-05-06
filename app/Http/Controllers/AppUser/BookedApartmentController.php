@@ -345,7 +345,7 @@ class BookedApartmentController extends Controller
                         //notification to login user
                         $notificationData = $this->controlNotification('entry_day');
                         $notificationDate = Carbon::parse($booked->date_from);
-                        $user->notify((new UserLogin($notificationData['message'], $notificationData['time']))->delay($notificationDate));
+                        $user->notify((new UserLogin($notificationData['message'], $notificationData['time'],$booked))->delay($notificationDate));
                         UserLoginEvent::dispatch($notificationData['message'], $notificationData['time']);
                         //notification to logout user
                         $notificationData = $this->controlNotification('exit_day');

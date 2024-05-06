@@ -142,12 +142,21 @@
       var pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
             cluster: 'mt1'
           });
-
-          var channel = pusher.subscribe('user-channel');
-          channel.bind('App\\Events\\BookedUserEvent', function(data) {
+          var channel = pusher.subscribe('admin-channel');
+          channel.bind('App\\Events\\BookingToAdminEvent', function(data) {
             console.log(data);
             alert(JSON.stringify(data));
           });
+        //   var pusher = new Pusher("{{ env('PUSHER_APP_KEY') }}", {
+        //     cluster: 'mt1'
+        //   });
+
+        //   var channel = pusher.subscribe('user-channel');
+        //   channel.bind('App\\Events\\BookingUserEvent', function(data) {
+        //     console.log(data);
+        //     alert(JSON.stringify(data));
+        //   });
+
         </script>
     </body>
 

@@ -11,25 +11,17 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserLoginEvent implements ShouldBroadcast
+class ManalNotificationWorkersEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $message;
-    private $id;
-
-
-
-
 
     /**
      * Create a new event instance.
      */
-    public function __construct($message,$booked)
+    public function __construct($message)
     {
-        $this->message = $message;
-
-        $this->id = $booked->id;
-
+        $this->message =$message ;
     }
 
     /**
@@ -40,7 +32,7 @@ class UserLoginEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('user-channel'),
+            new PrivateChannel('admin-channel'),
         ];
     }
 }

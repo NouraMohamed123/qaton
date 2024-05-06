@@ -3,42 +3,27 @@
 namespace App\Services;
 
 use Carbon\Carbon;
-use App\Models\Cart;
 use App\Models\User;
-use App\Models\Order;
 use App\Models\Point;
 use App\Models\Coupon;
-use App\Models\Booking;
-use App\Models\Membership;
-use App\Events\BookedEvent;
 use App\Models\OrderPayment;
-use App\Models\Subscription;
 use Illuminate\Http\Request;
-use App\Models\PaymentGetway;
 use App\Events\UserLoginEvent;
-use App\Models\PaymentGeteway;
-use App\Events\BookedUserEvent;
 use App\Events\UserLogoutEvent;
 use App\Events\BookingUserEvent;
 use App\Models\Booked_apartment;
 use App\Notifications\UserLogin;
-use App\Notifications\BookedUser;
 use App\Notifications\UserLogout;
 use App\Notifications\BookingUser;
 use Illuminate\Support\Facades\DB;
 use App\Events\BookingToAdminEvent;
 use App\Models\ControlNotification;
-use App\Models\SubscriptionPayment;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
-use App\Notifications\AppUserBooking;
 use App\Notifications\BookingToAdmin;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Config;
-use App\Notifications\BookingNotification;
-use App\Services\contracts\PaymentInterface;
 use Illuminate\Support\Facades\Notification;
-use App\Services\WatsapIntegrationSubscription;
 
 class TabbyPayment
 {
@@ -171,17 +156,36 @@ class TabbyPayment
 
                     //notification to login user
                     $notificationData = $this->controlNotification('entry_day');
-                    $notificationDate = Carbon::parse($booked->date_from);
-                    $user->notify((new UserLogin($notificationData['message'], $notificationData['time'],$booked))->delay($notificationDate));
-                    UserLoginEvent::dispatch($notificationData['message'], $notificationData['time'],$booked);
-
+                    $notificationTime = Carbon::parse($notificationData['time']);
+                        $hours = $notificationTime->hour;
+                        $minutes = $notificationTime->minute;
+                        $seconds = $notificationTime->second;
+                        $notificationDate = Carbon::parse($booked->date_from)
+                        ->addHours($hours)
+                        ->addMinutes($minutes)
+                        ->addSeconds($seconds);
+                    $user->notify((new UserLogin($notificationData['message'],$booked))->delay($notificationDate));
+                    $userLoginEvent = new UserLoginEvent($notificationData['message'], $booked);
+                    Queue::push(function($job) use ($userLoginEvent, $notificationDate) {
+                        Event::dispatch($userLoginEvent);
+                        $job->release($notificationDate);
+                    });
                     //notification to logout user
                     $notificationData = $this->controlNotification('exit_day');
-                    $notificationDate = Carbon::parse($booked->date_to);
-                    $user->notify((new UserLogout($notificationData['message'], $notificationData['time']))->delay($notificationDate));
-                    // $event = (new UserLogoutEvent($notificationData['message'], $notificationData['time']))
-                    //      ->delay($notificationDate);
-                    //      Event::dispatch($event);
+                    $hours = $notificationTime->hour;
+                    $minutes = $notificationTime->minute;
+                    $seconds = $notificationTime->second;
+                    $notificationDate = Carbon::parse($booked->date_to)
+                    ->addHours($hours)
+                    ->addMinutes($minutes)
+                    ->addSeconds($seconds);
+                    $user->notify((new UserLogout($notificationData['message']))->delay($notificationDate));
+                    $UserLogoutEvent = new UserLogoutEvent($notificationData['message']);
+                    Queue::push(function($job) use ($UserLogoutEvent, $notificationDate) {
+                        Event::dispatch($UserLogoutEvent);
+                        $job->release($notificationDate);
+                    });
+
                     ///broadcast event booked user
                     BookingToAdminEvent::dispatch($user, $booked->apartment);
                     ////////insert to points

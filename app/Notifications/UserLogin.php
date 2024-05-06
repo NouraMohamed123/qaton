@@ -13,17 +13,17 @@ class UserLogin extends Notification  implements ShouldQueue
 
 
   private $message;
-  private $time;
+
   public $id ;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($message,$time,$booked)
+    public function __construct($message,$booked)
     {
 
         $this->message = $message;
-        $this->time = $time;
+
         $this->id = $booked->id;
 
 
@@ -65,7 +65,6 @@ class UserLogin extends Notification  implements ShouldQueue
     {
         return [
             'message' =>$this->message,
-            'time' => 'Your check-in time is today at '. $this->time,
             'id'=>$this->id,
             'key' => 'entry',
 

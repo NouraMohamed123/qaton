@@ -8,9 +8,6 @@ use Illuminate\Database\Eloquent\Model;
 class ManualNotification extends Model
 {
     use HasFactory;
-
-
-    protected $table = 'manual_notifications_workers';
     protected $guarded = [];
 
 
