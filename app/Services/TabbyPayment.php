@@ -179,8 +179,8 @@ class TabbyPayment
                     ->addHours($hours)
                     ->addMinutes($minutes)
                     ->addSeconds($seconds);
-                    $user->notify((new UserLogout($notificationData['message']))->delay($notificationDate));
-                    $UserLogoutEvent = new UserLogoutEvent($notificationData['message']);
+                    $user->notify((new UserLogout($notificationData['message'],$booked))->delay($notificationDate));
+                    $UserLogoutEvent = new UserLogoutEvent($notificationData['message'],$booked);
                     Queue::push(function($job) use ($UserLogoutEvent, $notificationDate) {
                         Event::dispatch($UserLogoutEvent);
                         $job->release($notificationDate);

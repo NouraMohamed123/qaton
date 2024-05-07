@@ -1,32 +1,26 @@
 <?php
 
 namespace App\Notifications;
+
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
 
-
-class UserLogin extends Notification  implements ShouldQueue
+class LeavingToAdmin extends Notification
 {
-  use Queueable;
+    use Queueable;
 
 
-  private $message;
-
-  public $id ;
-
+    private $user;
+    private $apartment;
     /**
      * Create a new notification instance.
      */
-    public function __construct($message,$booked)
+    public function __construct($newUser,$apartment)
     {
-
-        $this->message = $message;
-
-        $this->id = $booked->id;
-
-
+        $this->user = $newUser;
+        $this->apartment = $apartment;
     }
 
     /**
@@ -55,19 +49,12 @@ class UserLogin extends Notification  implements ShouldQueue
      *
      * @return array<string, mixed>
      */
-    // public function toArray(object $notifiable): array
-    // {
-    //     return [
-    //         'message' => 'Your check-in time is today at 4 p.m'. $this->apartment->name,
-    //     ];
-    // }
     public function toArray(object $notifiable): array
     {
         return [
-            'message' =>$this->message,
-            'id'=>$this->id,
-            'key' => 'entry',
-
+            'name' => $this->user->name,
+            'email' => $this->user->email,
+            'message' => ' User leaved  apartment ' . $this->apartment->name,
         ];
     }
 }

@@ -11,21 +11,18 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserLogoutEvent implements ShouldBroadcast
+class LeavingToAdminEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $message;
-    private $id;
-
+    public $myUser;
     /**
      * Create a new event instance.
      */
-    public function __construct($message,$booked)
-
+    public function __construct($user, $booked)
     {
-        $this->message =$message;
-        $this->id = $booked->id;
-
+        $this->message = "User leaved  apartment  $booked->apartment";
+        $this->myUser = $user;
     }
 
     /**
@@ -36,7 +33,7 @@ class UserLogoutEvent implements ShouldBroadcast
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('user-channel'),
+            new PrivateChannel('admin-channel'),
         ];
     }
 }

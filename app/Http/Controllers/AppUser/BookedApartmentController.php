@@ -25,11 +25,14 @@ use App\Notifications\BookingUser;
 use App\Services\FatoorahServices;
 use Illuminate\Support\Facades\DB;
 use App\Events\BookingToAdminEvent;
+use App\Events\LeavingToAdminEvent;
 use App\Models\ControlNotification;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\BookingToAdmin;
+use App\Notifications\LeavingToAdmin;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Queue;
 use App\Http\Resources\BookedResource;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
@@ -141,34 +144,7 @@ class BookedApartmentController extends Controller
 
         ]);
 
-        ///
-        // if ($paymentMethod == 'cash') {
-        //     $booked->paid = 1;
-        //     $booked->status = 'recent';
-        //     $booked->save();
-        //     // send notification to admin
-        //     $admins = User::all();
-        //     Notification::send($admins, new BookingToAdmin($user, $booked->apartment));
-        //     // send notification to user
-        //     $notificationData = $this->controlNotification('booking');
-        //     Notification::send($user, new BookingUser($notificationData['message']));
-        //     //notification to login user
-        //     $notificationData = $this->controlNotification('entry_day');
-        //     $notificationDate = Carbon::parse($booked->date_from);
-        //     $user->notify((new UserLogin($notificationData['message'],$notificationData['time'], $booked))->delay($notificationDate));
-        //     //notification to logout user
-        //     $notificationData = $this->controlNotification('exit_day');
-        //     $notificationDate = Carbon::parse($booked->date_to);
-        //     $user->notify((new UserLogout($notificationData['message'],$notificationData['time']))->delay($notificationDate));
-        //     ///broadcast event booked user
-        //     BookingToAdminEvent::dispatch($user, $booked->apartment);
-        //     Point::create([
-        //         'booked_id'=> $booked->id,
-        //         'user_id'=> $user->id,
-        //         'point'=> $booked->total_price
-        //     ]);
-        //     return response()->json(['isSuccess' => true, 'Data' => 'payment success'], 200);
-        // }
+
         $settings = Setting::pluck('value', 'key')
             ->toArray();
         if ($settings['available_bookings'] == '0') {
@@ -268,34 +244,6 @@ class BookedApartmentController extends Controller
         $booked->delete();
         return response()->json(['isSuccess' => true], 200);
     }
-    public function canceld(Booked_apartment $booked)
-    {
-        if ($booked) {
-            $booked->update([
-                'status' => 'canceled',
-            ]);
-        } else {
-            return response()->json(['isSuccess' => false], 200);
-        }
-
-        return response()->json(['error' => 'There is no booked found'], 403);
-    }
-
-    public function userBooked(Request $request)
-    {
-
-        $user = Auth::guard('app_users')->user();
-        $BookedApartments =   Booked_apartment::where('user_id', $user->id)->where('status', $request->status)->get();
-        return BookedResource::collection($BookedApartments);
-    }
-    public function userBookedDetailsAccess(Request $reques,$id){
-        $user = Auth::guard('app_users')->user();
-        $booked =   Booked_apartment::where('id', $id)->where('user_id', $user->id)->first();
-        return  new ApartmentResourceAccess($booked);
-
-
-
-    }
 
     public function checkCoupon(Request $request)
     {
@@ -344,18 +292,35 @@ class BookedApartmentController extends Controller
 
                         //notification to login user
                         $notificationData = $this->controlNotification('entry_day');
-                        $notificationDate = Carbon::parse($booked->date_from);
-                        $user->notify((new UserLogin($notificationData['message'], $notificationData['time'],$booked))->delay($notificationDate));
-                        UserLoginEvent::dispatch($notificationData['message'], $notificationData['time']);
+                       $notificationTime = Carbon::parse($notificationData['time']);
+                        $hours = $notificationTime->hour;
+                        $minutes = $notificationTime->minute;
+                        $seconds = $notificationTime->second;
+                        $notificationDate = Carbon::parse($booked->date_from)
+                        ->addHours($hours)
+                        ->addMinutes($minutes)
+                        ->addSeconds($seconds);
+                        $user->notify((new UserLogin($notificationData['message'],$booked))->delay($notificationDate));
+                        $userLoginEvent = new UserLoginEvent($notificationData['message'], $booked);
+                        Queue::push(function($job) use ($userLoginEvent, $notificationDate) {
+                            Event::dispatch($userLoginEvent);
+                            $job->release($notificationDate);
+                        });
                         //notification to logout user
                         $notificationData = $this->controlNotification('exit_day');
-                        $notificationDate = Carbon::parse($booked->date_to);
-                        $user->notify((new UserLogout($notificationData['message'], $notificationData['time']))->delay($notificationDate));
-                        $event = (new UserLogoutEvent($notificationData['message'], $notificationData['time']))
-                         ->delay($notificationDate);
-                         Event::dispatch($event);
-                        UserLogoutEvent::dispatch($notificationData['message'], $notificationData['time']);
-
+                        $hours = $notificationTime->hour;
+                        $minutes = $notificationTime->minute;
+                        $seconds = $notificationTime->second;
+                        $notificationDate = Carbon::parse($booked->date_to)
+                        ->addHours($hours)
+                        ->addMinutes($minutes)
+                        ->addSeconds($seconds);
+                        $user->notify((new UserLogout($notificationData['message'],$booked))->delay($notificationDate));
+                        $UserLogoutEvent = new UserLogoutEvent($notificationData['message'],$booked);
+                        Queue::push(function($job) use ($UserLogoutEvent, $notificationDate) {
+                            Event::dispatch($UserLogoutEvent);
+                            $job->release($notificationDate);
+                        });
                         ///broadcast event booked user
                         BookingToAdminEvent::dispatch($user, $booked->apartment);
                         ////////insert to points
@@ -419,5 +384,41 @@ class BookedApartmentController extends Controller
         }
 
         return ['message' => $message, 'time' => $time];
+    }
+    public function canceld(Booked_apartment $booked)
+    {
+        if ($booked) {
+            $booked->update([
+                'status' => 'canceled',
+            ]);
+        } else {
+            return response()->json(['isSuccess' => false], 200);
+        }
+
+        return response()->json(['error' => 'There is no booked found'], 403);
+    }
+
+    public function userBooked(Request $request)
+    {
+
+        $user = Auth::guard('app_users')->user();
+        $BookedApartments =   Booked_apartment::where('user_id', $user->id)->where('status', $request->status)->get();
+        return BookedResource::collection($BookedApartments);
+    }
+    public function userBookedDetailsAccess(Request $reques,$id){
+        $user = Auth::guard('app_users')->user();
+        $booked =   Booked_apartment::where('id', $id)->where('user_id', $user->id)->first();
+        return  new ApartmentResourceAccess($booked);
+
+
+
+    }
+    public function userLeaving(Request $request,$id){
+        $user = Auth::guard('app_users')->user();
+        $booked =   Booked_apartment::where('id', $id)->where('user_id', $user->id)->first();
+        $admins = User::all();
+        Notification::send($admins, new LeavingToAdmin($user, $booked));
+        LeavingToAdminEvent::dispatch($user, $booked->apartment);
+
     }
 }
