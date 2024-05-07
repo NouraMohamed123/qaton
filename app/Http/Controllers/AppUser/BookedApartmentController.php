@@ -405,20 +405,40 @@ class BookedApartmentController extends Controller
         $BookedApartments =   Booked_apartment::where('user_id', $user->id)->where('status', $request->status)->get();
         return BookedResource::collection($BookedApartments);
     }
-    public function userBookedDetailsAccess(Request $reques,$id){
-        $user = Auth::guard('app_users')->user();
-        $booked =   Booked_apartment::where('id', $id)->where('user_id', $user->id)->first();
+    public function userBookedDetailsAccess($id){
+        $booked =   Apartment::where('id', $id)->first();
         return  new ApartmentResourceAccess($booked);
 
 
 
     }
-    public function userLeaving(Request $request,$id){
+    public function userLeaving(Request $request){
+        $validator = Validator::make($request->all(), [
+            'id' => 'required|exists:apartments,id',
+            'exit' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => false,
+                'message' => $validator->errors(),
+            ], 422);
+        }
         $user = Auth::guard('app_users')->user();
-        $booked =   Booked_apartment::where('id', $id)->where('user_id', $user->id)->first();
+        $booked =   Booked_apartment::where('apartment_id', $request->id)->where('user_id', $user->id)->first();
+
+        if($booked){
+        $booked->update([
+            'exit' =>$request->exit,
+        ]);
         $admins = User::all();
-        Notification::send($admins, new LeavingToAdmin($user, $booked));
-        LeavingToAdminEvent::dispatch($user, $booked->apartment);
+        if($booked->exit == 1){
+            Notification::send($admins, new LeavingToAdmin($user, $booked));
+            LeavingToAdminEvent::dispatch($user, $booked->apartment);
+            return response()->json(['isSuccess' => true,'message'=> 'send successfuly' ], 200);
+
+        }
+    }
 
     }
 }

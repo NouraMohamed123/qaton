@@ -65,7 +65,10 @@ class ManualNotificationController extends Controller
                 Event::dispatch($ManalNotificationWorkersEvent);
                 $job->release($notificationDate);
             });
+
         }
+        return response()->json(['isSuccess' => true,'message'=> 'send successfuly' ], 200);
+
     }
     /**
      * Display the specified resource.

@@ -60,7 +60,7 @@ Route::get('/canceld-booked/{Booked_apartment}', [BookedApartmentController::cla
 Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, 'destroy']);
 Route::get('user-booked', [BookedApartmentController::class, 'userBooked']);
 Route::get('user-booked-details/{id}', [BookedApartmentController::class, 'userBookedDetailsAccess']);
-Route::get('user-leaving/{id}', [BookedApartmentController::class, 'userLeaving']);
+Route::post('user-leaving', [BookedApartmentController::class, 'userLeaving']);
 
 
 ///coupon
