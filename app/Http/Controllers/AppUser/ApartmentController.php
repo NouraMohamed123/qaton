@@ -15,6 +15,7 @@ use App\Http\Requests\ApartmentRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Resources\ApartmentResource;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\ApartmentResourceMobile;
 
 class ApartmentController extends Controller
 {
@@ -138,7 +139,7 @@ class ApartmentController extends Controller
             $apartment->favorited_by_user = $apartment->favorites->contains('user_id', $userId);
         });
         return response()->json(['isSuccess' => true,
-        'data' => ApartmentResource::collection($available_apartments),
+        'data' => ApartmentResourceMobile::collection($available_apartments),
 
     ], 200);
     }
@@ -150,7 +151,7 @@ class ApartmentController extends Controller
 
         $apartments = \App\Models\Apartment::with('reviews')->where('status', 1)->get();
 
-        return response()->json(['isSuccess' => true, 'data' => ApartmentResource::collection($apartments)], 200);
+        return response()->json(['isSuccess' => true, 'data' => ApartmentResourceMobile::collection($apartments)], 200);
         if ($apartments->count() <= 0) {
             return response()->json(['error' => 'There is no apartment found'], 403);
         }

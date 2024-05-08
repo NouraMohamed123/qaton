@@ -6,7 +6,7 @@ use App\Models\Setting;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ApartmentResource extends JsonResource
+class ApartmentResourceMobile extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -29,7 +29,7 @@ class ApartmentResource extends JsonResource
             'tax' => $taxAddedValue,
             'total_price' => $total_price,
             'total_price_nights' => ($this->nights) * $total_price,
-            'area_name' =>   $area_name,
+            'area_name'=>   $area_name,
             'rating' => $ratingSum,
             'beds' => $bedsSum,
             'reviews' => $this->reviews->map(function ($review) {
@@ -39,17 +39,16 @@ class ApartmentResource extends JsonResource
             }),
             'images' => $this->images->map(function ($image) {
                 return [
-                    asset('uploads/apartments/' . $image->image),
+                    'id' => $image->id,
+                    'apartment_id' => $image->apartment_id,
+                    'image' => asset('uploads/apartments/' . $image->image),
+                    'created_at' => $image->created_at,
+                    'updated_at' => $image->updated_at,
                 ];
-            })->flatten()->toArray(),
-            'access_images' => $this->AccessImages ? $this->AccessImages->map(function ($image) {
-                return [
-                    asset('uploads/apartments-access/' . $image->image),
-                ];
-            })->flatten()->toArray() : [],
+            }),
             'prices' => $this->prices->map(function ($price) {
                 return [
-                    'price' => $price->price,
+                    'price' =>$price->price,
                     'date' => $price->date,
 
                 ];
