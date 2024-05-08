@@ -46,6 +46,11 @@ class ApartmentResource extends JsonResource
                     'updated_at' => $image->updated_at,
                 ];
             }),
+            'access_images' => $this->AccessImages ? $this->AccessImages->map(function ($image) {
+                return [
+                    'image' => asset('uploads/apartments-access/' . $image->image),
+                ];
+            }) : [],
             'prices' => $this->prices->map(function ($price) {
                 return [
                     'price' =>$price->price,
