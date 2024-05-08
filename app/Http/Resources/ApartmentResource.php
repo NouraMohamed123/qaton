@@ -39,16 +39,14 @@ class ApartmentResource extends JsonResource
             }),
             'images' => $this->images->map(function ($image) {
                 return [
-
                      asset('uploads/apartments/' . $image->image),
-
                 ];
-            }),
-            'access_images' => $this->AccessImages ? $this->AccessImages->map(function ($image) {
+            })->flatten()->toArray(),
+'access_images' => $this->AccessImages ? $this->AccessImages->map(function ($image) {
                 return [
                     asset('uploads/apartments-access/' . $image->image),
                 ];
-            }) : [],
+            })->flatten()->toArray() : [],
             'prices' => $this->prices->map(function ($price) {
                 return [
                     'price' =>$price->price,
