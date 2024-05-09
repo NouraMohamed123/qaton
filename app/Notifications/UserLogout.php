@@ -19,7 +19,7 @@ class UserLogout extends Notification implements ShouldQueue
     public function __construct($message,$booked)
     {
         $this->message = $message;
-        $this->id = $booked->id;
+        $this->id = $booked->apartment_id;
 
     }
 

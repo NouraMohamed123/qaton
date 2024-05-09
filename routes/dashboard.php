@@ -131,6 +131,7 @@ Route::get('/notification-clear', [NotificationController::class, 'Clear']);
 
 ///manual notifications
 Route::post('/manual-notifications', [ManualNotificationController::class, 'store']);
+
 //control notification
 
 Route::get('/control-notifications', [ControlNotificationController::class, 'index']);

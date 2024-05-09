@@ -406,6 +406,7 @@ class BookedApartmentController extends Controller
         return BookedResource::collection($BookedApartments);
     }
     public function userBookedDetailsAccess($id){
+
         $booked =   Apartment::where('id', $id)->first();
         return  new ApartmentResourceAccess($booked);
 

@@ -24,7 +24,7 @@ class UserLogin extends Notification  implements ShouldQueue
 
         $this->message = $message;
 
-        $this->id = $booked->id;
+        $this->id = $booked->apartment_id;
 
 
     }
