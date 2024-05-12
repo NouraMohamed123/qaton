@@ -125,9 +125,9 @@ Route::delete('/offers/{offer}', [OffersController::class, 'destroy']);
 
 
 ///notifications
-Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
-Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
-Route::get('/notification-clear', [NotificationController::class, 'Clear']);
+Route::get('/notification-read/{type}', [NotificationController::class, 'NotificationRead']);
+Route::get('/notification-markasread/{type}', [NotificationController::class, 'MarkASRead']);
+Route::get('/notification-clear/{type}', [NotificationController::class, 'Clear']);
 
 ///manual notifications
 Route::post('/manual-notifications', [ManualNotificationController::class, 'store']);

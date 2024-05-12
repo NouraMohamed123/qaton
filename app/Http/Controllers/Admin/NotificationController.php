@@ -8,25 +8,57 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
-    public function NotificationRead(){
-        $notifications = Auth::guard('users')->user()->notifications;
-        return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
-    }
-    public function MarkASRead(){
-        if(Auth::guard('users')->user()->notifications){
-            $notifications  =   Auth::guard('users')->user()->notifications->markAsRead();
-
-            return response()->json(['isSuccess' => true], 200);
+    public function NotificationRead($type)
+    {
+        if (!empty(Auth::guard('users')->user()->notifications)) {
+            if ($type == 'leaving') {
+                $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\LeavingToAdmin');
+            } elseif ($type == 'workers') {
+                $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\ManalNotificationWorkers');
+            } elseif ($type == 'booking') {
+                $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\BookingToAdmin');
+            }
+        } else {
+            $notifications = [];
         }
 
-    }
-    public function Clear(){
-
-        if(Auth::guard('users')->user()->notifications){
-            $notifications  =   Auth::guard('users')->user()->notifications()->delete();
-            return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
+        $data = [];
+        foreach ($notifications as $notification) {
+            $data[] = $notification;
         }
 
-        return response()->json(['isSuccess' => false,'error' => 'user it has no notification'], 200);
+        return response()->json(['isSuccess' => true, 'data' => $data], 200);
     }
-}
+        public function MarkASRead($type){
+
+            if(!empty(Auth::guard('users')->user()->notifications)){
+                if ($type == 'leaving') {
+                    $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\LeavingToAdmin')->markAsRead();
+                } elseif ($type == 'workers') {
+                    $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\ManalNotificationWorkers')->markAsRead();
+                } elseif ($type == 'booking') {
+                    $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\BookingToAdmin')->markAsRead();
+                }
+
+
+                return response()->json(['isSuccess' => true], 200);
+            }
+            return response()->json(['isSuccess' => false], 422);
+
+        }
+        public function Clear($type){
+
+            if(!empty(Auth::guard('users')->user()->notifications)){
+                if ($type == 'leaving') {
+                    $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\LeavingToAdmin')->delete();
+                } elseif ($type == 'workers') {
+                    $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\ManalNotificationWorkers')->delete();
+                } elseif ($type == 'booking') {
+                    $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\BookingToAdmin')->delete();
+                }
+                return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
+            }
+
+            return response()->json(['isSuccess' => false,'error' => 'user it has no notification'], 401);
+        }
+    }

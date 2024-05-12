@@ -87,7 +87,7 @@ public function login(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string',
-            'phone' => 'required|string|unique:app_users',
+            'phone' => 'required|string|unique:app_users,phone',
             'email' => 'required|string|email|unique:app_users',
             'password' => 'required|string|min:6',
         ]);
