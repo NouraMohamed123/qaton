@@ -62,6 +62,7 @@ class ReviewController extends Controller
             'location_rating' => $request->location_rating,
             'facilities_rating' => $request->facilities_rating,
             'cleanliness_rating' => $request->cleanliness_rating,
+            'price_rating' => $request->price_rating,
             'staff_rating' => $request->staff_rating,
             'liked' => $request->liked,
             'disliked' => $request->disliked,
@@ -114,6 +115,8 @@ class ReviewController extends Controller
             'descriptions' => $request->descriptions,
             'rating' => $request->rating,
             'comfort_rating' => $request->comfort_rating,
+            'price_rating' => $request->price_rating,
+
             'location_rating' => $request->location_rating,
             'facilities_rating' => $request->facilities_rating,
             'cleanliness_rating' => $request->cleanliness_rating,
