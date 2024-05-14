@@ -22,6 +22,7 @@ class Review extends Model
         'user_id'=>'integer',
         'comfort_rating'=>'integer',
         'location_rating'=>'integer',
+        'price_rating'=>'integer',
         'facilities_rating'=>'integer',
         'cleanliness_rating'=>'integer',
         'staff_rating'=>'integer',
