@@ -36,6 +36,7 @@ class ApartmentResourceAccess extends JsonResource
              'contact_numbers'=>json_decode($this->contact_numbers),
              'secret_door'=> $this->secret_door,
              'access_video' => $this->access_video ? asset('uploads/access_video/' . $this->access_video) : null,
+             'area_name' => $this->area->name
 
             ];
         }
