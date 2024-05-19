@@ -39,6 +39,7 @@ Route::group([
     'prefix' => 'dashboard',
 ], function ($router) {
  //users
+ Route::get('/me', [UserController::class, 'me']);
 Route::get('/users', [UserController::class, 'index']);
 Route::get('/users/{user}', [UserController::class, 'show']);
 Route::post('/users', [UserController::class, 'store']);

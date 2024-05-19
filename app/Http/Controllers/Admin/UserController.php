@@ -29,6 +29,22 @@ class UserController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+    public function me(Request $request)
+    {
+        $user = auth()->user();
+
+        $roles = $user->roles;
+        $permissions = $roles->flatMap(function ($role) {
+            return $role->permissions->pluck('name');
+        });
+        return response()->json([
+
+            'user' => $user,
+            "roles" => $roles,
+            'permissions' => $permissions,
+
+        ]);
+    }
     public function index(Request $request)
     {
         $users = User::with('permissions')->paginate($request->get('per_page', 50));

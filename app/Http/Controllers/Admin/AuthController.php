@@ -61,18 +61,16 @@ public function login(Request $request)
             ], 401);
         }
         $user = auth()->user();
-        $id = $user->id;
-        $name = $user->name;
+
         $roles = $user->roles;
         $permissions = $roles->flatMap(function ($role) {
             return $role->permissions->pluck('name');
         });
         return response()->json([
             'access_token' => $token,
+            'user' => $user,
             "roles" => $roles,
-            "name" => $name,
             'permissions' => $permissions,
-            "id" => $id,
             'expires_in' => JWTAuth::factory()->getTTL() * 60,
         ]);
     }
