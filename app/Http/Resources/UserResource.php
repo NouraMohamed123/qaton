@@ -27,12 +27,12 @@ class UserResource extends JsonResource
 
         return [
             'id' => $this->id,
-            'name' => $this->name,
-            'email' => $this->email,
+            'name' => $this->name??null,
+            'email' => $this->email??null,
             'phone' => $this->phone,
-            'date_of_birth' => $this->date_of_birth,
-            'national_id' => $this->national_id,
-            'photo' => $this->photo,
+            'date_of_birth' => $this->date_of_birth??null,
+            'national_id' => $this->national_id??null,
+            'photo' => $this->photo??null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'roles_name' => $this->roles->first()->name       ];

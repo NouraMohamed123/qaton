@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\ApartmentResource;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\ApartmentResourceMobile;
 
 class FavoriteController extends Controller
 {
@@ -34,7 +35,7 @@ class FavoriteController extends Controller
         })->get();
 
 
-        return response()->json(['data'=> ApartmentResource::collection( $apartments) ], 200);
+        return response()->json(['data'=> ApartmentResourceMobile::collection( $apartments) ], 200);
     }
 
 
