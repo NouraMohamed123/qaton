@@ -35,7 +35,7 @@ class UserResource extends JsonResource
             'photo' => $this->photo??null,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'roles_name' => $this->roles->first()->name       ];
+            'roles_name' => $this->roles->first()?->name ?? null,      ];
     }
 }
 
