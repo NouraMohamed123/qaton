@@ -55,7 +55,7 @@ Route::get('/user-favorits', [FavoriteController::class, 'index']);
 Route::get('/booked', [BookedApartmentController::class, 'index']);
 Route::get('/booked/{booked}', [BookedApartmentController::class, 'show']);
 Route::post('/booked', [BookedApartmentController::class, 'store']);
-Route::post('/booked/{Booked_apartment}', [BookedApartmentController::class, 'update']);
+Route::post('/booked-canceld', [BookedApartmentController::class, 'bookedCancelled']);
 Route::get('/canceld-booked/{Booked_apartment}', [BookedApartmentController::class, 'canceld']);
 Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, 'destroy']);
 Route::get('user-booked', [BookedApartmentController::class, 'userBooked']);

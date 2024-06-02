@@ -92,7 +92,10 @@ class BookedApartmentController extends Controller
                     })->orWhere(function ($qqq) use ($checkInDate, $checkOutDate) {
                         $qqq->where('date_from', '<=', $checkOutDate)->where('date_to', '>=', $checkOutDate);
                     });
-                })->where('paid', 1);
+                })  ->where(function ($w) {
+                    $w->where('paid', 1)
+                      ->orWhere('status', '!=', 'canceled');
+                });
             }])
             ->first();
         if (!$apartment) {
@@ -440,6 +443,13 @@ class BookedApartmentController extends Controller
 
         }
     }
+    }
+    public function bookedCancelled(Request $request){
+        $user = Auth::guard('app_users')->user();
+        $booked = Booked_apartment::where('user_id ', $user->id)->first();
+        $booked->status = 'canceled';
+        return response()->json(['isSuccess' => true,'message'=> 'successfuly' ], 200);
 
     }
+
 }

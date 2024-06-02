@@ -107,7 +107,8 @@ class ApartmentController extends Controller
             $query->where(function ($q) use ($checkInDate, $checkOutDate) {
                 $q->whereBetween('date_from', [$checkInDate, $checkOutDate])
                   ->orWhereBetween('date_to', [$checkInDate, $checkOutDate]);
-            });
+            })
+            ->where('status', '!=', 'canceled');
         }])
         ->where('status', 1)
         ->whereIn('area_id', $areas_id)
