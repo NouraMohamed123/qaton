@@ -406,7 +406,11 @@ class BookedApartmentController extends Controller
     {
 
         $user = Auth::guard('app_users')->user();
-        $BookedApartments =   Booked_apartment::where('user_id', $user->id)->where('status', $request->status)->get();
+        $BookedApartments = Booked_apartment::where('user_id', $user->id)
+        ->where('status', $request->status)
+        ->latest()
+        ->get();
+
         return BookedResource::collection($BookedApartments);
     }
     public function userBookedDetailsAccess($id){

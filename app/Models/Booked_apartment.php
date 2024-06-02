@@ -26,10 +26,15 @@ class Booked_apartment extends Model
     }
     public function getStatusAttribute()
     {
-        if ($this->date_from <= now()) {
-            return 'past';
+        $dateTo = Carbon::parse($this->date_to)->toDateString();
+        $now = Carbon::now()->toDateString();
+        if ($this->attributes['status'] === 'canceled') {
+            return 'canceled';
         }
 
+        if ($dateTo < $now) {
+            return 'past';
+        }
         return $this->attributes['status'];
     }
     // public function sendDateFromNotification()
