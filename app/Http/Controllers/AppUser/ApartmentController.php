@@ -161,7 +161,6 @@ class ApartmentController extends Controller
         try {
             $validatedData = $request->validate([
                 'name' => 'required|string',
-                'price' => 'required|numeric',
                 'bathrooms' => 'required|integer',
                 'lounges' => 'required|integer',
                 'view' => 'required|string',
@@ -178,7 +177,6 @@ class ApartmentController extends Controller
             }
             $data = [
                 'name' => $request->name,
-                'price' => $request->price,
                 'bathrooms' => $request->bathrooms,
                 'lounges' => $request->lounges,
                 'view' => $request->view,
