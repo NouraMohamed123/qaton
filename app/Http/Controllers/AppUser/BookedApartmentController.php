@@ -92,9 +92,9 @@ class BookedApartmentController extends Controller
                     })->orWhere(function ($qqq) use ($checkInDate, $checkOutDate) {
                         $qqq->where('date_from', '<=', $checkOutDate)->where('date_to', '>=', $checkOutDate);
                     });
-                })  ->where(function ($w) {
+                })->where(function ($w) {
                     $w->where('paid', 1)
-                      ->orWhere('status', '!=', 'canceled');
+              ->where('status', '!=', 'canceled');
                 });
             }])
             ->first();
@@ -388,17 +388,18 @@ class BookedApartmentController extends Controller
 
         return ['message' => $message, 'time' => $time];
     }
-    public function canceld(Booked_apartment $booked)
+    public function canceld(Request $request)
     {
-        if ($booked) {
-            $booked->update([
-                'status' => 'canceled',
-            ]);
-        } else {
-            return response()->json(['isSuccess' => false], 200);
-        }
+        $checkInDate = Carbon::parse($request->check_in_date);
+        $checkOutDate = Carbon::parse($request->check_out_date);
+            $booked = Booked_apartment::where('apartment_id', '=', $request->apartment_id)->where('date_from',$checkInDate)->where('date_to',$checkOutDate)->first();
+            if ($booked) {
+            $booked->status = 'canceled';
+            $booked->save();
+            return response()->json(['isSuccess' => true,'message'=> 'successfuly' ], 200);
+            }
 
-        return response()->json(['error' => 'There is no booked found'], 403);
+        return response()->json(['error' => 'There is no booked found for this apartment'], 403);
     }
 
     public function userBooked(Request $request)
@@ -443,13 +444,6 @@ class BookedApartmentController extends Controller
 
         }
     }
-    }
-    public function bookedCancelled(Request $request){
-        $user = Auth::guard('app_users')->user();
-        $booked = Booked_apartment::where('user_id ', $user->id)->first();
-        $booked->status = 'canceled';
-        return response()->json(['isSuccess' => true,'message'=> 'successfuly' ], 200);
-
     }
 
 }
