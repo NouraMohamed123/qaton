@@ -408,10 +408,17 @@ class BookedApartmentController extends Controller
         $user = Auth::guard('app_users')->user();
         $BookedApartments = Booked_apartment::where('user_id', $user->id)
         ->where('status', $request->status)
+        ->whereIn('id', function ($query) use ($user, $request) {
+            $query->selectRaw('MAX(id)')
+                ->from('booked_apartments')
+                ->where('user_id', $user->id)
+                ->where('status', $request->status)
+                ->groupBy('apartment_id');
+        })
         ->latest()
         ->get();
 
-        return BookedResource::collection($BookedApartments);
+    return BookedResource::collection($BookedApartments);
     }
     public function userBookedDetailsAccess($id){
 
