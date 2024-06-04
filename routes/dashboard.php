@@ -82,6 +82,7 @@ Route::get('apartmentCount', [ApartmentController::class, 'apartmentCount']);
 Route::post('/prices', [PriceController::class, 'store']);
 Route::get('/prices/{id}', [PriceController::class, 'show']);
 Route::post('/apartments/{id}/copy', [ApartmentController::class, 'copyApartment']);
+// Route::get('/immediate-follow-up', [ApartmentController::class, 'Immediate_follow_up']);
 /////////about_us
 Route::get('/about_us', [AboutUsController::class, 'index']);
 Route::get('/about_us/{about_us}', [AboutUsController::class, 'show']);
@@ -113,7 +114,7 @@ Route::get('/payments-getway', [PaymentGatewayController::class, 'index']);
 Route::post('/myFatoorah-update', [PaymentGatewayController::class, 'MyfatoorahUpdate']);
 //reports
 Route::get('/all-order', [ReportsController::class, 'all_orders']);
-Route::get('orderCount', [OrderController::class, 'orderCount']);
+Route::get('orderCount', [ReportsController::class, 'orderCount']);
 Route::get('/all-payments', [ReportsController::class, 'all_payments']);
 Route::get('/reservation-request', [ReportsController::class, 'reservation_request']);
 //offers

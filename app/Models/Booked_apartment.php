@@ -21,23 +21,24 @@ class Booked_apartment extends Model
     }
 
     public function apartment()
+
     {
         return $this->belongsTo(Apartment::class);
     }
     public function getStatusAttribute()
     {
-         $dateTo = Carbon::parse($this->date_to)->toDateString();
-    $now = Carbon::now()->toDateString();
+    //      $dateTo = Carbon::parse($this->date_to)->toDateString();
+    //        $now = Carbon::now()->toDateString();
 
 
-    if ($this->attributes['status'] === 'canceled') {
-        return 'canceled';
-    }
+    // if ($this->attributes['status'] === 'canceled') {
+    //     return 'canceled';
+    // }
 
 
-    if ($dateTo < $now) {
-        return 'past';
-    }
+    // if ($dateTo < $now) {
+    //     return 'past';
+    // }
 
 
     return $this->attributes['status'];

@@ -34,9 +34,11 @@ use App\Notifications\LeavingToAdmin;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Queue;
 use App\Http\Resources\BookedResource;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Notification;
 use App\Http\Resources\ApartmentResourceAccess;
+use PDF;
 
 class BookedApartmentController extends Controller
 {
@@ -455,5 +457,24 @@ class BookedApartmentController extends Controller
         }
     }
     }
+    public function generate_pdf(Request $request){
 
+        $data = [
+            'translation'=>[
+                'hello' => 'اهلا',
+                'welcome' => 'مرحبا',
+                'good' => 'جيد'
+                ]
+        ];
+        $dateTime = now();
+        $fileName = $dateTime->format('YmdHis') . '_translation.pdf';
+        $pdf = PDF::loadView('translation', $data);
+        $pdf->save( storage_path('app/public/'.$fileName));
+       //Get the file url
+        $urlToDownload =  Storage::disk('public')->url($fileName);
+        return response()->json([
+            'success' => true,
+            'url' => $urlToDownload,
+        ]);
+     }
 }

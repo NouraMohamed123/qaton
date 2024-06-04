@@ -23,7 +23,18 @@ class ReportsController extends Controller
         $payments = OrderPayment::with('booked')->latest()->get();
         return response()->json(['data'=> $payments], 200);
     }
+    public function orderCount()
+    {
+        $count = Booked_apartment::count();
 
+        return response()->json([
+            "message" => "عملية العرض تمت بنجاح",
+            'data' => $count
+        ], 200);
+    }
+    // public function Immediate_follow_up(){
+    //     $booked =  Booked_apartment::with('Apartment')->get();
+    //  }
     /**
      * Show the form for creating a new resource.
      */

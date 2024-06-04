@@ -315,4 +315,6 @@ class ApartmentController extends Controller
 
         return response()->json(['isSuccess' => true, 'data' => new ApartmentResource($apartment)], 200);
     }
+
+
 }
