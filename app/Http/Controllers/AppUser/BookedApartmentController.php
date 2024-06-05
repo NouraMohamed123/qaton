@@ -292,8 +292,8 @@ class BookedApartmentController extends Controller
                         Notification::send($admins, new BookingToAdmin($user, $booked->apartment));
                         // send notification to user
                         $notificationData = $this->controlNotification('booking');
-                        Notification::send($user, new BookingUser($notificationData['message']));
-                        BookingUserEvent::dispatch($notificationData['message']);
+                        Notification::send($user, new BookingUser($notificationData['message'],$notificationData['title']));
+                        BookingUserEvent::dispatch($notificationData['message'],$notificationData['title']);
 
                         //notification to login user
                         $notificationData = $this->controlNotification('entry_day');
@@ -305,8 +305,8 @@ class BookedApartmentController extends Controller
                         ->addHours($hours)
                         ->addMinutes($minutes)
                         ->addSeconds($seconds);
-                        $user->notify((new UserLogin($notificationData['message'],$booked))->delay($notificationDate));
-                        $userLoginEvent = new UserLoginEvent($notificationData['message'], $booked);
+                        $user->notify((new UserLogin($notificationData['message'],$booked,$notificationData['title']))->delay($notificationDate));
+                        $userLoginEvent = new UserLoginEvent($notificationData['message'], $booked,$notificationData['title']);
                         Queue::push(function($job) use ($userLoginEvent, $notificationDate) {
                             Event::dispatch($userLoginEvent);
                             $job->release($notificationDate);
@@ -320,8 +320,8 @@ class BookedApartmentController extends Controller
                         ->addHours($hours)
                         ->addMinutes($minutes)
                         ->addSeconds($seconds);
-                        $user->notify((new UserLogout($notificationData['message'],$booked))->delay($notificationDate));
-                        $UserLogoutEvent = new UserLogoutEvent($notificationData['message'],$booked);
+                        $user->notify((new UserLogout($notificationData['message'],$booked,$notificationData['title']))->delay($notificationDate));
+                        $UserLogoutEvent = new UserLogoutEvent($notificationData['message'],$booked,$notificationData['title']);
                         Queue::push(function($job) use ($UserLogoutEvent, $notificationDate) {
                             Event::dispatch($UserLogoutEvent);
                             $job->release($notificationDate);
@@ -376,19 +376,23 @@ class BookedApartmentController extends Controller
         $time = '';
         if ($type == 'booking') {
             $message = ControlNotification::where('type', 'booking')->value('message');
+            $title = ControlNotification::where('type', 'booking')->value('$title');
             $time = ControlNotification::where('type', 'booking')->value('time');
         } elseif ($type == 'entry_day') {
             $message = ControlNotification::where('type', 'entry_day')->value('message');
+            $title = ControlNotification::where('type', 'entry_day')->value('title');
             $time = ControlNotification::where('type', 'entry_day')->value('time');
         } elseif ($type == 'exit_day') {
             $message = ControlNotification::where('type', 'exit_day')->value('message');
+            $title = ControlNotification::where('type', 'exit_day')->value('title');
             $time = ControlNotification::where('type', 'exit_day')->value('time');
         } else {
             $message = 'Default message';
+            $title = 'Default title';
             $time = 'Default time';
         }
 
-        return ['message' => $message, 'time' => $time];
+        return ['message' => $message, 'time' => $time , 'title' => $title];
     }
     public function canceld(Request $request)
     {
@@ -471,7 +475,7 @@ class BookedApartmentController extends Controller
         $pdf = PDF::loadView('translation', $data);
         $pdf->save( storage_path('app/public/'.$fileName));
        //Get the file url
-        $urlToDownload =  Storage::disk('public')->url($fileName);
+        $urlToDownload =    asset('storage/' .   $fileName );
         return response()->json([
             'success' => true,
             'url' => $urlToDownload,

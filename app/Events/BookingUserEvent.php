@@ -15,13 +15,14 @@ class BookingUserEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $message;
-
+    public $title;
     /**
      * Create a new event instance.
      */
-    public function __construct($message)
+    public function __construct($message, $title)
     {
         $this->message = $message;
+        $this->title = $title;
 
     }
 

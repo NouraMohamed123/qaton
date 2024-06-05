@@ -37,7 +37,8 @@ class ControlNotificationController extends Controller
         $validatedData = $request->validate([
             'type' => 'required|in:booking,entry_day,exit_day',
             'time' => 'nullable',
-            'message' => 'nullable|string',
+            'message' => 'required|string',
+            'title' => 'required',
         ]);
 
         $notification = ControlNotification::create($request->all());
@@ -69,6 +70,7 @@ class ControlNotificationController extends Controller
             'type' => 'required|in:booking,entry_day,exit_day',
             'time' => 'nullable',
             'message' => 'nullable|string',
+            'title' => 'required',
         ]);
         $notification->update($request->all());
         return response()->json($notification);

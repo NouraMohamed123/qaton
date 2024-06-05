@@ -12,13 +12,14 @@ class UserLogout extends Notification implements ShouldQueue
     use Queueable;
     private $message;
     public $id ;
-
+    private $title;
     /**
      * Create a new notification instance.
      */
-    public function __construct($message,$booked)
+    public function __construct($message,$booked,$title)
     {
         $this->message = $message;
+        $this->title = $title;
         $this->id = $booked->apartment_id;
 
     }
@@ -52,6 +53,7 @@ class UserLogout extends Notification implements ShouldQueue
     public function toArray(object $notifiable): array
     {
         return [
+            'title' => $this->title,
             'message' =>$this->message,
             'id'=>$this->id,
             'key' => 'exit',

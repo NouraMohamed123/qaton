@@ -16,14 +16,15 @@ class UserLogoutEvent implements ShouldBroadcast
     use Dispatchable, InteractsWithSockets, SerializesModels;
     public $message;
     private $id;
-
+    public $title;
     /**
      * Create a new event instance.
      */
-    public function __construct($message,$booked)
+    public function __construct($message,$booked,$title)
 
     {
         $this->message =$message;
+        $this->title = $title;
         $this->id = $booked->id;
 
     }

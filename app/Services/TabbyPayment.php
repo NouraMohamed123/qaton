@@ -151,8 +151,8 @@ class TabbyPayment
                     Notification::send($admins, new BookingToAdmin($user, $booked->apartment));
                     // send notification to user
                     $notificationData = $this->controlNotification('booking');
-                    Notification::send($user, new BookingUser($notificationData['message']));
-                    BookingUserEvent::dispatch($notificationData['message']);
+                    Notification::send($user, new BookingUser($notificationData['message'],$notificationData['title']));
+                    BookingUserEvent::dispatch($notificationData['message'],$notificationData['title']);
 
                     //notification to login user
                     $notificationData = $this->controlNotification('entry_day');
@@ -164,8 +164,8 @@ class TabbyPayment
                         ->addHours($hours)
                         ->addMinutes($minutes)
                         ->addSeconds($seconds);
-                    $user->notify((new UserLogin($notificationData['message'],$booked))->delay($notificationDate));
-                    $userLoginEvent = new UserLoginEvent($notificationData['message'], $booked);
+                    $user->notify((new UserLogin($notificationData['message'],$booked,$notificationData['title']))->delay($notificationDate));
+                    $userLoginEvent = new UserLoginEvent($notificationData['message'], $booked,$notificationData['title']);
                     Queue::push(function($job) use ($userLoginEvent, $notificationDate) {
                         Event::dispatch($userLoginEvent);
                         $job->release($notificationDate);
@@ -179,8 +179,8 @@ class TabbyPayment
                     ->addHours($hours)
                     ->addMinutes($minutes)
                     ->addSeconds($seconds);
-                    $user->notify((new UserLogout($notificationData['message'],$booked))->delay($notificationDate));
-                    $UserLogoutEvent = new UserLogoutEvent($notificationData['message'],$booked);
+                    $user->notify((new UserLogout($notificationData['message'],$booked,$notificationData['title']))->delay($notificationDate));
+                    $UserLogoutEvent = new UserLogoutEvent($notificationData['message'],$booked,$notificationData['title']);
                     Queue::push(function($job) use ($UserLogoutEvent, $notificationDate) {
                         Event::dispatch($UserLogoutEvent);
                         $job->release($notificationDate);

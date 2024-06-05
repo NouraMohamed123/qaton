@@ -13,13 +13,14 @@ class BookingUser  extends Notification
 
 
     private $message;
-
+    private $title;
     /**
      * Create a new notification instance.
      */
-    public function __construct($message)
+    public function __construct($message,$title)
     {
         $this->message = $message;
+        $this->title = $title;
     }
 
     /**
@@ -51,6 +52,7 @@ class BookingUser  extends Notification
     public function toArray(object $notifiable): array
     {
         return [
+            'title' => $this->title,
             'message' =>  $this->message,
              'key' => 'booking',
 
