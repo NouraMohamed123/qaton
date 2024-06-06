@@ -40,6 +40,7 @@ class SettingController extends Controller
             'site_name' => '',
             'info_email' => '',
             'mobile' => '',
+            'snapchat' => '',
             'tiktok' => '',
             'instagram' => '',
             'maintenance_mode' => 'integer',
