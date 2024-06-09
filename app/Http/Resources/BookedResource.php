@@ -15,10 +15,34 @@ class BookedResource extends JsonResource
      */
     public function toArray(Request $request): array
 {
-    return array_merge(parent::toArray($request), [
-        'apartment' => new ApartmentResource($this->apartment),
-        'user_name'=>$this->user->name
-    ]);
+    return  [
+    'date_from'=>$this->date_from,
+    'date_to'=>$this->date_to,
+    'price'=>$this->total_price,
+    'status'=>$this->status,
+    'leaving' =>$this->booked->exit,
+        'customer'=>[
+            'name' =>$this->user->name,
+            'email' =>$this->user->email,
+            'avatar' => asset('uploads/user/' .$this->user->avatar),
+        ],
+        'apartment' =>[
+         'name' =>$this->apartment->name,
+         'images' => $this->apartment->images->map(function ($image) {
+            return [
+                asset('uploads/apartments/' . $image->image),
+            ];
+        })->flatten()->toArray(),
+        'prices' => $this->apartment->prices->map(function ($price) {
+            return [
+                'price' => $price->price,
+                'date' => $price->date,
+
+            ];
+        }),
+    ],
+
+    ];
 }
 
 }
