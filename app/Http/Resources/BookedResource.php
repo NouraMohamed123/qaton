@@ -17,6 +17,7 @@ class BookedResource extends JsonResource
 {
     return  [
         'id'=>$this->id,
+
     'date_from'=>$this->date_from,
     'date_to'=>$this->date_to,
     'price'=>$this->total_price,
