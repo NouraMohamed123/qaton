@@ -35,13 +35,7 @@ class BookedResource extends JsonResource
                 asset('uploads/apartments/' . $image->image),
             ];
         })->flatten()->toArray(),
-        'prices' => $this->apartment->prices->map(function ($price) {
-            return [
-                'price' => $price->price,
-                'date' => $price->date,
 
-            ];
-        }),
     ],
 
     ];
