@@ -20,7 +20,7 @@ class BookedResource extends JsonResource
     'date_to'=>$this->date_to,
     'price'=>$this->total_price,
     'status'=>$this->status,
-    'leaving' =>$this->booked->exit,
+    'leaving' =>$this->exit,
         'customer'=>[
             'name' =>$this->user->name,
             'email' =>$this->user->email,
