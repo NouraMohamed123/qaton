@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Booked_apartment;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\BookedResource;
+use App\Http\Resources\OrderPaymentResource;
 
 class ReportsController extends Controller
 {
@@ -20,8 +21,8 @@ class ReportsController extends Controller
     }
     public function all_payments()
     {
-        $payments = OrderPayment::with('booked')->latest()->get();
-        return response()->json(['data'=> $payments], 200);
+        $payments = OrderPayment::with('booked.user')->latest()->get();
+        return OrderPaymentResource::collection($payments);
     }
     public function orderCount()
     {
