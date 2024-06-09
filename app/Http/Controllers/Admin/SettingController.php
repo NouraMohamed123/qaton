@@ -43,14 +43,14 @@ class SettingController extends Controller
             'snapchat' => '',
             'tiktok' => '',
             'instagram' => '',
-            'maintenance_mode' => 'integer',
+            'maintenance_mode' => '',
             'siteMaintenanceMsg' => '',
             'tax_added_value' => '',
             'site_name_en' => '',
             'cr' => '',
             'vat' => '',
-            'available_bookings' => 'integer',
-            'available_discount' => 'integer',
+            'available_bookings' => '',
+            'available_discount' => '',
         ]);
 
         if ($validator->fails()) {
