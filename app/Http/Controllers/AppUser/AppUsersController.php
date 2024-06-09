@@ -191,7 +191,7 @@ class AppUsersController extends Controller
     {
         try {
 
-            $token = "1c6120686b6b628a4b7e6b925b013757";
+            $token = "730e84907c2db2bd82f06807860e2cf5";
             $url = "https://api.taqnyat.sa/v1/messages";
 
             //Sender Name must be pre approved by the operator before being used
