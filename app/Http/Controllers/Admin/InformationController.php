@@ -24,29 +24,33 @@ class InformationController extends Controller
     public function show($id)
     {
         $information = Information::find($id);
-    
+
         if (!$information) {
             return response()->json(['message' => 'Information not found'], Response::HTTP_NOT_FOUND);
         }
-    
+
         return response()->json($information, Response::HTTP_OK);
     }
-    
 
-    public function update(Request $request, Information $information)
+
+    public function update(Request $request,$id)
     {
-        $information->update($request->all());
-        return response()->json($information);
+        $informations= Information::find($id);
+        $informations->update($request->all());
+        return response()->json(['message' => 'Information update successfully'], Response::HTTP_OK);
     }
 
-    public function destroy(Information $information)
+    public function destroy($id)
     {
-        if (!$information) {
-            return response()->json(['message' => 'information not found'], 404);
+        $Informations= Information::find($id);
+        if (!$Informations) {
+            return response()->json(['message' => 'Information not found'], Response::HTTP_NOT_FOUND);
         }
-    
-        $information->delete();
-        
-        return response()->json(['message' => 'information deleted successfully'], 200);
+        $Informations->delete();
+        return response()->json(['message' => 'Information deleted successfully'], Response::HTTP_OK);
+
+
+
+
     }
 }
