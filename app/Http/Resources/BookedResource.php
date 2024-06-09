@@ -22,7 +22,7 @@ class BookedResource extends JsonResource
     'status'=>$this->status,
     'leaving' =>$this->exit,
     'paid' =>$this->paid,
-    'coupon' =>$this->coupon_id == 1?$this->coupon->discount_code:0,
+'coupon' => !empty($this->coupon_id) ? $this->coupon->discount_code : 0,
         'customer'=>[
             'name' =>$this->user->name,
             'email' =>$this->user->email,
