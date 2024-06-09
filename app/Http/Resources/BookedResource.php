@@ -16,6 +16,7 @@ class BookedResource extends JsonResource
     public function toArray(Request $request): array
 {
     return  [
+        'id'=>$this->id,
     'date_from'=>$this->date_from,
     'date_to'=>$this->date_to,
     'price'=>$this->total_price,
