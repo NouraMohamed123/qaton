@@ -24,6 +24,12 @@ class ReportsController extends Controller
         $payments = OrderPayment::with('booked.user')->latest()->get();
         return OrderPaymentResource::collection($payments);
     }
+    public function payments($id)
+    {
+        $payments = OrderPayment::with('booked.user')->where('booked_id', $id)->first();
+
+        return new OrderPaymentResource($payments);
+    }
     public function orderCount()
     {
         $count = Booked_apartment::count();
