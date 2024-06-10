@@ -68,8 +68,6 @@ Route::post('check-coupon', [BookedApartmentController::class, 'checkCoupon']);
 Route::post('/invest-user', [ApartmentController::class, 'store']);
 
 //////payments
-
-
 ///user profile
 Route::get('/user-profile', [UserProfileController::class, 'index']);
 Route::post('/update-profile', [UserProfileController::class, 'updateProfile']);
@@ -82,11 +80,8 @@ Route::get('/balance', [PointController::class, 'index']);
 Route::get('/notification-read', [NotificationController::class, 'NotificationRead']);
 Route::get('/notification-markasread', [NotificationController::class, 'MarkASRead']);
 Route::get('/notification-clear', [NotificationController::class, 'Clear']);
-
-
 //apartments
 Route::post('/search/apartments', [ApartmentController::class, 'search']);
-
 });
 
 //apartments
