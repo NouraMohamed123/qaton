@@ -19,6 +19,7 @@ class OrderPaymentResource extends JsonResource
         'id'=>$this->id,
         'name'=> $this->name,
         'invoice_id'=>$this->invoice_id,
+        'price'=>$this->price,
         'invoice_url'=>$this->invoice_url,
         'invoice_status'=>$this->invoice_status,
         'customer'=>[
