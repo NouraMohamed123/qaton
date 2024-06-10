@@ -195,7 +195,7 @@ class AppUsersController extends Controller
             $token = "730e84907c2db2bd82f06807860e2cf5";
             $url = "https://api.taqnyat.sa/v1/messages";
 
-            $sender = "qatoon";
+            $sender = "qotoon";
 
             //You may send message to 1 destination or multiple destinations by supply destinations number in one string and separate the numbers with "," or provide a array of strings
             //يمكنك ارسال الرسائل الى جهة واحدة من خلال او اكثر تزويدنا بالارقام في متغير نصي واحد تكون فيه الارقام مفصولة عن بعضها باستخدام "," او من خلال تزويدنا بمصفوفة من الارقام
