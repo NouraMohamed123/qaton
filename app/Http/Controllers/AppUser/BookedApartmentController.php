@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\AppUser;
 
+use PDF;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Point;
@@ -36,9 +37,9 @@ use Illuminate\Support\Facades\Queue;
 use App\Http\Resources\BookedResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
+use App\Http\Resources\BookedResourceMobile;
 use Illuminate\Support\Facades\Notification;
 use App\Http\Resources\ApartmentResourceAccess;
-use PDF;
 
 class BookedApartmentController extends Controller
 {
@@ -55,7 +56,7 @@ class BookedApartmentController extends Controller
     public function index()
     {
         $booked =  Booked_apartment::with('Apartment', 'user')->get();
-        return BookedResource::collection($booked);
+        return BookedResourceMobile::collection($booked);
     }
     /**
      * Store a newly created resource in storage.
@@ -228,7 +229,7 @@ class BookedApartmentController extends Controller
      */
     public function show(Booked_apartment $booked)
     {
-        return  new BookedResource($booked);
+        return  new BookedResourceMobile($booked);
     }
 
     /**
@@ -423,7 +424,7 @@ class BookedApartmentController extends Controller
         })
         ->latest()
         ->get();
-    return BookedResource::collection($BookedApartments);
+    return BookedResourceMobile::collection($BookedApartments);
     }
     public function userBookedDetailsAccess($id){
 
@@ -472,7 +473,7 @@ class BookedApartmentController extends Controller
         ];
         $dateTime = now();
         $fileName = $dateTime->format('YmdHis') . '_translation.pdf';
-        $pdf = PDF::loadView('translation', $data);
+        $pdf = PDF::loadView('invoices', $data);
         $pdf->save( storage_path('app/public/'.$fileName));
        //Get the file url
         $urlToDownload =    asset('storage/' .   $fileName );

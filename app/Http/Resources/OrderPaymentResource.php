@@ -16,7 +16,7 @@ class OrderPaymentResource extends JsonResource
     public function toArray(Request $request): array
 {
     return  [
-        'name'=> $this->name ,
+        'name'=> $this->name,
         'invoice_id'=>$this->invoice_id,
         'invoice_url'=>$this->invoice_url,
         'invoice_status'=>$this->invoice_status,
