@@ -1,14 +1,16 @@
 <?php
 
 namespace App\Http\Controllers\AppUser;
-use App\Http\Controllers\Controller;
 use App\Models\AppUsers;
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator;
-use Tymon\JWTAuth\Facades\JWTAuth;
+
 class AppUsersController extends Controller
 {
     public function check_number(Request $request)
@@ -186,18 +188,19 @@ class AppUsersController extends Controller
         $new_user = AppUsers::where('email', $request->email)->first();
         return response()->json(['success' => "true", 'user' => $new_user], 200);
     }
-
     public function send_sms($number, $text)
     {
         try {
 
             $token = "730e84907c2db2bd82f06807860e2cf5";
             $url = "https://api.taqnyat.sa/v1/messages";
+
             $sender = "Qatoon";
+
+            //You may send message to 1 destination or multiple destinations by supply destinations number in one string and separate the numbers with "," or provide a array of strings
+            //يمكنك ارسال الرسائل الى جهة واحدة من خلال او اكثر تزويدنا بالارقام في متغير نصي واحد تكون فيه الارقام مفصولة عن بعضها باستخدام "," او من خلال تزويدنا بمصفوفة من الارقام
             $recipients = $number;
 
-            //The message Content in UTF-8
-            //نص الرساله مشفر ب UTF-8
             $body = $text;
 
             $customRequest = "POST"; //POST or GET
@@ -229,10 +232,23 @@ class AppUsersController extends Controller
 
             $response = curl_exec($curl);
 
-            return true;
+        // Log the response
+        Log::info('SMS Response', ['response' => $response]);
+
+        if ($response === false) {
+            $error = curl_error($curl);
+            // Log curl error
+            Log::error('Curl error', ['error' => $error]);
+            curl_close($curl);
+            return false;
+        }
+
+        curl_close($curl);
+        return true;
         } catch (\Exception $e) {
             return false;
         }
     }
+
 
 }
