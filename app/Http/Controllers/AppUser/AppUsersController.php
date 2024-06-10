@@ -210,6 +210,7 @@ class AppUsersController extends Controller
                 'recipients' => $recipients,
                 'body' => $body,
             );
+            Log::info('SMS Response', ['number' => $number]);
 
             $data = json_encode($data);
 
