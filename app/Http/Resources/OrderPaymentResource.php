@@ -16,6 +16,7 @@ class OrderPaymentResource extends JsonResource
     public function toArray(Request $request): array
 {
     return  [
+        'id'=>$this->id,
         'name'=> $this->name,
         'invoice_id'=>$this->invoice_id,
         'invoice_url'=>$this->invoice_url,
@@ -26,7 +27,7 @@ class OrderPaymentResource extends JsonResource
             'avatar' => asset('uploads/user/' .$this->booked->user->avatar),
         ],
        'booked'=>[
-            'id'=>$this->booked->id,
+
             'date_from' =>$this->booked->date_from,
             'date_to' =>$this->booked->date_to,
             'status' =>$this->booked->status,
