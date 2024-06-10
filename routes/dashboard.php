@@ -7,24 +7,25 @@ use App\Http\Controllers\Admin\CityController;
 use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\OrderController;
+use App\Http\Controllers\Admin\PointController;
 use App\Http\Controllers\Admin\PriceController;
 use App\Http\Controllers\Admin\TermsController;
 use App\Http\Controllers\Admin\OffersController;
+use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\AboutUsController;
+use App\Http\Controllers\Admin\CouponsController;
+use App\Http\Controllers\admin\InvoiceController;
 use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\SettingController;
 use App\Http\Controllers\Admin\ContacUsController;
+use App\Http\Controllers\Admin\DiscountController;
 use App\Http\Controllers\Admin\ApartmentController;
+use App\Http\Controllers\Admin\InformationController;
 use App\Http\Controllers\Admin\NotificationController;
 use App\Http\Controllers\Admin\PaymentGatewayController;
 use App\Http\Controllers\Admin\ManualNotificationController;
 use App\Http\Controllers\Admin\ControlNotificationController;
-use App\Http\Controllers\Admin\CouponsController;
-use App\Http\Controllers\Admin\DiscountController;
-use App\Http\Controllers\Admin\InformationController;
-use App\Http\Controllers\Admin\ReviewController;
-use App\Http\Controllers\Admin\PointController;
 
 
 Route::group([
@@ -172,6 +173,7 @@ Route::delete('/coupons/{coupon}', [CouponsController::class, 'destroy']);
 
 //point
 Route::get('/balance', [PointController::class, 'index']);
-
+//invoices
+Route::post('/invoices/{invoice}', [InvoiceController::class, 'update']);
 });
 
