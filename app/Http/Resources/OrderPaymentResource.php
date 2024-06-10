@@ -26,6 +26,7 @@ class OrderPaymentResource extends JsonResource
             'avatar' => asset('uploads/user/' .$this->booked->user->avatar),
         ],
        'booked'=>[
+            'id'=>$this->booked->id,
             'date_from' =>$this->booked->date_from,
             'date_to' =>$this->booked->date_to,
             'status' =>$this->booked->status,
