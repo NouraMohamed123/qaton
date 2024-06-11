@@ -489,6 +489,7 @@ class BookedApartmentController extends Controller
             return response()->json(['success' => false, 'message' => 'Booking not found.'], 404);
         }
 
+
         // Generate a unique filename
         $dateTime = now();
         $fileName = $dateTime->format('YmdHis') . '_translation.pdf';
