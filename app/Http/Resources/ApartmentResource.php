@@ -26,6 +26,7 @@ class ApartmentResource extends JsonResource
         return array_merge(parent::toArray($request), [
             'features' => json_decode($this->features),
             'additional_features' => json_decode($this->additional_features),
+            'contact_numbers' => json_decode($this->contact_numbers),
             'tax' => $taxAddedValue,
             'total_price' => $total_price,
             'total_price_nights' => ($this->nights) * $total_price,
