@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AppUser\BookedApartmentController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,7 +18,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
+// Route::get('/generate-pdf/{id}', [BookedApartmentController::class, 'generate_pdf']);
 
 
 

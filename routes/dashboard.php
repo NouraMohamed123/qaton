@@ -175,5 +175,6 @@ Route::delete('/coupons/{coupon}', [CouponsController::class, 'destroy']);
 Route::get('/balance', [PointController::class, 'index']);
 //invoices
 Route::post('/invoices/{invoice}', [InvoiceController::class, 'update']);
+Route::get('/invoice/{id}', [InvoiceController::class, 'show'])->name('show-invoice');
 });
 

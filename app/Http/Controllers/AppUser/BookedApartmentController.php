@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\Point;
 use App\Models\price;
 use App\Models\Coupon;
+use App\Models\Invoice;
 use App\Models\Setting;
 use App\Models\Apartment;
 use App\Models\OrderPayment;
@@ -109,12 +110,23 @@ class BookedApartmentController extends Controller
             return response()->json(['error' => 'The apartment has already been booked'], 403);
         }
         ///////////////logic price
-        $price_day =  price::where('apartment_id', $apartmentId)->where('date', $checkInDate)->value('price');
+        // $price_day =  price::where('apartment_id', $apartmentId)->where('date', $checkInDate)->value('price');
+        // $settings = Setting::pluck('value', 'key')->toArray();
+        // $taxAddedValue = $settings['tax_added_value'];
+        // $price_with_tax = $taxAddedValue ?
+        //     (($price_day ?? $apartment->price) + $taxAddedValue) : ($price_day ?? $apartment->price);
+        $price_day = Price::where('apartment_id', $apartmentId)->where('date', $checkInDate)->value('price');
         $settings = Setting::pluck('value', 'key')->toArray();
-        $taxAddedValue = $settings['tax_added_value'];
-        $price_with_tax = $taxAddedValue ?
-            (($price_day ?? $apartment->price) + $taxAddedValue) : ($price_day ?? $apartment->price);
+        $taxAddedValue = isset($settings['tax_added_value']) ? $settings['tax_added_value'] : 0;
+        $base_price = $price_day ?? $apartment->price;
 
+        // Calculate price with tax if tax is added
+        if ($taxAddedValue) {
+            $price_with_tax = $base_price + ($base_price * $taxAddedValue / 100);
+        } else {
+            $price_with_tax = $base_price;
+        }
+        // Output or return $price_with_tax as needed
         if ($request->has('coupon_code') && !empty($request->coupon_code)) {
             $coupon_data = checkCoupon($request->coupon_code, $price_with_tax);
             if ($coupon_data && $coupon_data['status'] == true) {
@@ -147,6 +159,9 @@ class BookedApartmentController extends Controller
             'date_from' => $checkInDate,
             'date_to' => $checkOutDate,
             'coupon_id' => $coupon_data['id'] ?? 0,
+            'tax'=>$taxAddedValue??0,
+            'price_notax'=> $base_price* $totalDays,
+            'price_day'=>$price_day??0,
 
         ]);
 
@@ -462,24 +477,47 @@ class BookedApartmentController extends Controller
         }
     }
     }
-    public function generate_pdf(Request $request){
+    public function generate_pdf($id)
+    {
+        // Fetch the booked apartment along with related data
+        $booked = Booked_apartment::with('user', 'apartment', 'coupon', 'order_payment')
+            ->where('id', $id)
+            ->where('status', 'recent')
+            ->first();
 
-        $data = [
-            'translation'=>[
-                'hello' => 'اهلا',
-                'welcome' => 'مرحبا',
-                'good' => 'جيد'
-                ]
-        ];
+        if (!$booked) {
+            return response()->json(['success' => false, 'message' => 'Booking not found.'], 404);
+        }
+
+        // Generate a unique filename
         $dateTime = now();
         $fileName = $dateTime->format('YmdHis') . '_translation.pdf';
-        $pdf = PDF::loadView('invoices', $data);
-        $pdf->save( storage_path('app/public/'.$fileName));
-       //Get the file url
-        $urlToDownload =    asset('storage/' .   $fileName );
+
+        // Generate PDF
+        $pdf = PDF::loadView('invoices', ['booked' => $booked]);
+
+        // Save the PDF to the storage
+        $filePath = storage_path('app/public/' . $fileName);
+        $pdf->save($filePath);
+
+        // Update invoice link in the database
+        $orderPayment = OrderPayment::where('booked_id', $booked->id)->first();
+
+        if ($orderPayment) {
+            $orderPayment->invoice_link = $fileName;
+            $orderPayment->save();
+        } else {
+            return response()->json(['success' => false, 'message' => 'Order payment not found.'], 404);
+        }
+
+        // Get the file URL for download
+        $urlToDownload = asset('storage/' . $fileName);
+
+        // Return the response with the download URL
         return response()->json([
             'success' => true,
             'url' => $urlToDownload,
         ]);
-     }
+    }
+
 }

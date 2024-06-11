@@ -60,7 +60,7 @@ Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, '
 Route::get('user-booked', [BookedApartmentController::class, 'userBooked']);
 Route::get('user-booked-details/{id}', [BookedApartmentController::class, 'userBookedDetailsAccess']);
 Route::post('user-leaving', [BookedApartmentController::class, 'userLeaving']);
-Route::get('/generate-pdf', [BookedApartmentController::class, 'generate_pdf']);
+
 
 ///coupon
 Route::post('check-coupon', [BookedApartmentController::class, 'checkCoupon']);
@@ -107,7 +107,7 @@ Route::get('/tabby-failure', [BookedApartmentController::class, 'failure'])->nam
 
 
 /////home page web
-
+Route::get('/generate-pdf/{id}', [BookedApartmentController::class, 'generate_pdf']);
 Route::post('/contact-us', [App\Http\Controllers\HomeController::class, 'contactUs']);
 Route::get('/home-settings', [App\Http\Controllers\HomeController::class, 'Settings']);
 require __DIR__ . '/dashboard.php';

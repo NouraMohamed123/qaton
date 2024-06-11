@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Simplified Tax Invoice</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.16/dist/tailwind.min.css" rel="stylesheet">
-  <style>
+
+ <style>
     @media print {
       @page {
         size: A4;
@@ -31,17 +32,21 @@
     }
   </style>
 </head>
-
+@php
+$invoice =  \App\Models\Invoice::find(1);
+ @endphp
 <body dir="rtl" style="font-size: 6px;">
   <div class="container mx-auto p-8">
     <div class="flex justify-center mb-8">
       <div class="w-full">
         <div class="flex mb-4 font-bold relative">
           <div class="h-20 mx-auto mb-4 absolute" style="right: 50%; top: -10px; transform: translateX(50%);">
-            <img class="w-full h-full" src="./logo_qotoon.png" alt="">
+            <img class="w-full h-full" src="{{asset('uploads/invoice/' . $invoice->img)  }}" alt="">
           </div>
+
           <div class="w-1/2 flex flex-col overflow-hidden">
-            <p class="mb-1" style="font-size: 8px;">شركة قطون للسفر والسياحة</p>
+            <p class="mb-1" style="font-size: 8px;"></p>{{   $invoice->title?? 'شركة قطون للسفر والسياحة'}}</p>
+
             <div class="flex gap-4">
               <ul>
                 <li class="whitespace-nowrap">هاتف</li>
@@ -53,13 +58,13 @@
                 <li class="whitespace-nowrap">رقم السجل التجاري</li>
               </ul>
               <ul>
-                <li class="whitespace-nowrap">112242235</li>
-                <li class="whitespace-nowrap">2235235</li>
-                <li class="whitespace-nowrap">311495305500003</li>
-                <li class="whitespace-nowrap">شارع العليا العام امام مركز النمر - الرياض - السعودية</li>
-                <li class="whitespace-nowrap">5558453490</li>
-                <li class="whitespace-nowrap">admin@admin.com</li>
-                <li class="whitespace-nowrap">1010847223</li>
+                <li class="whitespace-nowrap">{{  $invoice->mobile}}</li>
+                <li class="whitespace-nowrap">{{  $invoice->fax}}</li>
+                <li class="whitespace-nowrap">{{  $invoice->tax_number}}</li>
+                <li class="whitespace-nowrap">{{  $invoice->address_ar}}</li>
+                <li class="whitespace-nowrap">{{  $invoice->phone}}</li>
+                <li class="whitespace-nowrap">{{  $invoice->email}}</li>
+                <li class="whitespace-nowrap">{{  $invoice->CRN}}</li>
               </ul>
             </div>
           </div>
@@ -76,14 +81,13 @@
                 <li class="whitespace-nowrap">Commercial Reg.</li>
               </ul>
               <ul>
-                <li class="whitespace-nowrap">112242235</li>
-                <li class="whitespace-nowrap">2235235</li>
-                <li class="whitespace-nowrap">311495305500003</li>
-                <li class="whitespace-nowrap">Olaya Main Street in front of the Tiger Center - Riyadh - Saudi Arabia
-                </li>
-                <li class="whitespace-nowrap">5558453490</li>
-                <li class="whitespace-nowrap">admin@admin.com</li>
-                <li class="whitespace-nowrap">1010847223</li>
+                <li class="whitespace-nowrap">{{  $invoice->mobile}}</li>
+                <li class="whitespace-nowrap">{{  $invoice->fax}}</li>
+                <li class="whitespace-nowrap">{{  $invoice->tax_number}}</li>
+                <li class="whitespace-nowrap">{{  $invoice->address_en}}</li>
+                <li class="whitespace-nowrap">{{  $invoice->phone}}</li>
+                <li class="whitespace-nowrap">{{  $invoice->email}}</li>
+                <li class="whitespace-nowrap">{{  $invoice->CRN}}</li>
               </ul>
             </div>
           </div>
@@ -94,7 +98,7 @@
         <div class="flex mb-4 gap-4">
           <div class="w-1/2 rtl">
             <div class="w-20 h-20 mx-auto mb-4">
-              <img class="w-full h-full" src="./qr-code.jpg" alt="">
+                {!! QrCode::generate(route('show-invoice', [$booked->order_payment->invoice_number])) !!}
             </div>
             <div class="rtl">
               <table class="table-fixed border-collapse border border-slate-500 w-full mb-6">
@@ -107,38 +111,38 @@
                 <tbody>
                   <tr>
                     <td class="border border-slate-700 p-1">اسم العميل</td>
-                    <td class="border border-slate-700 p-1"></td>
+                    <td class="border border-slate-700 p-1">{{  $booked->user->name }}</td>
                     <td class="border border-slate-700 p-1 text-left">Customer Name</td>
                   </tr>
                   <tr>
                     <td class="border border-slate-700 p-1">طريقة الدفع</td>
-                    <td class="border border-slate-700 p-1">كاش / تحويل / فيزا / مدا / TAP</td>
+                    <td class="border border-slate-700 p-1"> Tabby /Fatoorah  </td>
                     <td class="border border-slate-700 p-1 text-left">Payment Method</td>
                   </tr>
                   <tr>
                     <td class="border border-slate-700 p-1">تاريخ الدفع</td>
                     <td class="border border-slate-700 p-1">
-                      <pre>  /  /  20</pre>
+                      <pre>  {{  $booked->order_payment->created_at }}</pre>
                     </td>
                     <td class="border border-slate-700 p-1 text-left">Payment Date</td>
                   </tr>
                   <tr>
                     <td class="border border-slate-700 p-1">تسجيل الوصول</td>
                     <td class="border border-slate-700 p-1">
-                      <pre>  /  /  20</pre>
+                      <pre>  {{   Carbon\Carbon::parse($booked->date_from)  }}</pre>
                     </td>
                     <td class="border border-slate-700 p-1 text-left">Check-in</td>
                   </tr>
                   <tr>
                     <td class="border border-slate-700 p-1">تسجيل المغادرة</td>
                     <td class="border border-slate-700 p-1">
-                      <pre>  /  /  20</pre>
+                      <pre>   {{  Carbon\Carbon::parse($booked->date_to)  }}</pre>
                     </td>
                     <td class="border border-slate-700 p-1 text-left">Check-out</td>
                   </tr>
                   <tr>
                     <td class="border border-slate-700 p-1">عدد الليالي المدفوعة</td>
-                    <td class="border border-slate-700 p-1"></td>
+                    <td class="border border-slate-700 p-1">{{   Carbon\Carbon::parse($booked->date_from)->diffInDays(Carbon\Carbon::parse($booked->date_to)) }}</td>
                     <td class="border border-slate-700 p-1 text-left">Number of Paid Nights</td>
                   </tr>
                 </tbody>
@@ -154,15 +158,15 @@
               <tbody>
                 <tr>
                   <td class="border border-slate-700 p-1">تاريخ اصدار الفاتورة:
-                    <pre class="inline">2024/  /  </pre>
+                    <pre class="inline">  {{  $booked->order_payment->updated_at}}</pre>
                   </td>
                   <td class="border border-slate-700 p-1 text-left" dir="ltr">Invoice Issuance Date:
-                    <pre class="inline">2024/  /  </pre>
+                    <pre class="inline">{{  $booked->order_payment->updated_at}} </pre>
                   </td>
                 </tr>
                 <tr>
-                  <td class="border border-slate-700 p-1">رقم الفاتورة : 123456</td>
-                  <td class="border border-slate-700 p-1 text-left" dir="ltr">Invoice Number: 123456</td>
+                  <td class="border border-slate-700 p-1">رقم الفاتورة : {{  $booked->order_payment->invoice_number}}</td>
+                  <td class="border border-slate-700 p-1 text-left" dir="ltr">Invoice Number: {{  $booked->order_payment->invoice_id}}</td>
                 </tr>
               </tbody>
             </table>
@@ -176,7 +180,7 @@
               <tbody>
                 <tr>
                   <td class="border border-slate-700 p-1">اسم الحي</td>
-                  <td class="border border-slate-700 p-1"></td>
+                  <td class="border border-slate-700 p-1">{{  $booked->apartment->area->name}}</td>
                   <td class="border border-slate-700 p-1 text-left">District</td>
                 </tr>
                 <tr>
@@ -186,17 +190,17 @@
                 </tr>
                 <tr>
                   <td class="border border-slate-700 p-1">رقم الشقة</td>
-                  <td class="border border-slate-700 p-1"></td>
+                  <td class="border border-slate-700 p-1">{{  $booked->apartment->code}}</td>
                   <td class="border border-slate-700 p-1 text-left">Apartment No</td>
                 </tr>
                 <tr>
                   <td class="border border-slate-700 p-1">رقم الحجز</td>
-                  <td class="border border-slate-700 p-1"></td>
+                  <td class="border border-slate-700 p-1">{{  $booked->id}}</td>
                   <td class="border border-slate-700 p-1 text-left">Reservation No</td>
                 </tr>
                 <tr>
                   <td class="border border-slate-700 p-1">متوفر خدمة الإنترنت</td>
-                  <td class="border border-slate-700 p-1"></td>
+                  <td class="border border-slate-700 p-1">{{  !empty($booked->apartment->internet_name)?'متوفر':'غير متوفر'}}</td>
                   <td class="border border-slate-700 p-1 text-left">Internet Service is Available</td>
                 </tr>
               </tbody>
@@ -247,15 +251,15 @@
                 </thead>
                 <tbody>
                   <tr>
-                    <td class="border border-slate-700 p-1 text-center">1</td>
+                    <td class="border border-slate-700 p-1 text-center">{{  $booked->order_payment->invoice_number}}</td>
+                    <td class="border border-slate-700 p-1 text-center">{{  $booked->id}}</td>
                     <td class="border border-slate-700 p-1 text-center"></td>
                     <td class="border border-slate-700 p-1 text-center"></td>
-                    <td class="border border-slate-700 p-1 text-center"></td>
-                    <td class="border border-slate-700 p-1 text-center"></td>
-                    <td class="border border-slate-700 p-1 text-center"></td>
-                    <td class="border border-slate-700 p-1 text-center">0</td>
-                    <td class="border border-slate-700 p-1 text-center">0</td>
-                    <td class="border border-slate-700 p-1 text-center">0</td>
+                    <td class="border border-slate-700 p-1 text-center">{{  Carbon\Carbon::parse($booked->date_from)->diffInDays(Carbon\Carbon::parse($booked->date_to)) }}</td>
+                    <td class="border border-slate-700 p-1 text-center">{{  $booked->price_day??$booked->apartment->price}}</td>
+                    <td class="border border-slate-700 p-1 text-center">{{  $booked->price_notax}}</td>
+                    <td class="border border-slate-700 p-1 text-center">{{  $booked->tax}}</td>
+                    <td class="border border-slate-700 p-1 text-center">{{  $booked->total_price}}</td>
                   </tr>
                 </tbody>
               </table>
@@ -268,7 +272,7 @@
             <table class="table-fixed border-collapse border border-slate-500 w-full rtl">
               <tbody>
                 <tr>
-                  <td class="border border-slate-700 p-1">ر.س - </td>
+                  <td class="border border-slate-700 p-1">ر.س -{{  $booked->price_notax}} </td>
                   <td class="border border-slate-700 p-1">الاجمالي قبل الضريبة</td>
                   <td class="border border-slate-700 p-1 text-left">Total Before Tax</td>
                   <td class="border border-slate-700 p-1 text-center" rowspan="3">
@@ -284,17 +288,17 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="border border-slate-700 p-1">ر.س - </td>
+                  <td class="border border-slate-700 p-1">ر.س -{{  $booked->price_notax}} </td>
                   <td class="border border-slate-700 p-1">ضريبة القيمة الضريبة 15%</td>
                   <td class="border border-slate-700 p-1 text-left">VAT 15%</td>
                 </tr>
                 <tr>
-                  <td class="border border-slate-700 p-1">ر.س - </td>
+                  <td class="border border-slate-700 p-1">ر.س -{{  $booked->total_price}} </td>
                   <td class="border border-slate-700 p-1">الإجمالي شامل الضريبة</td>
                   <td class="border border-slate-700 p-1 text-left">Total Including Tax</td>
                 </tr>
                 <tr>
-                  <td class="border border-slate-700 p-1">ر.س - </td>
+                  <td class="border border-slate-700 p-1">ر.س -{{ ( $booked->price_notax * $booked->tax / 100) }} </td>
                   <td class="border border-slate-700 p-1">مبلغ الخصم</td>
                   <td class="border border-slate-700 p-1 text-left">Discount Amount</td>
                   <td class="border border-slate-700 p-1 text-center" rowspan="2">
@@ -311,7 +315,7 @@
                   </td>
                 </tr>
                 <tr>
-                  <td class="border border-slate-700 p-1">ر.س - </td>
+                  <td class="border border-slate-700 p-1">ر.س -{{  $booked->order_payment->price}} </td>
                   <td class="border border-slate-700 p-1">المبلغ المستحق</td>
                   <td class="border border-slate-700 p-1 text-left">Total Amount Due</td>
                 </tr>

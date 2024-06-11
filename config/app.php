@@ -171,8 +171,8 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Tymon\JWTAuth\Providers\LaravelServiceProvider::class,
-        niklasravnsborg\LaravelPdf\PdfServiceProvider::class
-
+        niklasravnsborg\LaravelPdf\PdfServiceProvider::class,
+        SimpleSoftwareIO\QrCode\QrCodeServiceProvider::class
     ])->toArray(),
 
     /*
@@ -193,8 +193,8 @@ return [
         'JWTAuth' => Tymon\JWTAuth\Facades\JWTAuth::class,
         'JWTFactory' => Tymon\JWTAuth\Facades\JWTFactory::class,
         'Auth' => Illuminate\Support\Facades\Auth::class,
-        'PDF' => niklasravnsborg\LaravelPdf\Facades\Pdf::class
-
+        'PDF' => niklasravnsborg\LaravelPdf\Facades\Pdf::class,
+        'QrCode' => SimpleSoftwareIO\QrCode\Facades\QrCode::class
     ])->toArray(),
 
 ];

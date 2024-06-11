@@ -62,4 +62,8 @@ class Booked_apartment extends Model
     {
         return $this->belongsTo(Coupon::class);
     }
+    public function order_payment()
+    {
+        return $this->hasOne(OrderPayment::class,'booked_id','id');
+    }
 }

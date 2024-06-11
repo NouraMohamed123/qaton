@@ -9,8 +9,13 @@ class OrderPayment extends Model
 {
     use HasFactory;
     protected $guarded =[];
+    protected static function booted() {
+        static::creating(function ($model) {
+          $model->invoice_number =  mt_rand(100000000, 999999999);
+     });
+    }
     public function booked()
     {
-        return $this->belongsTo(Booked_apartment::class);
+        return $this->hasOne(Booked_apartment::class ,'booked_id');
     }
 }

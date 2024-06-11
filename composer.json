@@ -14,6 +14,7 @@
         "myfatoorah/laravel-package": "2.1",
         "niklasravnsborg/laravel-pdf": "^4.1",
         "pusher/pusher-php-server": "^7.2",
+        "simplesoftwareio/simple-qrcode": "~4",
         "spatie/laravel-permission": "^6.3",
         "tymon/jwt-auth": "^2.0"
     },

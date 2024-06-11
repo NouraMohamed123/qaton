@@ -4,6 +4,7 @@ namespace App\Http\Controllers\admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Invoice;
+use App\Models\OrderPayment;
 use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
@@ -37,7 +38,9 @@ class InvoiceController extends Controller
      */
     public function show(string $id)
     {
-        //
+     $invoice_link =  OrderPayment::where('invoice_number', $id)->value('invoice_link');
+     $urlToDownload =    asset('storage/' .    $invoice_link );
+     return response()->json(['isSuccess' => true,'invoice_link'=> $urlToDownload], 200);
     }
 
     /**
@@ -45,7 +48,7 @@ class InvoiceController extends Controller
      */
     public function edit(string $id)
     {
-        //
+
     }
 
     /**
