@@ -91,6 +91,8 @@ Route::post('/about_us', [AboutUsController::class, 'store']);
 Route::post('/about_us/{about_us}', [AboutUsController::class, 'update']);
 Route::delete('/about_us/{about_us}', [AboutUsController::class, 'destroy']);
 
+
+
 /////////privacy
 Route::get('/privacy', [PrivacyController::class, 'index']);
 Route::get('/privacy/{privacy}', [PrivacyController::class, 'show']);
