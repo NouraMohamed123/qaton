@@ -503,7 +503,6 @@ class BookedApartmentController extends Controller
 
         // Update invoice link in the database
         $orderPayment = OrderPayment::where('booked_id', $booked->id)->first();
-
         if ($orderPayment) {
             $orderPayment->invoice_link = $fileName;
             $orderPayment->save();

@@ -10,7 +10,7 @@
  <style>
     @media print {
       @page {
-        size: A4;
+
         margin: 20mm;
       }
 
@@ -32,6 +32,7 @@
     }
   </style>
 </head>
+
 @php
 $invoice =  \App\Models\Invoice::find(1);
  @endphp
@@ -334,3 +335,4 @@ $invoice =  \App\Models\Invoice::find(1);
 </body>
 
 </html>
+
