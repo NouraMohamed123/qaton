@@ -201,7 +201,6 @@ class UserController extends Controller
     public function getUserCount()
     {
         $count = User::count();
-
         return response()->json([
             "successful" => true,
             "message" => "عملية العرض تمت بنجاح",
@@ -213,5 +212,14 @@ class UserController extends Controller
     {
         $users =  AppUsers::all();
         return response()->json(['data' => $users], 200);
+    }
+    public function count_appUsers(){
+        $count = AppUsers::count();
+
+        return response()->json([
+            "successful" => true,
+            "message" => "عملية العرض تمت بنجاح",
+            'data' => $count
+        ], 200);
     }
 }
