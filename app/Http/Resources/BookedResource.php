@@ -32,6 +32,7 @@ class BookedResource extends JsonResource
             ],
             'apartment' => [
                 'name' => $this->apartment->name,
+                'max_guests'=>$this->apartment->max_guests,
                 'images' => $this->apartment->images->map(function ($image) {
                     return [
                         asset('uploads/apartments/' . $image->image),
