@@ -83,7 +83,7 @@ Route::get('apartmentCount', [ApartmentController::class, 'apartmentCount']);
 Route::post('/prices', [PriceController::class, 'store']);
 Route::get('/prices/{id}', [PriceController::class, 'show']);
 Route::post('/apartments/{id}/copy', [ApartmentController::class, 'copyApartment']);
-// Route::get('/immediate-follow-up', [ApartmentController::class, 'Immediate_follow_up']);
+Route::get('/last-apartments', [ApartmentController::class, 'lastApartment']);
 /////////about_us
 Route::get('/about_us', [AboutUsController::class, 'index']);
 Route::get('/about_us/{about_us}', [AboutUsController::class, 'show']);
