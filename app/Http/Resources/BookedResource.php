@@ -23,6 +23,7 @@ class BookedResource extends JsonResource
             'status' => $this->status,
             'leaving' => $this->exit,
             'paid' => $this->paid,
+            'created_at' => $this->created_at,
             'coupon' => !empty($this->coupon_id) ? $this->coupon->discount_code : 0,
             'customer' => [
                 'name' => $this->user->name,
@@ -31,9 +32,15 @@ class BookedResource extends JsonResource
             ],
             'apartment' => [
                 'name' => $this->apartment->name,
-
+                'images' => $this->apartment->images->map(function ($image) {
+                    return [
+                        asset('uploads/apartments/' . $image->image),
+                    ];
+                })->flatten()->toArray(),
 
             ],
+
+
 
         ];
     }
