@@ -41,6 +41,8 @@ class SettingController extends Controller
             'info_email' => '',
             'mobile' => '',
             'snapchat' => '',
+            'link_android' => '',
+            'Link_os' => '',
             'tiktok' => '',
             'instagram' => '',
             'maintenance_mode' => '',
@@ -49,8 +51,8 @@ class SettingController extends Controller
             'site_name_en' => '',
             'cr' => '',
             'vat' => '',
-            'available_bookings' => '',
-            'available_discount' => '',
+            'available_bookings' => true,
+            'available_discount' => false,
         ]);
 
         if ($validator->fails()) {
