@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Resources\AppUserResource;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -211,7 +212,7 @@ class UserController extends Controller
     public function All()
     {
         $users =  AppUsers::all();
-        return response()->json(['data' => $users], 200);
+        return response()->json(['data' =>AppUserResource::collection($users)], 200);
     }
     public function count_appUsers(){
         $count = AppUsers::count();
