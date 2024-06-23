@@ -23,21 +23,21 @@ class ReviewController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function show($apartment_id)
+    public function show_review($apartment_id)
     {
         $review = Review::where('apartment_id', $apartment_id)->get();
-    
+
         if (!$review) {
             return response()->json(['message' => 'Review not found for the given Apartment ID'], Response::HTTP_NOT_FOUND);
         }
-    
+
         return response()->json([
             'status' => 'success',
             'message' => 'Review retrieved successfully',
             'data' => new ReviewsResource($review),
         ], Response::HTTP_OK);
     }
-    
+
     public function destroy($id)
     {
         $review = Review::find($id);
