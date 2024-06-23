@@ -91,7 +91,7 @@ class PermissionTableSeeder extends Seeder
             // "questions",
 
 
-            "copy-apartment",
+            //"copy-apartment",
             "calendar-apartment",
 
             "notification-read-booking",
