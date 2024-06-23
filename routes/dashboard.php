@@ -161,6 +161,7 @@ Route::delete('information/{Information}', [InformationController::class, 'destr
 Route::get('/reviews', [ReviewController::class, 'index']);
 Route::get('/reviews/{id}', [ReviewController::class, 'show']);
 Route::delete('/reviews/{id}', [ReviewController::class, 'destroy']);
+Route::get('/review/app/{apartment_id}', [ReviewController::class, 'show_review']);
 //Discount
 Route::get('/discounts', [DiscountController::class, 'index']);
 Route::post('/discounts', [DiscountController::class, 'store']);
