@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\admin;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use App\Models\price;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class PriceController extends Controller
 {
@@ -29,20 +30,28 @@ class PriceController extends Controller
      */
     public function store(Request $request)
     {
-        $priceData = $request->all();
-        $existingPrice = Price::where('apartment_id', $priceData['apartment_id'])
-            ->where('date', $priceData['date'])
-            ->first();
+       $priceData = $request->all();
+        $startDate = Carbon::parse($priceData['start_date']);
+        $endDate = Carbon::parse($priceData['end_date']);
 
-        if ($existingPrice) {
-            $existingPrice->price = $priceData['price'];
-            $existingPrice->save();
-        } else {
-            $price = new Price();
-            $price->apartment_id = $priceData['apartment_id'];
-            $price->price = $priceData['price'];
-            $price->date = $priceData['date'];
-            $price->save();
+        $currentDate = $startDate;
+        while ($currentDate->lte($endDate)) {
+            $existingPrice = Price::where('apartment_id', $priceData['apartment_id'])
+                ->where('date', $currentDate->format('Y-m-d'))
+                ->first();
+
+            if ($existingPrice) {
+                $existingPrice->price = $priceData['price'];
+                $existingPrice->save();
+            } else {
+                $price = new Price();
+                $price->apartment_id = $priceData['apartment_id'];
+                $price->price = $priceData['price'];
+                $price->date = $currentDate->format('Y-m-d');
+                $price->save();
+            }
+
+            $currentDate->addDay();
         }
 
         return response()->json(['isSuccess' => true , 'data'=> $price], 200);

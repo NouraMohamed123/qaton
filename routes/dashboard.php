@@ -83,13 +83,15 @@ Route::get('apartmentCount', [ApartmentController::class, 'apartmentCount']);
 Route::post('/prices', [PriceController::class, 'store']);
 Route::get('/prices/{id}', [PriceController::class, 'show']);
 Route::post('/apartments/{id}/copy', [ApartmentController::class, 'copyApartment']);
-// Route::get('/immediate-follow-up', [ApartmentController::class, 'Immediate_follow_up']);
+Route::get('/last-apartments', [ApartmentController::class, 'lastApartment']);
 /////////about_us
 Route::get('/about_us', [AboutUsController::class, 'index']);
 Route::get('/about_us/{about_us}', [AboutUsController::class, 'show']);
 Route::post('/about_us', [AboutUsController::class, 'store']);
 Route::post('/about_us/{about_us}', [AboutUsController::class, 'update']);
 Route::delete('/about_us/{about_us}', [AboutUsController::class, 'destroy']);
+
+
 
 /////////privacy
 Route::get('/privacy', [PrivacyController::class, 'index']);
@@ -144,8 +146,10 @@ Route::post('/control-notification/{notification}', [ControlNotificationControll
 Route::delete('/control-notification/{notification}', [ControlNotificationController::class, 'destroy']);
 ///contact us
 Route::get('/contact-us', [ContacUsController::class, 'index']);
+Route::get('/count-contacts', [ContacUsController::class, 'count_contacts']);
 //
 Route::get('/app-users', [UserController::class, 'All']);
+Route::get('/count-appUsers', [UserController::class, 'count_appUsers']);
 //Information
 Route::get('information', [InformationController::class, 'index']);
 Route::post('information', [InformationController::class, 'store']);

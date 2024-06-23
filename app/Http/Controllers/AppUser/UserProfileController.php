@@ -2,12 +2,13 @@
 
 namespace App\Http\Controllers\AppUser;
 
+use App\Models\AppUsers;
 use App\Models\Apartment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\AppUserResource;
 use App\Http\Resources\ApartmentResource;
-use App\Models\AppUsers;
 use Illuminate\Support\Facades\Validator;
 
 class UserProfileController extends Controller
@@ -80,7 +81,7 @@ class UserProfileController extends Controller
         $user->image = $image;
         $user->save();
 
-        return response()->json(['message' => 'Profile updated successfully', 'data' => $user]);
+        return response()->json(['message' => 'Profile updated successfully', 'data' => new  AppUserResource($user) ]);
     }
     public  function deactive_account(Request $request)
     {

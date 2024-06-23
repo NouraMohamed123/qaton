@@ -16,6 +16,11 @@ class ContacUsController extends Controller
        $contacts = ContactUs::get();
        return response()->json(['isSuccess' => true,'data'=>$contacts], 200);
     }
+    public function count_contacts()
+    {
+       $count = ContactUs::count();
+       return response()->json(['isSuccess' => true,'data'=>$count], 200);
+    }
 
     /**
      * Show the form for creating a new resource.

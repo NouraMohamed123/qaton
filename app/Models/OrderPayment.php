@@ -16,6 +16,6 @@ class OrderPayment extends Model
     }
     public function booked()
     {
-        return $this->hasOne(Booked_apartment::class ,'booked_id');
+        return $this->hasOne(Booked_apartment::class ,'id','booked_id');
     }
 }

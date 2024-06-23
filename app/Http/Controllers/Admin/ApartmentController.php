@@ -20,11 +20,19 @@ class ApartmentController extends Controller
      */
     public function index()
     {
-        $apartments = Apartment::with('rooms', 'reviews', 'images')->get();
+        $apartments = Apartment::with('rooms','images')->get();
 
         return ApartmentResource::collection($apartments);
     }
+    public function lastApartment()
+    {
+        $apartments = Apartment::whereHas('BookedApartments', function ($query) {
+            $query->where('paid', 1);
+        })->latest()->take(5)->get();
 
+
+        return ApartmentResource::collection($apartments);
+    }
     /**
      * Show the form for creating a new resource.
      */

@@ -48,16 +48,23 @@ class NotificationController extends Controller
         }
         public function Clear($type){
 
-            if(!empty(Auth::guard('users')->user()->notifications)){
+            if (!empty(Auth::guard('users')->user()->notifications)) {
                 if ($type == 'leaving') {
-                    $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\LeavingToAdmin')->delete();
+                    $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\LeavingToAdmin');
                 } elseif ($type == 'workers') {
-                    $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\ManalNotificationWorkers')->delete();
+                    $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\ManalNotificationWorkers');
                 } elseif ($type == 'booking') {
-                    $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\BookingToAdmin')->delete();
+                    $notifications = Auth::guard('users')->user()->notifications->where('type', 'App\Notifications\BookingToAdmin');
                 }
-                return response()->json(['isSuccess' => true,'data'=> $notifications ], 200);
+
+                // Deleting each notification individually
+                $notifications->each(function($notification) {
+                    $notification->delete();
+                });
+
+                return response()->json(['isSuccess' => true, 'data' => $notifications], 200);
             }
+
 
             return response()->json(['isSuccess' => false,'error' => 'user it has no notification'], 401);
         }

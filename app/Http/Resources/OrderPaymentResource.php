@@ -18,10 +18,12 @@ class OrderPaymentResource extends JsonResource
     return  [
         'id'=>$this->id,
         'name'=> $this->name,
+        'invoice_number'=>$this->invoice_number,
         'invoice_id'=>$this->invoice_id,
         'price'=>$this->price,
         'invoice_url'=>$this->invoice_url,
         'invoice_status'=>$this->invoice_status,
+        'invoice_url'=>$this->invoice_url,
         'customer'=>[
             'name' =>$this->booked->user->name,
             'email' =>$this->booked->user->email,
