@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\OffersController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\CouponsController;
-use App\Http\Controllers\admin\InvoiceController;
+use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\SettingController;
@@ -77,6 +77,7 @@ Route::get('/apartment', [ApartmentController::class, 'index']);
 Route::get('/apartment/{apartment}', [ApartmentController::class, 'show']);
 Route::post('/apartment', [ApartmentController::class, 'store']);
 Route::post('/apartment/{apartment}', [ApartmentController::class, 'update']);
+Route::post('/apartments/{apartment}/images/{image}', [ApartmentController::class, 'deleteImage'])->name('apartments.images.delete');
 Route::delete('/apartment/{apartment}', [ApartmentController::class, 'destroy']);
 Route::post('/change-status', [ApartmentController::class, 'changeStatus']);
 Route::get('apartmentCount', [ApartmentController::class, 'apartmentCount']);
@@ -178,6 +179,7 @@ Route::delete('/coupons/{coupon}', [CouponsController::class, 'destroy']);
 //point
 Route::get('/balance', [PointController::class, 'index']);
 //invoices
+Route::get('/invoices/{invoice}', [InvoiceController::class, 'index']);
 Route::post('/invoices/{invoice}', [InvoiceController::class, 'update']);
 Route::get('/invoice/{id}', [InvoiceController::class, 'show'])->name('show-invoice');
 });

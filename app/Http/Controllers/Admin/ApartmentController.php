@@ -226,6 +226,29 @@ class ApartmentController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    public function deleteImage(Apartment $apartment, $imageId)
+    {
+        try {
+            DB::beginTransaction();
+
+            // Find the image by its ID
+            $image = $apartment->images()->findOrFail($imageId);
+
+            $imagePath = public_path('uploads/apartments/' . $image->image);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+
+            // Delete the image record from the database
+            $image->delete();
+
+            DB::commit();
+            return response()->json(['isSuccess' => true, 'message' => 'Image deleted successfully.'], 200);
+        } catch (\Exception $e) {
+            DB::rollback();
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
+    }
 
     /**
      * Remove the specified resource from storage.

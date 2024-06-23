@@ -12,9 +12,12 @@ class InvoiceController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Invoice $invoice)
     {
-        //
+        $image = asset('uploads/invoice/' . $invoice['img']);
+        $invoice['img'] =    $image;
+        return response()->json(['isSuccess' => true,'data'=> $invoice], 200);
+
     }
 
     /**
@@ -36,7 +39,7 @@ class InvoiceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show($id)
     {
      $invoice_link =  OrderPayment::where('invoice_number', $id)->value('invoice_link');
      $urlToDownload =    asset('storage/' .    $invoice_link );
