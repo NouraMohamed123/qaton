@@ -23,20 +23,7 @@ class ReviewController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function show_review($apartment_id)
-    {
-        $review = Review::where('apartment_id', $apartment_id)->get();
 
-        if (!$review) {
-            return response()->json(['message' => 'Review not found for the given Apartment ID'], Response::HTTP_NOT_FOUND);
-        }
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Review retrieved successfully',
-            'data' => $review,
-        ], Response::HTTP_OK);
-    }
     public function show($id)
     {
         $review = Review::find($id);
@@ -49,6 +36,20 @@ class ReviewController extends Controller
             'status' => 'success',
             'message' => 'Review retrieved successfully',
             'data' => new ReviewsResource($review),
+        ], Response::HTTP_OK);
+    }
+    public function show_review($apartment_id)
+    {
+        $review = Review::where('apartment_id', $apartment_id)->get();
+
+        if (!$review) {
+            return response()->json(['message' => 'Review not found for the given Apartment ID'], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Review retrieved successfully',
+            'data' => $review,
         ], Response::HTTP_OK);
     }
 
