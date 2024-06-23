@@ -14,6 +14,8 @@ class InvoiceController extends Controller
      */
     public function index(Invoice $invoice)
     {
+        $image = asset('uploads/invoice/' . $invoice['img']);
+        $invoice['img'] =    $image;
         return response()->json(['isSuccess' => true,'data'=> $invoice], 200);
 
     }
