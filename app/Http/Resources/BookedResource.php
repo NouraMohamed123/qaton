@@ -31,6 +31,7 @@ class BookedResource extends JsonResource
                 'avatar' => asset('uploads/user/' . $this->user->avatar),
             ],
             'apartment' => [
+                'id'=>$this->apartment->id,
                 'name' => $this->apartment->name,
                 'max_guests'=>$this->apartment->max_guests,
                 'images' => $this->apartment->images->map(function ($image) {
