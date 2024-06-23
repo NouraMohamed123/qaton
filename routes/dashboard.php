@@ -14,7 +14,7 @@ use App\Http\Controllers\Admin\OffersController;
 use App\Http\Controllers\Admin\ReviewController;
 use App\Http\Controllers\Admin\AboutUsController;
 use App\Http\Controllers\Admin\CouponsController;
-use App\Http\Controllers\admin\InvoiceController;
+use App\Http\Controllers\Admin\InvoiceController;
 use App\Http\Controllers\Admin\PrivacyController;
 use App\Http\Controllers\Admin\ReportsController;
 use App\Http\Controllers\Admin\SettingController;
