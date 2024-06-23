@@ -93,7 +93,7 @@ class PermissionTableSeeder extends Seeder
 
             "copy-apartment",
             "calendar-apartment",
-            "coupons-delete",
+
             "notification-read-booking",
             "notification-markasread-booking",
             "notification-clear-booking",
