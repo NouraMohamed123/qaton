@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "38acea51c08600529aaace0c49278342",
+    "content-hash": "800796e45b8b35b3b4509a34dcbc6d74",
     "packages": [
         {
             "name": "bacon/bacon-qr-code",
@@ -2372,16 +2372,16 @@
         },
         {
             "name": "mpdf/mpdf",
-            "version": "v8.2.3",
+            "version": "v8.2.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mpdf/mpdf.git",
-                "reference": "6f723a96becf989a831e38caf758d28364a69939"
+                "reference": "9e3ff91606fed11cd58a130eabaaf60e56fdda88"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/6f723a96becf989a831e38caf758d28364a69939",
-                "reference": "6f723a96becf989a831e38caf758d28364a69939",
+                "url": "https://api.github.com/repos/mpdf/mpdf/zipball/9e3ff91606fed11cd58a130eabaaf60e56fdda88",
+                "reference": "9e3ff91606fed11cd58a130eabaaf60e56fdda88",
                 "shasum": ""
             },
             "require": {
@@ -2449,7 +2449,7 @@
                     "type": "custom"
                 }
             ],
-            "time": "2024-03-11T12:55:53+00:00"
+            "time": "2024-06-14T16:06:41+00:00"
         },
         {
             "name": "mpdf/psr-http-message-shim",
@@ -3032,61 +3032,6 @@
                 "source": "https://github.com/nikic/PHP-Parser/tree/v4.18.0"
             },
             "time": "2023-12-10T21:03:43+00:00"
-        },
-        {
-            "name": "niklasravnsborg/laravel-pdf",
-            "version": "v4.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/niklasravnsborg/laravel-pdf.git",
-                "reference": "a5f5c22dd5e10d8f536102cec01c21282e18ebae"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/niklasravnsborg/laravel-pdf/zipball/a5f5c22dd5e10d8f536102cec01c21282e18ebae",
-                "reference": "a5f5c22dd5e10d8f536102cec01c21282e18ebae",
-                "shasum": ""
-            },
-            "require": {
-                "mpdf/mpdf": "^8.0",
-                "php": ">=7.0"
-            },
-            "require-dev": {
-                "orchestra/testbench": "^3.7",
-                "phpunit/phpunit": "^7.4"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "niklasravnsborg\\LaravelPdf\\PdfServiceProvider"
-                    ],
-                    "aliases": {
-                        "PDF": "niklasravnsborg\\LaravelPdf\\Facades\\Pdf"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "niklasravnsborg\\LaravelPdf\\": "src/LaravelPdf"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "description": "Generate PDFs in Laravel with this mPDF wrapper.",
-            "keywords": [
-                "laravel",
-                "mpdf",
-                "pdf"
-            ],
-            "support": {
-                "issues": "https://github.com/niklasravnsborg/laravel-pdf/issues",
-                "source": "https://github.com/niklasravnsborg/laravel-pdf/tree/v4.1.0"
-            },
-            "abandoned": true,
-            "time": "2021-06-08T11:07:13+00:00"
         },
         {
             "name": "nunomaduro/termwind",
