@@ -31,8 +31,8 @@ class PriceController extends Controller
     public function store(Request $request)
     {
        $priceData = $request->all();
-        $startDate = Carbon::parse($priceData['start_date']);
-        $endDate = Carbon::parse($priceData['end_date']);
+        $startDate = Carbon::parse($priceData['start']);
+        $endDate = Carbon::parse($priceData['end']);
 
         $currentDate = $startDate;
         while ($currentDate->lte($endDate)) {
