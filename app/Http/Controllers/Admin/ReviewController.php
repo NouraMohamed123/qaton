@@ -40,6 +40,7 @@ class ReviewController extends Controller
     }
     public function show_review($apartment_id)
     {
+
         $review = Review::where('apartment_id', $apartment_id)->get();
 
         if (!$review) {
