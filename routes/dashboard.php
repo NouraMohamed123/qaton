@@ -77,6 +77,7 @@ Route::get('/apartment', [ApartmentController::class, 'index']);
 Route::get('/apartment/{apartment}', [ApartmentController::class, 'show']);
 Route::post('/apartment', [ApartmentController::class, 'store']);
 Route::post('/apartment/{apartment}', [ApartmentController::class, 'update']);
+Route::post('/apartments/{apartment}/images/{image}', [ApartmentController::class, 'deleteImage'])->name('apartments.images.delete');
 Route::delete('/apartment/{apartment}', [ApartmentController::class, 'destroy']);
 Route::post('/change-status', [ApartmentController::class, 'changeStatus']);
 Route::get('apartmentCount', [ApartmentController::class, 'apartmentCount']);
