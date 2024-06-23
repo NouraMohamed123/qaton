@@ -34,9 +34,24 @@ class ReviewController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Review retrieved successfully',
+            'data' => $review,
+        ], Response::HTTP_OK);
+    }
+    public function show($id)
+    {
+        $review = Review::find($id);
+
+        if (!$review) {
+            return response()->json(['message' => 'Review not found for the given Apartment ID'], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Review retrieved successfully',
             'data' => new ReviewsResource($review),
         ], Response::HTTP_OK);
     }
+
 
     public function destroy($id)
     {

@@ -46,7 +46,8 @@ Route::post('/review', [ReviewController::class, 'store']);
 Route::post('/review/{review}', [ReviewController::class, 'update']);
 Route::delete('/review/{review}', [ReviewController::class, 'destroy']);
 //Route::get('/user-reviews', [ReviewController::class, 'index']);
-Route::get('/review/{id}', [ReviewController::class, 'show_review']);
+Route::get('/review-app/{id}', [ReviewController::class, 'show_review']);
+Route::get('/review/{id}', [ReviewController::class, 'show']);
 //favorit route
 Route::post('/favorit', [FavoriteController::class, 'store']);
 Route::post('/update-favorit', [FavoriteController::class, 'update']);
