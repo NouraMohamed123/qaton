@@ -35,7 +35,7 @@ class ReviewController extends Controller
         return response()->json([
             'status' => 'success',
             'message' => 'Review retrieved successfully',
-            'data' => new ReviewsResource($review),
+            'data' => $review,
         ], Response::HTTP_OK);
     }
     public function show_review($apartment_id)
