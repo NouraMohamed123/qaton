@@ -209,9 +209,9 @@ class BookedApartmentController extends Controller
                 'unit_price' => 20,
                 'category' => 'Clothes',
             ]);
-
+dd($totalPrice);
             $order_data = [
-                'amount' => 100,
+                'amount' => $totalPrice,
                 'currency' => 'SAR',
                 'description' => 'description',
                 'full_name' => Auth::guard('app_users')->user()->name ?? 'user_name',
