@@ -209,7 +209,7 @@ class BookedApartmentController extends Controller
                 'unit_price' => 20,
                 'category' => 'Clothes',
             ]);
-dd($totalPrice);
+
             $order_data = [
                 'amount' => $totalPrice,
                 'currency' => 'SAR',
