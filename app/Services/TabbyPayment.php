@@ -54,8 +54,11 @@ class TabbyPayment
 
         $body = $this->getConfig($data);
 
-        $http = Http::withToken(Config::get('services.tabby.pk_test'))
-        ->baseUrl(Config::get('services.tabby.base_url'));
+     $http = Http::withToken(Config::get('services.tabby.pk_test'))
+       ->baseUrl(Config::get('services.tabby.base_url'))
+       ->withOptions([
+           'verify' => false
+       ]);
 
         $response = $http->post('checkout', $body);
 
