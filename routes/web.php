@@ -18,7 +18,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/generate-pdf/{id}', [BookedApartmentController::class, 'generate_pdf']);
+// Route::get('/generate-pdf/{id}', [BookedApartmentController::class, 'generate_pdf']);
 
 
 
