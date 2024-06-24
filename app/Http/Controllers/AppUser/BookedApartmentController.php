@@ -211,7 +211,7 @@ class BookedApartmentController extends Controller
             ]);
 
             $order_data = [
-                'amount' => $totalPrice,
+                'amount' => 100,
                 'currency' => 'SAR',
                 'description' => 'description',
                 'full_name' => Auth::guard('app_users')->user()->name ?? 'user_name',
