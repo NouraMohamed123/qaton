@@ -216,7 +216,7 @@ class TabbyPayment
         $time = '';
         if ($type == 'booking') {
             $message = ControlNotification::where('type', 'booking')->value('message');
-            $title = ControlNotification::where('type', 'booking')->value('$title');
+            $title = ControlNotification::where('type', 'booking')->value('title');
             $time = ControlNotification::where('type', 'booking')->value('time');
         } elseif ($type == 'entry_day') {
             $message = ControlNotification::where('type', 'entry_day')->value('message');
