@@ -35,6 +35,9 @@
     .ltr {
       direction: ltr;
     }
+    .whitespace-nowrap{
+        color: red;
+    }
   </style>
 </head>
 
@@ -55,7 +58,7 @@ $invoice =  \App\Models\Invoice::find(1);
 
             <div class="flex gap-4">
               <ul>
-                <li class="whitespace-nowrap">هاتف</li>
+                <li class="whitespace-nowrap " style="color: red">هاتف</li>
                 <li class="whitespace-nowrap">فاكس</li>
                 <li class="whitespace-nowrap">الرقم الضريبي</li>
                 <li class="whitespace-nowrap">العنوان</li>

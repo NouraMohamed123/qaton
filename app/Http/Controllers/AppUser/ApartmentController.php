@@ -135,10 +135,12 @@ class ApartmentController extends Controller
         $available_apartments->each(function ($apartment) use ($checkInDate, $checkOutDate) {
             $apartment->nights = $checkOutDate->diffInDays($checkInDate);
         });
-        $userId = Auth::guard('app_users')->user()->id;
-        $available_apartments->each(function ($apartment) use ($userId) {
-            $apartment->favorited_by_user = $apartment->favorites->contains('user_id', $userId);
-        });
+        if (Auth::guard('app_users')->check()) {
+            $userId = Auth::guard('app_users')->user()->id;
+            $available_apartments->each(function ($apartment) use ($userId) {
+                $apartment->favorited_by_user = $apartment->favorites->contains('user_id', $userId);
+            });
+        }
         return response()->json(['isSuccess' => true,
         'data' => ApartmentResourceMobile::collection($available_apartments),
 

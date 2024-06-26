@@ -41,6 +41,10 @@ class FavoriteController extends Controller
 
     public function store(Request $request)
     {
+        $user = Auth::guard('app_users')->user();
+        if (!$user) {
+            return response()->json(['error' => 'User not authenticated'], 401);
+        }
         $validator = Validator::make($request->all(), [
             'apartment_id' => ['required'],
         ]);
