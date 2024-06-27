@@ -43,14 +43,10 @@ $invoice =  \App\Models\Invoice::find(1);
 <body dir="rtl">
 
     {{-- <div style=" font-size: 8px;"> --}}
-        <table style="width: 100%; position: relative;">
-            <div style="position:absolute; right: 50%; top: 50%;">
-                <div style="width: 90px;">
-                    <img class="width: 100%; height: 100%" src="{{asset('uploads/invoice/' . $invoice->img) }}" alt="">
-                </div>
-            </div>
+        <table style="width: 100%;">
+
             <tr>
-                <td style="width: 50%; overflow-x: hidden;">
+                <td style="width: 40%; overflow-x: hidden;">
                     <p style="margin-bottom: 8px">شركة قطون للسفر والسياحة</p>
                     <table style="width: 100%; gap: 12px;">
                         <tr>
@@ -79,7 +75,12 @@ $invoice =  \App\Models\Invoice::find(1);
                         </tr>
                     </table>
                 </td>
-                <td style="width: 50%; overflow-x: hidden;" dir="ltr">
+                <td style="width: 20%;">
+                    <div style="max-width: 90px">
+                        <img class="width: 100%; height: 100%" src="{{asset('uploads/invoice/' . $invoice->img) }}" alt="">
+                    </div>
+                </td>
+                <td style="width: 40%; overflow-x: hidden;" dir="ltr">
                     <p style="margin-bottom: 8px">Co .T .Q</p>
                     <table style="width: 100%; gap: 12px;">
                         <tr>
