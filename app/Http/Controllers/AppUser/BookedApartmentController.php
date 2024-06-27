@@ -41,6 +41,7 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\BookedResourceMobile;
 use Illuminate\Support\Facades\Notification;
 use App\Http\Resources\ApartmentResourceAccess;
+use Mpdf\Mpdf;
 
 class BookedApartmentController extends Controller
 {
@@ -478,28 +479,47 @@ class BookedApartmentController extends Controller
     }
     }
     public function generate_pdf($id)
-    {
-        // Fetch the booked apartment along with related data
-        $booked = Booked_apartment::with('user', 'apartment', 'coupon', 'order_payment')
-            ->where('id', $id)
-            ->where('status', 'recent')
-            ->first();
+{
+    // Fetch the booked apartment along with related data
+    $booked = Booked_apartment::with('user', 'apartment', 'coupon', 'order_payment')
+        ->where('id', $id)
+        ->where('status', 'recent')
+        ->first();
 
         if (!$booked) {
             return response()->json(['success' => false, 'message' => 'Booking not found.'], 404);
         }
 
+        // Debugging: Log the fetched data
+        \Log::info('Booked Apartment Data:', $booked->toArray());
 
         // Generate a unique filename
         $dateTime = now();
         $fileName = $dateTime->format('YmdHis') . '_translation.pdf';
 
-        // Generate PDF
-        $pdf = PDF::loadView('invoices', ['booked' => $booked]);
+        // Generate PDF using mPDF
+        try {
+            // Configure mPDF
+            $mpdf = new Mpdf([
+                'default_font' => 'Arial',
+                'format' => 'A4',
+                'font_size' => '8px',
 
-        // Save the PDF to the storage
-        $filePath = storage_path('app/public/' . $fileName);
-        $pdf->save($filePath);
+            ]);
+
+            // Load the view and render HTML to a string
+            $html = view('invoices', ['booked' => $booked])->render();
+
+            // Write HTML to the PDF
+            $mpdf->WriteHTML($html);
+
+            // Save the PDF to storage
+            $filePath = storage_path('app/public/' . $fileName);
+            $mpdf->Output($filePath, \Mpdf\Output\Destination::FILE);
+        } catch (\Exception $e) {
+            \Log::error('PDF Generation Error: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'PDF generation failed.'], 500);
+        }
 
         // Update invoice link in the database
         $orderPayment = OrderPayment::where('booked_id', $booked->id)->first();
@@ -518,6 +538,9 @@ class BookedApartmentController extends Controller
             'success' => true,
             'url' => $urlToDownload,
         ]);
-    }
+
+}
+
+
 
 }

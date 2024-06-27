@@ -61,8 +61,8 @@ Route::delete('/booked/{Booked_apartment}', [BookedApartmentController::class, '
 Route::get('user-booked', [BookedApartmentController::class, 'userBooked']);
 Route::get('user-booked-details/{id}', [BookedApartmentController::class, 'userBookedDetailsAccess']);
 Route::post('user-leaving', [BookedApartmentController::class, 'userLeaving']);
-Route::get('/generate-pdf/{id}', [BookedApartmentController::class, 'generate_pdf']);
 
+Route::get('/generate-pdf/{id}', [BookedApartmentController::class, 'generate_pdf']);
 
 ///coupon
 Route::post('check-coupon', [BookedApartmentController::class, 'checkCoupon']);
