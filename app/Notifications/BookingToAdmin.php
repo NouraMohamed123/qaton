@@ -55,6 +55,7 @@ class BookingToAdmin extends Notification
             'name' => $this->user->name,
             'email' => $this->user->email,
             'message' => 'New User booked  apartment ' . $this->apartment->name,
+            'details_apartment'=>$this->apartment
         ];
     }
 }

@@ -55,6 +55,7 @@ class LeavingToAdmin extends Notification
             'name' => $this->user->name,
             'email' => $this->user->email,
             'message' => ' User leaved  apartment ' . $this->apartment->name,
+            'details_apartment'=>$this->apartment
         ];
     }
 }
