@@ -40,7 +40,7 @@ class UserController extends Controller
         });
         return response()->json([
 
-            'user' => $user,
+            'user' => new UserResource($user),
             "roles" => $roles,
             'permissions' => $permissions,
 

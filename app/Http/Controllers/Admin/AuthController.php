@@ -6,6 +6,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Support\Facades\Validator;
@@ -68,7 +69,7 @@ public function login(Request $request)
         });
         return response()->json([
             'access_token' => $token,
-            'user' => $user,
+            'user' => new UserResource($user),
             "roles" => $roles,
             'permissions' => $permissions,
             'expires_in' => JWTAuth::factory()->getTTL() * 60,
