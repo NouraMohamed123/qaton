@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\AppUser;
 
 use PDF;
+use Mpdf\Mpdf;
 use Carbon\Carbon;
 use App\Models\User;
 use App\Models\Point;
@@ -29,6 +30,7 @@ use Illuminate\Support\Facades\DB;
 use App\Events\BookingToAdminEvent;
 use App\Events\LeavingToAdminEvent;
 use App\Models\ControlNotification;
+use App\Traits\NotificationControl;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use App\Notifications\BookingToAdmin;
@@ -41,10 +43,10 @@ use Illuminate\Support\Facades\Validator;
 use App\Http\Resources\BookedResourceMobile;
 use Illuminate\Support\Facades\Notification;
 use App\Http\Resources\ApartmentResourceAccess;
-use Mpdf\Mpdf;
 
 class BookedApartmentController extends Controller
 {
+    use NotificationControl;
     private $fatoorah_services;
     public $tabby;
     /**
@@ -387,30 +389,7 @@ class BookedApartmentController extends Controller
     {
         return response()->json(["error" => 'error', 'Data' => 'payment failure'], 404);
     }
-    public function controlNotification($type)
-    {
-        $message = '';
-        $time = '';
-        if ($type == 'booking') {
-            $message = ControlNotification::where('type', 'booking')->value('message');
-            $title = ControlNotification::where('type', 'booking')->value('title');
-            $time = ControlNotification::where('type', 'booking')->value('time');
-        } elseif ($type == 'entry_day') {
-            $message = ControlNotification::where('type', 'entry_day')->value('message');
-            $title = ControlNotification::where('type', 'entry_day')->value('title');
-            $time = ControlNotification::where('type', 'entry_day')->value('time');
-        } elseif ($type == 'exit_day') {
-            $message = ControlNotification::where('type', 'exit_day')->value('message');
-            $title = ControlNotification::where('type', 'exit_day')->value('title');
-            $time = ControlNotification::where('type', 'exit_day')->value('time');
-        } else {
-            $message = 'Default message';
-            $title = 'Default title';
-            $time = 'Default time';
-        }
 
-        return ['message' => $message, 'time' => $time , 'title' => $title];
-    }
     public function canceld(Request $request)
     {
         $checkInDate = Carbon::parse($request->check_in_date);

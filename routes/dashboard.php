@@ -122,6 +122,7 @@ Route::get('/payment/{id}', [ReportsController::class, 'payments']);
 Route::get('orderCount', [ReportsController::class, 'orderCount']);
 Route::get('/all-payments', [ReportsController::class, 'all_payments']);
 Route::get('/reservation-request', [ReportsController::class, 'reservation_request']);
+Route::post('/accept-reservation-request', [ReportsController::class, 'accept_reservation_request']);
 //offers
 
 Route::get('/offers', [OffersController::class, 'index']);

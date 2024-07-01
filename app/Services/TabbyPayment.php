@@ -18,6 +18,7 @@ use App\Notifications\BookingUser;
 use Illuminate\Support\Facades\DB;
 use App\Events\BookingToAdminEvent;
 use App\Models\ControlNotification;
+use App\Traits\NotificationControl;
 use Illuminate\Support\Facades\Http;
 use App\Notifications\BookingToAdmin;
 use Illuminate\Support\Facades\Event;
@@ -27,6 +28,7 @@ use Illuminate\Support\Facades\Notification;
 
 class TabbyPayment
 {
+    use NotificationControl;
     public function __construct()
     {
 
@@ -126,7 +128,7 @@ class TabbyPayment
         if ($response->status == "CLOSED") {
 
             $booked = Booked_apartment::where('id', $response->order->reference_id)->first();
-            $payment =    OrderPayment::where('booked_id', $booked->id)->first();
+            $payment =  OrderPayment::where('booked_id', $booked->id)->first();
 
             if ($response->status == "CLOSED") {
                 try {
@@ -210,28 +212,5 @@ class TabbyPayment
         }
     }
 
-    public function controlNotification($type)
-    {
-        $message = '';
-        $time = '';
-        if ($type == 'booking') {
-            $message = ControlNotification::where('type', 'booking')->value('message');
-            $title = ControlNotification::where('type', 'booking')->value('title');
-            $time = ControlNotification::where('type', 'booking')->value('time');
-        } elseif ($type == 'entry_day') {
-            $message = ControlNotification::where('type', 'entry_day')->value('message');
-            $title = ControlNotification::where('type', 'entry_day')->value('title');
-            $time = ControlNotification::where('type', 'entry_day')->value('time');
-        } elseif ($type == 'exit_day') {
-            $message = ControlNotification::where('type', 'exit_day')->value('message');
-            $title = ControlNotification::where('type', 'exit_day')->value('title');
-            $time = ControlNotification::where('type', 'exit_day')->value('time');
-        } else {
-            $message = 'Default message';
-            $title = 'Default title';
-            $time = 'Default time';
-        }
 
-        return ['message' => $message, 'time' => $time , 'title' => $title];
-    }
 }
