@@ -15,9 +15,9 @@ class CityController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $cities = City::all();
+        $cities = City::paginate($request->get('per_page', 50));
         return CityResource::collection($cities);
     }
 

@@ -10,13 +10,13 @@ use Illuminate\Support\Facades\DB;
 
 class PointController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         // Retrieve points with user information
         $points = Point::with('user')
                        ->select('user_id', DB::raw('SUM(point) as total_points'))
                        ->groupBy('user_id')
-                       ->get();
+                       ->paginate($request->get('per_page', 50));
 
         // Calculate riyals for each user
         $pointsPerRiyal = 5000;

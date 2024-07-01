@@ -14,7 +14,7 @@ class AreaController extends Controller
      */
     public function index(Request $request)
     {
-        $areas = Area::with('city')->get();
+        $areas = Area::with('city')->paginate($request->get('per_page', 50));
         return AreaResource::collection($areas);
     }
 

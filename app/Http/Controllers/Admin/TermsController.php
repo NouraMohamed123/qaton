@@ -13,9 +13,9 @@ class TermsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $terms = Term::all();
+        $terms = Term::paginate($request->get('per_page', 50));
         return TermsResource::collection($terms);
     }
 

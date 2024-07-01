@@ -18,9 +18,9 @@ class ApartmentController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $apartments = Apartment::with('rooms','images')->get();
+        $apartments = Apartment::with('rooms','images')->paginate($request->get('per_page', 50));
 
         return ApartmentResource::collection($apartments);
     }

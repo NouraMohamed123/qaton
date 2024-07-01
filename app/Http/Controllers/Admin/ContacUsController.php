@@ -11,9 +11,9 @@ class ContacUsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-       $contacts = ContactUs::get();
+       $contacts = ContactUs::paginate($request->get('per_page', 50));
        return response()->json(['isSuccess' => true,'data'=>$contacts], 200);
     }
     public function count_contacts()

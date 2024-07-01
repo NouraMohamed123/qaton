@@ -13,9 +13,9 @@ class PrivacyController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $privacy = Privacy::all();
+        $privacy = Privacy::paginate($request->get('per_page', 50));
         return PrivacyResource::collection($privacy);
     }
 

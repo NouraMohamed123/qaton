@@ -13,10 +13,10 @@ class AboutUsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
 
-        $about_us = AboutUs::all();
+        $about_us = AboutUs::paginate($request->get('per_page', 50));
         return AboutUsResource::collection($about_us);
     }
 

@@ -14,14 +14,14 @@ class ReportsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function all_orders()
+    public function all_orders(Request $request)
     {
-        $booked =  Booked_apartment::with('Apartment')->get();
+        $booked =  Booked_apartment::with('Apartment')->latest()->paginate($request->get('per_page', 50));
         return BookedResource::collection($booked);
     }
-    public function all_payments()
+    public function all_payments(Request $request)
     {
-        $payments = OrderPayment::with('booked.user')->latest()->get();
+        $payments = OrderPayment::with('booked.user')->latest()->paginate($request->get('per_page', 50));
         return OrderPaymentResource::collection($payments);
     }
     public function payments($id)

@@ -12,9 +12,9 @@ class CouponsController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $coupons = Coupon::get();
+        $coupons = Coupon::paginate($request->get('per_page', 50));
         return response()->json($coupons, 201);
 
     }

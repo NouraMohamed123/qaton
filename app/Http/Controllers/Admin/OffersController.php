@@ -12,9 +12,9 @@ class OffersController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-     $offers =  Offer::get();
+     $offers =  Offer::paginate($request->get('per_page', 50));
      return OfferResource::collection($offers);
     }
 

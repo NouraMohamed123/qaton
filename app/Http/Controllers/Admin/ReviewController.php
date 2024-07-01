@@ -12,9 +12,9 @@ use Illuminate\Http\Response;
 
 class ReviewController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $reviews = Review::all();
+        $reviews = Review::paginate($request->get('per_page', 50));
 
         return response()->json([
             'status' => 'success',
