@@ -235,7 +235,7 @@ class BookedApartmentController extends Controller
 
             $payment = $this->tabby->createSession($order_data);
 
-            dd($payment);
+
 
             if (isset($payment->configuration->available_products->installments[0]->web_url)) {
                 $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
