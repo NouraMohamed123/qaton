@@ -235,10 +235,15 @@ class BookedApartmentController extends Controller
 
             $payment = $this->tabby->createSession($order_data);
 
-            $id = $payment->id;
-// dd($order_data);
-            $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
-            return  $redirect_url;
+            dd($payment);
+
+            if (isset($payment->configuration->available_products->installments[0]->web_url)) {
+                $redirect_url = $payment->configuration->available_products->installments[0]->web_url;
+                return $redirect_url;
+            } else {
+                // Handle the case where installments or web_url is not available
+                return redirect()->back()->with('error', 'Unable to process payment with Tabby.');
+            }
         }
     }
 
