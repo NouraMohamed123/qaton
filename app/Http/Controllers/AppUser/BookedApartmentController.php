@@ -220,7 +220,7 @@ class BookedApartmentController extends Controller
                 'full_name' => Auth::guard('app_users')->user()->name ?? 'user_name',
                 'buyer_phone' =>   Auth::guard('app_users')->user()->phone ?? '9665252123',
                 //  'buyer_email' => 'card.success@tabby.ai',//this test
-                'buyer_email' =>    Auth::guard('app_users')->user()->email ?? 'user@gmail.com',
+                'buyer_email' =>    Auth::guard('app_users')->user()->email ?? 'card.success@tabby.ai',
                 'address' => 'Saudi Riyadh',
                 'city' => 'Riyadh',
                 'zip' => '1234',
